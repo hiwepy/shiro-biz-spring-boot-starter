@@ -1,9 +1,10 @@
 server:
   port: 7900
 
-flyway: 
+shiro: 
   enabled: true
-  baseline-on-migrate: true
-  baseline-version: 1.0.0
-  baseline-description: 系统初始化 
-  
+  sessionManager:
+    sessionIdCookieEnabled: 
+  biz:
+    session-id-cookie:
+      comment: 
