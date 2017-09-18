@@ -19,8 +19,8 @@ import org.apache.shiro.web.util.WebUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.nimbusds.jose.JWSObject;
 
-import io.authc.spring.boot.shiro.token.JWTAuthenticationToken;
-import io.authc.spring.boot.utils.JwtTokenUtils;
+import org.apache.shiro.spring.boot.shiro.token.JWTAuthenticationToken;
+import org.apache.shiro.spring.boot.utils.JwtTokenUtils;
 import io.jsonwebtoken.Claims;
 
 public final class JWTOrFormAuthenticationFilter extends AuthenticatingFilter {

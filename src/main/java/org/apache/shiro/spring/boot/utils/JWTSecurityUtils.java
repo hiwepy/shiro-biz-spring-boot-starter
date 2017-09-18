@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.authc.spring.boot.utils;
+package org.apache.shiro.spring.boot.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,7 +27,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.alibaba.fastjson.JSONObject;
 
-import io.authc.spring.boot.security.JWTUserDetails;
+import org.apache.shiro.spring.boot.security.JWTUserDetails;
 import io.jsonwebtoken.Claims;
 
 public class JWTSecurityUtils {

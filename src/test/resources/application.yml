@@ -4,7 +4,8 @@ server:
 shiro: 
   enabled: true
   sessionManager:
-    sessionIdCookieEnabled: 
+    sessionIdCookieEnabled: true
+    sessionIdUrlRewritingEnabled:  true
   biz:
     session-id-cookie:
       comment: 

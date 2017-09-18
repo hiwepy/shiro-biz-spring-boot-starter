@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.authc.spring.boot.utils;
+package org.apache.shiro.spring.boot.utils;
 
 import com.alibaba.fastjson.JSONObject;
 

@@ -31,7 +31,7 @@
 		<java.version>1.8</java.version>
 		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
 		<shiro.version>1.4.0</shiro.version>
-		<jjwt.version>0.7.0</jjwt.version>
+		<pac4j.version>2.1.0</pac4j.version>
 	</properties>
 	
 	<dependencies>
@@ -93,7 +93,7 @@
 		<dependency>
 		    <groupId>io.jsonwebtoken</groupId>
 		    <artifactId>jjwt</artifactId>
-		    <version>${jjwt.version}</version>
+		    <version>0.7.0</version>
 		</dependency>
 		 
 
@@ -132,7 +132,6 @@
 		    <artifactId>shiro-ehcache</artifactId>
 		    <version>${shiro.version}</version>
 		</dependency>
-		
 		<dependency>
 		    <groupId>org.apache.shiro</groupId>
 		    <artifactId>shiro-quartz</artifactId>
@@ -142,6 +141,76 @@
 		    <groupId>org.apache.shiro</groupId>
 		    <artifactId>shiro-aspectj</artifactId>
 		    <version>${shiro.version}</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/io.buji/buji-pac4j -->
+		<dependency>
+		    <groupId>io.buji</groupId>
+		    <artifactId>buji-pac4j</artifactId>
+		    <version>3.0.0</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.pac4j -->
+		<dependency>
+		    <groupId>org.pac4j</groupId>
+		    <artifactId>pac4j-http</artifactId>
+		    <version>${pac4j.version}</version>
+		    <optional>true</optional>
+		</dependency>
+		<dependency>
+		    <groupId>org.pac4j</groupId>
+		    <artifactId>pac4j-oauth</artifactId>
+		    <version>${pac4j.version}</version>
+		    <optional>true</optional>
+		</dependency>
+		<dependency>
+		    <groupId>org.pac4j</groupId>
+		    <artifactId>pac4j-cas</artifactId>
+		    <version>${pac4j.version}</version>
+		    <optional>true</optional>
+		</dependency>
+		<dependency>
+		    <groupId>org.pac4j</groupId>
+		    <artifactId>pac4j-saml</artifactId>
+		   <version>${pac4j.version}</version>
+		    <optional>true</optional>
+		</dependency>
+		<dependency>
+		    <groupId>org.pac4j</groupId>
+		    <artifactId>pac4j-oidc</artifactId>
+		    <version>${pac4j.version}</version>
+		    <optional>true</optional>
+		</dependency>
+		<dependency>
+		    <groupId>org.pac4j</groupId>
+		    <artifactId>pac4j-jwt</artifactId>
+		    <version>${pac4j.version}</version>
+		    <optional>true</optional>
+		</dependency>
+		<dependency>
+		    <groupId>org.pac4j</groupId>
+		    <artifactId>pac4j-openid</artifactId>
+		    <version>${pac4j.version}</version>
+		    <optional>true</optional>
+		</dependency>
+		<dependency>
+		    <groupId>org.pac4j</groupId>
+		    <artifactId>pac4j-ldap</artifactId>
+		    <version>${pac4j.version}</version>
+		    <optional>true</optional>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.pac4j</groupId>
+		    <artifactId>pac4j-sql</artifactId>
+		    <version>${pac4j.version}</version>
+		    <optional>true</optional>
+		</dependency>
+		<dependency>
+		    <groupId>org.pac4j</groupId>
+		    <artifactId>pac4j-mongo</artifactId>
+		    <version>${pac4j.version}</version>
+		    <optional>true</optional>
 		</dependency>
 		
 		<dependency>

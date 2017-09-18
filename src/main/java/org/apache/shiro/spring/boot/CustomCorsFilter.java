@@ -1,4 +1,4 @@
-package io.authc.spring.boot;
+package org.apache.shiro.spring.boot;
 
 import java.util.Arrays;
 

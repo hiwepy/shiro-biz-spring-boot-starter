@@ -1,12 +1,12 @@
-package io.authc.spring.boot.config;
+package org.apache.shiro.spring.boot.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import io.authc.spring.boot.security.CustomAuthenticationProvider;
-import io.authc.spring.boot.security.filter.JWTAuthenticationFilter;
-import io.authc.spring.boot.security.filter.JWTLoginFilter;
+import org.apache.shiro.spring.boot.security.CustomAuthenticationProvider;
+import org.apache.shiro.spring.boot.security.filter.JWTAuthenticationFilter;
+import org.apache.shiro.spring.boot.security.filter.JWTLoginFilter;
 
 @Configuration
 @EnableWebSecurity

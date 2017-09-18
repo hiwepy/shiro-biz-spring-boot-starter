@@ -1,8 +1,8 @@
-package io.authc.spring.boot;
+package org.apache.shiro.spring.boot;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import io.authc.spring.boot.token.JwtToken;
+import org.apache.shiro.spring.boot.token.JwtToken;
 
 public abstract class JwtProperties {
 	

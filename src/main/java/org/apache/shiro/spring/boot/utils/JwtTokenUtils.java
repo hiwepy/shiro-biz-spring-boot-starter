@@ -1,4 +1,4 @@
-package io.authc.spring.boot.utils;
+package org.apache.shiro.spring.boot.utils;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

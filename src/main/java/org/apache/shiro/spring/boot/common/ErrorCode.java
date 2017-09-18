@@ -1,4 +1,4 @@
-package io.authc.spring.boot.common;
+package org.apache.shiro.spring.boot.common;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
