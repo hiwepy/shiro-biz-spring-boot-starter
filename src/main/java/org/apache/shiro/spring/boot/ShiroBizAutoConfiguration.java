@@ -1,21 +1,44 @@
 package org.apache.shiro.spring.boot;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.servlet.Filter;
 
-import org.apache.shiro.util.ClassUtils;
-import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
-import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
-import org.apache.shiro.web.filter.mgt.DefaultFilter;
-import org.apache.shiro.web.filter.mgt.DefaultFilterChainManager;
-import org.apache.shiro.web.filter.mgt.PathMatchingFilterChainResolver;
-import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.apache.commons.collections.MapUtils;
+import org.apache.shiro.biz.realm.PrincipalRealmListener;
+import org.apache.shiro.biz.spring.ShiroFilterProxyFactoryBean;
+import org.apache.shiro.biz.web.filter.authc.LoginListener;
+import org.apache.shiro.biz.web.filter.authc.LogoutListener;
+import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.spring.boot.cache.ShiroEhCacheAutoConfiguration;
+import org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguration;
+import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
+import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.apache.shiro.web.filter.AccessControlFilter;
+import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.DelegatingFilterProxyRegistrationBean;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.ObjectUtils;
 
 
 /**
@@ -201,78 +224,188 @@ import org.springframework.context.annotation.Configuration;
  *		</tr>
  *	  </tbody>
  * </table>
- *
+ * 自定义Filter通过@Bean注解后，被Spring Boot自动注册到了容器的Filter chain中，这样导致的结果是，所有URL都会被自定义Filter过滤，而不是Shiro中配置的一部分URL。
+ * https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#howto-disable-registration-of-a-servlet-or-filter
+ * http://www.jianshu.com/p/bf79fdab9c19
  */
 @Configuration
-@ConditionalOnClass({ PathMatchingFilterChainResolver.class })
-//@ConditionalOnProperty(name = RocketmqConsumerProperties.PREFIX, matchIfMissing = true)
-//@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 20)
-
-@ConditionalOnProperty(name = "shiro.biz", matchIfMissing = true)
-//@EnableConfigurationProperties({ RocketmqConsumerProperties.class })
-public class ShiroBizAutoConfiguration {
+@AutoConfigureBefore(ShiroWebAutoConfiguration.class)
+@AutoConfigureAfter(ShiroEhCacheAutoConfiguration.class)
+@ConditionalOnProperty(prefix = ShiroBizProperties.PREFIX, value = "enabled", havingValue = "true")
+@EnableConfigurationProperties({ ShiroBizProperties.class })
+public class ShiroBizAutoConfiguration implements ApplicationContextAware {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ShiroBizAutoConfiguration.class);
+	private ApplicationContext applicationContext;
+	
+	@Autowired
+	private ShiroBizProperties properties;
+ 
+	/**
+	 * 登录监听：实现该接口可监听账号登录失败和成功的状态，从而做业务系统自己的事情，比如记录日志
+	 */
+	@Bean("loginListeners")
+	@ConditionalOnMissingBean(name = "loginListeners")
+	public List<LoginListener> loginListeners() {
 
-	//1、创建FilterChainResolver 
-	@Bean
-	@ConditionalOnMissingBean
-	public PathMatchingFilterChainResolver filterChainResolver(DefaultFilterChainManager filterChainManager) {
+		List<LoginListener> loginListeners = new ArrayList<LoginListener>();
 		
-		PathMatchingFilterChainResolver filterChainResolver =  
-		        new PathMatchingFilterChainResolver(); 
-		
-		//5、设置Filter的属性  
-		FormAuthenticationFilter authcFilter = (FormAuthenticationFilter) filterChainManager.getFilter("authc");  
-		authcFilter.setLoginUrl("/login.jsp");  
-		RolesAuthorizationFilter rolesFilter = (RolesAuthorizationFilter)filterChainManager.getFilter("roles");  
-		rolesFilter.setUnauthorizedUrl("/unauthorized.jsp");  
-		  
-		filterChainResolver.setFilterChainManager(filterChainManager);  
-		
-		return filterChainResolver;
-	}
-	
-	//2、创建FilterChainManager
-	@Bean
-	@ConditionalOnMissingBean
-	public DefaultFilterChainManager filterChainManager() {
-		
-		DefaultFilterChainManager filterChainManager = new DefaultFilterChainManager();
-		//3、注册Filter  
-		for(DefaultFilter filter : DefaultFilter.values()) {  
-		    filterChainManager.addFilter( filter.name(), (Filter) ClassUtils.newInstance(filter.getFilterClass()));  
+		Map<String, LoginListener> beansOfType = getApplicationContext().getBeansOfType(LoginListener.class);
+		if (!ObjectUtils.isEmpty(beansOfType)) {
+			Iterator<Entry<String, LoginListener>> ite = beansOfType.entrySet().iterator();
+			while (ite.hasNext()) {
+				loginListeners.add(ite.next().getValue());
+			}
 		}
-		//4、注册URL-Filter的映射关系  
-		filterChainManager.addToChain("/login.jsp", "authc");  
-		filterChainManager.addToChain("/unauthorized.jsp", "anon");  
-		filterChainManager.addToChain("/**", "authc");  
-		filterChainManager.addToChain("/**", "roles", "admin");   
 		
-		return filterChainManager;
+		return loginListeners;
 	}
 	
-	//3、创建SessionManager
+	/**
+	 * Realm 执行监听：实现该接口可监听认证失败和成功的状态，从而做业务系统自己的事情，比如记录日志
+	 */
+	@Bean("realmListeners")
+	@ConditionalOnMissingBean(name = "realmListeners")
+	public List<PrincipalRealmListener> realmListeners() {
+
+		List<PrincipalRealmListener> realmListeners = new ArrayList<PrincipalRealmListener>();
+		
+		Map<String, PrincipalRealmListener> beansOfType = getApplicationContext().getBeansOfType(PrincipalRealmListener.class);
+		if (!ObjectUtils.isEmpty(beansOfType)) {
+			Iterator<Entry<String, PrincipalRealmListener>> ite = beansOfType.entrySet().iterator();
+			while (ite.hasNext()) {
+				realmListeners.add(ite.next().getValue());
+			}
+		}
+		
+		return realmListeners;
+	}
+	
+	/**
+	 * 注销监听：实现该接口可监听账号注销失败和成功的状态，从而做业务系统自己的事情，比如记录日志
+	 */
+	@Bean("logoutListeners")
+	@ConditionalOnMissingBean(name = "logoutListeners")
+	public List<LogoutListener> logoutListeners() {
+
+		List<LogoutListener> logoutListeners = new ArrayList<LogoutListener>();
+		
+		Map<String, LogoutListener> beansOfType = getApplicationContext().getBeansOfType(LogoutListener.class);
+		if (!ObjectUtils.isEmpty(beansOfType)) {
+			Iterator<Entry<String, LogoutListener>> ite = beansOfType.entrySet().iterator();
+			while (ite.hasNext()) {
+				logoutListeners.add(ite.next().getValue());
+			}
+		}
+		
+		return logoutListeners;
+	}
+	
+	/**
+	 * 登录监听：实现该接口可监听账号登录失败和成功的状态，从而做业务系统自己的事情，比如记录日志
+	 */
+	public Map<String, Filter> authcFilters() {
+
+		Map<String, Filter> filters = new LinkedHashMap<String, Filter>();
+
+		Map<String, FilterRegistrationBean> beansOfType = getApplicationContext().getBeansOfType(FilterRegistrationBean.class);
+		if (!ObjectUtils.isEmpty(beansOfType)) {
+			Iterator<Entry<String, FilterRegistrationBean>> ite = beansOfType.entrySet().iterator();
+			while (ite.hasNext()) {
+				Entry<String, FilterRegistrationBean> entry = ite.next();
+				if (entry.getValue().getFilter() instanceof AccessControlFilter) {
+					filters.put(entry.getKey(), entry.getValue().getFilter());
+				}
+			}
+		}
+		
+		return filters;
+	}
+
+	
+	/**
+	 * 系统登录注销过滤器；默认：com.zfsoft.shiro.filter.ZFLogoutFilter
+	 
+	@Bean("logout")
+	@ConditionalOnMissingBean(name = "logout")
+	public FilterRegistrationBean zfLogoutFilter(CacheManager cacheManager,List<LogoutListener> logoutListeners){
+		
+		ZFLogoutFilter logoutFilter = new ZFLogoutFilter();
+		
+		//登录注销后的重定向地址：直接进入登录页面
+		logoutFilter.setRedirectUrl(properties.getRedirectUrl());
+		//注销监听：实现该接口可监听账号注销失败和成功的状态，从而做业务系统自己的事情，比如记录日志
+		logoutFilter.setLogoutListeners(logoutListeners);
+		
+	    FilterRegistrationBean registration = new FilterRegistrationBean(logoutFilter); 
+	    registration.setEnabled(false); 
+	    return registration;
+	}*/
+	
+	/**
+	 * 默认的Session过期过滤器 ：解决Ajax请求期间会话过期异常处理
+	 
+	@Bean("sessionExpired")
+	@ConditionalOnMissingBean(name = "sessionExpired")
+	public FilterRegistrationBean sessionExpiredFilter(CacheManager cacheManager,List<LogoutListener> logoutListeners){
+		FilterRegistrationBean registration = new FilterRegistrationBean(new SessionExpiredFilter()); 
+	    registration.setEnabled(false); 
+	    return registration;
+	}
+	*/
 	@Bean
 	@ConditionalOnMissingBean
-	public DefaultWebSessionManager webSessionManager() {
-		/*
-		//如DefaultSessionManager在创建完session后会调用该方法；如保存到关系数据库/文件系统/NoSQL数据库；即可以实现会话的持久化；返回会话ID；主要此处返回的ID.equals(session.getId())；  
-		Serializable create(Session session);  
-		//根据会话ID获取会话  
-		Session readSession(Serializable sessionId) throws UnknownSessionException;  
-		//更新会话；如更新会话最后访问时间/停止会话/设置超时时间/设置移除属性等会调用  
-		void update(Session session) throws UnknownSessionException;  
-		//删除会话；当会话过期/会话停止（如用户退出时）会调用  
-		void delete(Session session);  
-		//获取当前所有活跃用户，如果用户量多此方法影响性能  
-		Collection<Session> getActiveSessions(); 
-		*/
-		return null;
+	protected ShiroFilterChainDefinition shiroFilterChainDefinition() {
+		DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
+		Map<String /* pattert */, String /* Chain names */> pathDefinitions = properties.getFilterChainDefinitionMap();
+		if (MapUtils.isNotEmpty(pathDefinitions)) {
+			chainDefinition.addPathDefinitions(pathDefinitions);
+			return chainDefinition;
+		}
+		chainDefinition.addPathDefinition("/**", "authc");
+		return chainDefinition;
 	}
-	  
 	
+	@Bean("shiroFilter")
+	@ConditionalOnMissingBean(name = "shiroFilter")
+	protected ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager, ShiroFilterChainDefinition shiroFilterChainDefinition, Map<String, Filter> authcFilters) {
+		
+		ShiroFilterFactoryBean filterFactoryBean = new ShiroFilterProxyFactoryBean();
+        //ShiroFilterFactoryBean filterFactoryBean = new ShiroFilterFactoryBean();
+		
+	    //登录地址：会话不存在时访问的地址
+        filterFactoryBean.setLoginUrl(properties.getLoginUrl());
+        //系统主页：登录成功后跳转路径
+        filterFactoryBean.setSuccessUrl(properties.getSuccessUrl());
+        //异常页面：无权限时的跳转路径
+        filterFactoryBean.setUnauthorizedUrl(properties.getUnauthorizedUrl());
+        //必须设置 SecurityManager
+   		filterFactoryBean.setSecurityManager(securityManager);
+   		//过滤器链：实现对路径规则的拦截过滤
+   		filterFactoryBean.setFilters(authcFilters);
+   		//拦截规则
+        filterFactoryBean.setFilterChainDefinitionMap(shiroFilterChainDefinition.getFilterChainMap());
+        
+        return filterFactoryBean;
+    }
 	
+	@Bean
+	public DelegatingFilterProxyRegistrationBean delegatingFilterProxy(AbstractShiroFilter shiroFilter){
+	    //FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+		DelegatingFilterProxyRegistrationBean filterRegistrationBean = new DelegatingFilterProxyRegistrationBean("shiroFilter");
+		 
+		filterRegistrationBean.setOrder(Integer.MAX_VALUE);
+		filterRegistrationBean.addUrlPatterns("/*");
+	    return filterRegistrationBean;
+	}
 	
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
+
+	public ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
 
 }
