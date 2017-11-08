@@ -17,6 +17,7 @@ import org.apache.shiro.biz.web.filter.authc.LogoutListener;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.boot.cache.ShiroEhCacheAutoConfiguration;
+import org.apache.shiro.spring.boot.template.method.ValidateCaptcha;
 import org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguration;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
@@ -240,6 +241,13 @@ public class ShiroBizAutoConfiguration implements ApplicationContextAware {
 	
 	@Autowired
 	private ShiroBizProperties properties;
+	
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnProperty(prefix = "spring.freemarker", value = "enabled", havingValue = "true")
+	public ValidateCaptcha validateCaptcha() {
+		return new ValidateCaptcha();
+	}
  
 	/**
 	 * 登录监听：实现该接口可监听账号登录失败和成功的状态，从而做业务系统自己的事情，比如记录日志

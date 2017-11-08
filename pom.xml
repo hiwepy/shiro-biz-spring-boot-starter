@@ -53,6 +53,13 @@
 		    <scope>test</scope>
 		</dependency>
 		
+		<!-- FreeMarker是一个用Java语言编写的模板引擎，它基于模板来生成文本输出 -->
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<optional>true</optional>
+		</dependency>
+		
 		<!-- Core starter, including auto-configuration support, logging and YAML -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
