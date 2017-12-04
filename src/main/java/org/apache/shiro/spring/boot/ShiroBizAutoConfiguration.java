@@ -330,37 +330,6 @@ public class ShiroBizAutoConfiguration implements ApplicationContextAware {
 		return filters;
 	}
 
-	
-	/**
-	 * 系统登录注销过滤器；默认：com.zfsoft.shiro.filter.ZFLogoutFilter
-	 
-	@Bean("logout")
-	@ConditionalOnMissingBean(name = "logout")
-	public FilterRegistrationBean zfLogoutFilter(CacheManager cacheManager,List<LogoutListener> logoutListeners){
-		
-		ZFLogoutFilter logoutFilter = new ZFLogoutFilter();
-		
-		//登录注销后的重定向地址：直接进入登录页面
-		logoutFilter.setRedirectUrl(properties.getRedirectUrl());
-		//注销监听：实现该接口可监听账号注销失败和成功的状态，从而做业务系统自己的事情，比如记录日志
-		logoutFilter.setLogoutListeners(logoutListeners);
-		
-	    FilterRegistrationBean registration = new FilterRegistrationBean(logoutFilter); 
-	    registration.setEnabled(false); 
-	    return registration;
-	}*/
-	
-	/**
-	 * 默认的Session过期过滤器 ：解决Ajax请求期间会话过期异常处理
-	 
-	@Bean("sessionExpired")
-	@ConditionalOnMissingBean(name = "sessionExpired")
-	public FilterRegistrationBean sessionExpiredFilter(CacheManager cacheManager,List<LogoutListener> logoutListeners){
-		FilterRegistrationBean registration = new FilterRegistrationBean(new SessionExpiredFilter()); 
-	    registration.setEnabled(false); 
-	    return registration;
-	}
-	*/
 	@Bean
 	@ConditionalOnMissingBean
 	protected ShiroFilterChainDefinition shiroFilterChainDefinition() {
