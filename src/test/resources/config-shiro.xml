@@ -35,7 +35,7 @@
 		</property>
 		<property name="realmsListeners">
 			<list>
-				<bean class="com.zfsoft.globalweb.shiro.DefaultRealmListener"/>
+				<bean class="net.jeebiz.globalweb.shiro.DefaultRealmListener"/>
 			</list>
 		</property>
 		<property name="cachingEnabled" value="true"/>
@@ -64,11 +64,11 @@
 	</bean>
 	
 	<!-- 自定义验证拦截器 -->
-	<bean id="ZFFormAuthenticationFilter" class="com.zfsoft.globalweb.shiro.DefaultAuthenticationFilter">
+	<bean id="ZFFormAuthenticationFilter" class="net.jeebiz.globalweb.shiro.DefaultAuthenticationFilter">
 		<property name="validateCaptcha" value="false"></property>
 	</bean>
 	
-	<bean id="OutAccountAuthenticationFilter" class="com.zfsoft.globalweb.shiro.ext.OutAccountAuthFilter" >
+	<bean id="OutAccountAuthenticationFilter" class="net.jeebiz.globalweb.shiro.ext.OutAccountAuthFilter" >
 		<property name="errorUrl" value="/403.zf"></property>
 	</bean>
 
@@ -84,15 +84,15 @@
 		<property name="securityManager" ref="securityManager" />
 	</bean>
 	
-	<bean id="sessionControFilter" class="com.zfsoft.globalweb.shiro.DefaultSessionControlFilter">
+	<bean id="sessionControFilter" class="net.jeebiz.globalweb.shiro.DefaultSessionControlFilter">
 		<property name="cacheManager" ref="shiroCacheManager"/>
 		<property name="sessionControlCacheName" value="ZFTAL_SHIRO"></property>
 		<property name="loginUrl" value="/xtgl/login/slogin.zf?kickout=1"></property>
 	</bean>
 	
-	<bean id="zflogoutFilter" class="com.zfsoft.globalweb.shiro.ZFLogoutFilter"></bean>
+	<bean id="zflogoutFilter" class="net.jeebiz.globalweb.shiro.ZFLogoutFilter"></bean>
 	
-	<bean id="sessionExpiredFilter" class="com.zfsoft.shiro.filter.session.SessionExpiredFilter"></bean>
+	<bean id="sessionExpiredFilter" class="net.jeebiz.shiro.filter.session.SessionExpiredFilter"></bean>
     
 	<!-- 配置Shiro拦截器 -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
