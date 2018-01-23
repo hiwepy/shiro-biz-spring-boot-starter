@@ -14,7 +14,6 @@ import org.apache.shiro.biz.realm.PrincipalRealmListener;
 import org.apache.shiro.biz.spring.ShiroFilterProxyFactoryBean;
 import org.apache.shiro.biz.web.filter.authc.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.LogoutListener;
-import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.boot.cache.ShiroEhCacheAutoConfiguration;
 import org.apache.shiro.spring.boot.template.method.ValidateCaptcha;
@@ -40,7 +39,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ObjectUtils;
-
 
 /**
  * 默认拦截器

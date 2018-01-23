@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.apache.shiro.spring.boot.ShiroBizProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModelEx;
