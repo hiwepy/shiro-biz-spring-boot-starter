@@ -2,41 +2,36 @@ package org.apache.shiro.spring.boot;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.Filter;
-
-import org.apache.commons.collections.MapUtils;
 import org.apache.shiro.biz.realm.PrincipalRealmListener;
-import org.apache.shiro.biz.spring.ShiroFilterProxyFactoryBean;
+import org.apache.shiro.biz.web.filter.HttpServletSessionExpiredFilter;
 import org.apache.shiro.biz.web.filter.authc.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.LogoutListener;
-import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.spring.boot.biz.ShiroBizFilterFactoryBean;
+import org.apache.shiro.spring.boot.biz.filter.BizLogoutFilter;
+import org.apache.shiro.spring.boot.cache.ShiroEhCacheAutoConfiguration;
+import org.apache.shiro.spring.boot.template.method.ValidateCaptcha;
 import org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguration;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
-import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
-import org.apache.shiro.web.filter.AccessControlFilter;
+import org.apache.shiro.spring.web.config.AbstractShiroWebFilterConfiguration;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.servlet.DelegatingFilterProxyRegistrationBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.util.ObjectUtils;
-
 
 /**
  * 默认拦截器
@@ -227,16 +222,23 @@ import org.springframework.util.ObjectUtils;
  */
 @Configuration
 @AutoConfigureBefore(ShiroWebAutoConfiguration.class)
-@ConditionalOnProperty(prefix = ShiroTicketProperties.PREFIX, value = "enabled", havingValue = "true")
-@EnableConfigurationProperties({ ShiroTicketProperties.class })
-public class ShiroTicketAutoConfiguration implements ApplicationContextAware {
+@AutoConfigureAfter(ShiroEhCacheAutoConfiguration.class)
+@ConditionalOnProperty(prefix = ShiroBizProperties.PREFIX, value = "enabled", havingValue = "true")
+@EnableConfigurationProperties({ ShiroBizProperties.class })
+public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfiguration implements ApplicationContextAware {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ShiroTicketAutoConfiguration.class);
 	private ApplicationContext applicationContext;
 	
 	@Autowired
-	private ShiroTicketProperties properties;
+	private ShiroBizProperties properties;
 	
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnProperty(prefix = "spring.freemarker", value = "enabled", havingValue = "true")
+	public ValidateCaptcha validateCaptcha() {
+		return new ValidateCaptcha();
+	}
+ 
 	/**
 	 * 登录监听：实现该接口可监听账号登录失败和成功的状态，从而做业务系统自己的事情，比如记录日志
 	 */
@@ -298,71 +300,69 @@ public class ShiroTicketAutoConfiguration implements ApplicationContextAware {
 	}
 	
 	/**
-	 * 登录监听：实现该接口可监听账号登录失败和成功的状态，从而做业务系统自己的事情，比如记录日志
+	 * 系统登录注销过滤器；默认：org.apache.shiro.spring.boot.cas.filter.CasLogoutFilter
 	 */
-	public Map<String, Filter> authcFilters() {
-
-		Map<String, Filter> filters = new LinkedHashMap<String, Filter>();
-
-		Map<String, FilterRegistrationBean> beansOfType = getApplicationContext().getBeansOfType(FilterRegistrationBean.class);
-		if (!ObjectUtils.isEmpty(beansOfType)) {
-			Iterator<Entry<String, FilterRegistrationBean>> ite = beansOfType.entrySet().iterator();
-			while (ite.hasNext()) {
-				Entry<String, FilterRegistrationBean> entry = ite.next();
-				if (entry.getValue().getFilter() instanceof AccessControlFilter) {
-					filters.put(entry.getKey(), entry.getValue().getFilter());
-				}
-			}
-		}
+	@Bean("logout")
+	@ConditionalOnMissingBean(name = "logout")
+	public FilterRegistrationBean logoutFilter(List<LogoutListener> logoutListeners){
 		
-		return filters;
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	protected ShiroFilterChainDefinition shiroFilterChainDefinition() {
-		DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
-		Map<String /* pattert */, String /* Chain names */> pathDefinitions = properties.getFilterChainDefinitionMap();
-		if (MapUtils.isNotEmpty(pathDefinitions)) {
-			chainDefinition.addPathDefinitions(pathDefinitions);
-			return chainDefinition;
-		}
-		chainDefinition.addPathDefinition("/**", "authc");
-		return chainDefinition;
+		FilterRegistrationBean registration = new FilterRegistrationBean(); 
+		BizLogoutFilter logoutFilter = new BizLogoutFilter();
+		
+		//登录注销后的重定向地址：直接进入登录页面
+		logoutFilter.setRedirectUrl(properties.getRedirectUrl());
+		registration.setFilter(logoutFilter);
+		//注销监听：实现该接口可监听账号注销失败和成功的状态，从而做业务系统自己的事情，比如记录日志
+		logoutFilter.setLogoutListeners(logoutListeners);
+	    
+	    registration.setEnabled(false); 
+	    return registration;
 	}
 	
-	@Bean("shiroFilter")
-	@ConditionalOnMissingBean(name = "shiroFilter")
-	protected ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager, ShiroFilterChainDefinition shiroFilterChainDefinition, Map<String, Filter> authcFilters) {
+	/**
+	 * 默认的Session过期过滤器 ：解决Ajax请求期间会话过期异常处理
+	 */
+	@Bean("sessionExpired")
+	@ConditionalOnMissingBean(name = "sessionExpired")
+	public FilterRegistrationBean sessionExpiredFilter(){
+		FilterRegistrationBean registration = new FilterRegistrationBean(new HttpServletSessionExpiredFilter()); 
+	    registration.setEnabled(false); 
+	    return registration;
+	}
+	
+	@Bean
+    @ConditionalOnMissingBean
+    @Override
+    protected ShiroFilterFactoryBean shiroFilterFactoryBean() {
 		
-		ShiroFilterFactoryBean filterFactoryBean = new ShiroFilterProxyFactoryBean();
-        //ShiroFilterFactoryBean filterFactoryBean = new ShiroFilterFactoryBean();
-		
-	    //登录地址：会话不存在时访问的地址
-        filterFactoryBean.setLoginUrl(properties.getLoginUrl());
-        //系统主页：登录成功后跳转路径
-        filterFactoryBean.setSuccessUrl(properties.getSuccessUrl());
-        //异常页面：无权限时的跳转路径
-        filterFactoryBean.setUnauthorizedUrl(properties.getUnauthorizedUrl());
-        //必须设置 SecurityManager
-   		filterFactoryBean.setSecurityManager(securityManager);
-   		//过滤器链：实现对路径规则的拦截过滤
-   		filterFactoryBean.setFilters(authcFilters);
-   		//拦截规则
-        filterFactoryBean.setFilterChainDefinitionMap(shiroFilterChainDefinition.getFilterChainMap());
+		ShiroFilterFactoryBean filterFactoryBean = new ShiroBizFilterFactoryBean();
         
-        return filterFactoryBean;
+		//登录地址：会话不存在时访问的地址
+        filterFactoryBean.setLoginUrl(properties.getLoginUrl());
+  		//系统主页：登录成功后跳转路径
+  		filterFactoryBean.setSuccessUrl(properties.getSuccessUrl());
+  		//异常页面：无权限时的跳转路径
+  		filterFactoryBean.setUnauthorizedUrl(properties.getUnauthorizedUrl());
+  		
+  		//必须设置 SecurityManager
+ 		filterFactoryBean.setSecurityManager(securityManager);
+ 		//拦截规则
+ 		filterFactoryBean.setFilterChainDefinitionMap(shiroFilterChainDefinition.getFilterChainMap());
+      
+ 		return filterFactoryBean;
+        
     }
-	
-	@Bean
-	public DelegatingFilterProxyRegistrationBean delegatingFilterProxy(AbstractShiroFilter shiroFilter){
-	    //FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
-		DelegatingFilterProxyRegistrationBean filterRegistrationBean = new DelegatingFilterProxyRegistrationBean("shiroFilter");
-		 
-		filterRegistrationBean.setOrder(Integer.MAX_VALUE);
-		filterRegistrationBean.addUrlPatterns("/*");
-	    return filterRegistrationBean;
-	}
+
+    @Bean(name = "filterShiroFilterRegistrationBean")
+    @ConditionalOnMissingBean
+    protected FilterRegistrationBean filterShiroFilterRegistrationBean() throws Exception {
+
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        filterRegistrationBean.setFilter((AbstractShiroFilter) shiroFilterFactoryBean().getObject());
+        filterRegistrationBean.setOrder(Ordered.LOWEST_PRECEDENCE);
+
+        return filterRegistrationBean;
+    }
 	
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

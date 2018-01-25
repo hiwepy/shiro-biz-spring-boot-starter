@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.apache.shiro.spring.boot.ticket.filter;
+package org.apache.shiro.spring.boot.biz.filter;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
