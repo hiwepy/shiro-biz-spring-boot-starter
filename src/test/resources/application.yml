@@ -1,11 +1,28 @@
-server:
-  port: 7900
-
-shiro: 
+################################################################################################################  
+###Shiro 权限控制基本配置：  
+################################################################################################################
+shiro:
   enabled: true
-  sessionManager:
-    sessionIdCookieEnabled: true
-    sessionIdUrlRewritingEnabled:  true
-  biz:
-    session-id-cookie:
-      comment: 
+  validate-captcha: false
+  login-url: /authz/login
+  redirect-url: /authz/index
+  success-url: /index
+  unauthorized-url: /error
+  failure-url: /error
+  annotations: 
+    enabled: true
+  web: 
+    enabled: true
+  filter-chain-definition-map: 
+    / : anon
+    /*favicon.ico : anon
+    /webjars/** : anon
+    /assets/** : anon
+    /html/** : anon
+    /error* : anon
+    /logo/** : anon
+    /kaptcha* : anon
+    /sockets/** : anon
+    /logout : logout
+    /index : sessionExpired,sessionControl,authc
+    /** : sessionExpired,sessionControl,authc
