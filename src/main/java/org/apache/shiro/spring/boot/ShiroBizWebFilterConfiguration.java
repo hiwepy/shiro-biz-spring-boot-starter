@@ -12,18 +12,16 @@ import org.apache.shiro.biz.web.filter.authc.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.LogoutListener;
 import org.apache.shiro.spring.boot.biz.ShiroBizFilterFactoryBean;
 import org.apache.shiro.spring.boot.biz.filter.BizLogoutFilter;
-import org.apache.shiro.spring.boot.cache.ShiroEhCacheAutoConfiguration;
 import org.apache.shiro.spring.boot.template.method.ValidateCaptcha;
-import org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguration;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.AbstractShiroWebFilterConfiguration;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
@@ -221,8 +219,10 @@ import org.springframework.util.ObjectUtils;
  * http://www.jianshu.com/p/bf79fdab9c19
  */
 @Configuration
-@AutoConfigureBefore(ShiroWebAutoConfiguration.class)
-@AutoConfigureAfter(ShiroEhCacheAutoConfiguration.class)
+@AutoConfigureBefore( name = {
+	"org.apache.shiro.spring.config.web.autoconfigure.ShiroWebFilterConfiguration" // shiro-spring-boot-web-starter
+})
+@ConditionalOnWebApplication
 @ConditionalOnProperty(prefix = ShiroBizProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ ShiroBizProperties.class })
 public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfiguration implements ApplicationContextAware {
@@ -230,7 +230,7 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	private ApplicationContext applicationContext;
 	
 	@Autowired
-	private ShiroBizProperties properties;
+	private ShiroBizProperties bizProperties;
 	
 	@Bean
 	@ConditionalOnMissingBean
@@ -310,7 +310,7 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		BizLogoutFilter logoutFilter = new BizLogoutFilter();
 		
 		//登录注销后的重定向地址：直接进入登录页面
-		logoutFilter.setRedirectUrl(properties.getRedirectUrl());
+		logoutFilter.setRedirectUrl(bizProperties.getRedirectUrl());
 		registration.setFilter(logoutFilter);
 		//注销监听：实现该接口可监听账号注销失败和成功的状态，从而做业务系统自己的事情，比如记录日志
 		logoutFilter.setLogoutListeners(logoutListeners);
@@ -338,11 +338,11 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		ShiroFilterFactoryBean filterFactoryBean = new ShiroBizFilterFactoryBean();
         
 		//登录地址：会话不存在时访问的地址
-        filterFactoryBean.setLoginUrl(properties.getLoginUrl());
+        filterFactoryBean.setLoginUrl(bizProperties.getLoginUrl());
   		//系统主页：登录成功后跳转路径
-  		filterFactoryBean.setSuccessUrl(properties.getSuccessUrl());
+  		filterFactoryBean.setSuccessUrl(bizProperties.getSuccessUrl());
   		//异常页面：无权限时的跳转路径
-  		filterFactoryBean.setUnauthorizedUrl(properties.getUnauthorizedUrl());
+  		filterFactoryBean.setUnauthorizedUrl(bizProperties.getUnauthorizedUrl());
   		
   		//必须设置 SecurityManager
  		filterFactoryBean.setSecurityManager(securityManager);
@@ -354,7 +354,7 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
     }
 
     @Bean(name = "filterShiroFilterRegistrationBean")
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "filterShiroFilterRegistrationBean")
     protected FilterRegistrationBean filterShiroFilterRegistrationBean() throws Exception {
 
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();

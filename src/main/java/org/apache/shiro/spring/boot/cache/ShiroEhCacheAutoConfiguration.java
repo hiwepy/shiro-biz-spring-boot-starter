@@ -16,14 +16,6 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(prefix = "spring.cache", value = "type", havingValue = "ehcache")
 public class ShiroEhCacheAutoConfiguration {
  
-	/**
-	 * 
-	 * @description	： 缓存管理器：使用Ehcache实现
-	 * @author 		： 万大龙（743）
-	 * @date 		：2017年9月27日 下午8:33:56
-	 * @param cacheManager
-	 * @return
-	 */
 	@Bean
 	public CacheManager shiroCacheManager(org.springframework.cache.CacheManager cacheManager) {
 		// 强制类型转换

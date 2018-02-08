@@ -29,6 +29,8 @@ public class ShiroBizProperties {
 
 	public static final String PREFIX = "shiro";
 	
+	/* ================================== Shiro Basic ================================= */
+	
 	/**
      * 是否校验验证码
      */
@@ -65,8 +67,10 @@ public class ShiroBizProperties {
     private String redirectUrl;
 	/** 系统主页：登录成功后跳转路径 */
     private String successUrl;
-    /** 异常页面：无权限时的跳转路径 */
+    /** 未授权页面：无权限时的跳转路径 */
     private String unauthorizedUrl;
+    /** 异常页面：认证失败时的跳转路径 */
+    private String failureUrl;
 	
 	private Map<String /* pattert */, String /* Chain names */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 	
@@ -258,6 +262,14 @@ public class ShiroBizProperties {
 
 	public void setUnauthorizedUrl(String unauthorizedUrl) {
 		this.unauthorizedUrl = unauthorizedUrl;
+	}
+	
+	public String getFailureUrl() {
+		return failureUrl;
+	}
+
+	public void setFailureUrl(String failureUrl) {
+		this.failureUrl = failureUrl;
 	}
 
 	public Map<String, String> getFilterChainDefinitionMap() {
