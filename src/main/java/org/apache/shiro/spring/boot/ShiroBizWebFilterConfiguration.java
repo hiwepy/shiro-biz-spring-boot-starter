@@ -220,7 +220,8 @@ import org.springframework.util.ObjectUtils;
  */
 @Configuration
 @AutoConfigureBefore( name = {
-	"org.apache.shiro.spring.config.web.autoconfigure.ShiroWebFilterConfiguration" // shiro-spring-boot-web-starter
+	"org.apache.shiro.spring.config.web.autoconfigure.ShiroWebFilterConfiguration", // shiro-spring-boot-web-starter
+	"org.apache.shiro.spring.boot.ShiroBizWebAutoConfiguration"
 })
 @ConditionalOnWebApplication
 @ConditionalOnProperty(prefix = ShiroBizProperties.PREFIX, value = "enabled", havingValue = "true")
@@ -304,9 +305,9 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	 */
 	@Bean("logout")
 	@ConditionalOnMissingBean(name = "logout")
-	public FilterRegistrationBean logoutFilter(List<LogoutListener> logoutListeners){
+	public FilterRegistrationBean<BizLogoutFilter> logoutFilter(List<LogoutListener> logoutListeners){
 		
-		FilterRegistrationBean registration = new FilterRegistrationBean(); 
+		FilterRegistrationBean<BizLogoutFilter> registration = new FilterRegistrationBean<BizLogoutFilter>(); 
 		BizLogoutFilter logoutFilter = new BizLogoutFilter();
 		
 		//登录注销后的重定向地址：直接进入登录页面
@@ -324,8 +325,11 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	 */
 	@Bean("sessionExpired")
 	@ConditionalOnMissingBean(name = "sessionExpired")
-	public FilterRegistrationBean sessionExpiredFilter(){
-		FilterRegistrationBean registration = new FilterRegistrationBean(new HttpServletSessionExpiredFilter()); 
+	public FilterRegistrationBean<HttpServletSessionExpiredFilter> sessionExpiredFilter(){
+		
+		FilterRegistrationBean<HttpServletSessionExpiredFilter> registration = new FilterRegistrationBean<HttpServletSessionExpiredFilter>();
+		registration.setFilter(new HttpServletSessionExpiredFilter());
+		
 	    registration.setEnabled(false); 
 	    return registration;
 	}
@@ -355,9 +359,9 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 
     @Bean(name = "filterShiroFilterRegistrationBean")
     @ConditionalOnMissingBean(name = "filterShiroFilterRegistrationBean")
-    protected FilterRegistrationBean filterShiroFilterRegistrationBean() throws Exception {
+    protected FilterRegistrationBean<AbstractShiroFilter> filterShiroFilterRegistrationBean() throws Exception {
 
-        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        FilterRegistrationBean<AbstractShiroFilter> filterRegistrationBean = new FilterRegistrationBean<AbstractShiroFilter>();
         filterRegistrationBean.setFilter((AbstractShiroFilter) shiroFilterFactoryBean().getObject());
         filterRegistrationBean.setOrder(Ordered.LOWEST_PRECEDENCE);
 
