@@ -161,6 +161,12 @@
 		    <groupId>com.github.vindell</groupId>
 			<artifactId>shiro-biz</artifactId>
 			<version>${shiro-biz.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.shiro</groupId>
+					<artifactId>shiro-quartz</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		
 	</dependencies>
