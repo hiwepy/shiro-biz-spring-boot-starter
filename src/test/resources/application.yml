@@ -16,7 +16,7 @@ shiro:
   filter-chain-definition-map: 
     / : anon
     /*favicon.ico : anon
-    /webjars/** : anon
+    ['/webjars/**'] : anon
     /assets/** : anon
     /html/** : anon
     /error* : anon
