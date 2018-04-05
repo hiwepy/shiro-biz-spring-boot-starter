@@ -29,7 +29,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.ObjectUtils;
-
+@SuppressWarnings("rawtypes")
 public class ShiroBizFilterFactoryBean extends ShiroFilterProxyFactoryBean implements ApplicationContextAware  {
 	
 	private ApplicationContext applicationContext;

@@ -11,12 +11,8 @@ import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 
 /**
- * 
- * @className	： ValidateCaptcha
- * @description	： 提供Freemarker模板判断是否启用验证码功能
- * @author 		： <a href="https://github.com/vindell">vindell</a>
- * @date		： 2017年11月8日 上午11:54:31
- * @version 	V1.0
+ * 提供Freemarker模板判断是否启用验证码功能
+ * @author <a href="https://github.com/vindell">vindell</a>
  */
 public class ValidateCaptcha implements TemplateMethodModelEx {
 
