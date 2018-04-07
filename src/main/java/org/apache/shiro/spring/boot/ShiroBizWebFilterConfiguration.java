@@ -7,12 +7,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.shiro.biz.realm.PrincipalRealmListener;
+import org.apache.shiro.biz.web.filter.HttpServletSessionControlFilter;
 import org.apache.shiro.biz.web.filter.HttpServletSessionExpiredFilter;
 import org.apache.shiro.biz.web.filter.authc.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.LogoutListener;
 import org.apache.shiro.spring.boot.biz.ShiroBizFilterFactoryBean;
 import org.apache.shiro.spring.boot.biz.filter.BizLogoutFilter;
-import org.apache.shiro.spring.boot.template.method.ValidateCaptcha;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.AbstractShiroWebFilterConfiguration;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
@@ -233,13 +233,6 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	@Autowired
 	private ShiroBizProperties bizProperties;
 	
-	@Bean
-	@ConditionalOnMissingBean
-	@ConditionalOnProperty(prefix = "spring.freemarker", value = "enabled", havingValue = "true")
-	public ValidateCaptcha validateCaptcha() {
-		return new ValidateCaptcha();
-	}
- 
 	/**
 	 * 登录监听：实现该接口可监听账号登录失败和成功的状态，从而做业务系统自己的事情，比如记录日志
 	 */
@@ -329,6 +322,27 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		
 		FilterRegistrationBean<HttpServletSessionExpiredFilter> registration = new FilterRegistrationBean<HttpServletSessionExpiredFilter>();
 		registration.setFilter(new HttpServletSessionExpiredFilter());
+		
+	    registration.setEnabled(false); 
+	    return registration;
+	}
+	
+	/**
+	 * 默认的Session控制实现，解决唯一登录问题
+	 */
+	@Bean("sessionControl")
+	@ConditionalOnMissingBean(name = "sessionControl")
+	public FilterRegistrationBean<HttpServletSessionControlFilter> sessionControlFilter(){
+		
+		FilterRegistrationBean<HttpServletSessionControlFilter> registration = new FilterRegistrationBean<HttpServletSessionControlFilter>();
+		registration.setFilter(new HttpServletSessionControlFilter() {
+
+			@Override
+			protected String getSessionControlCacheKey(Object principal) {
+				return bizProperties.getSessionControlCacheName();
+			}
+			
+		});
 		
 	    registration.setEnabled(false); 
 	    return registration;

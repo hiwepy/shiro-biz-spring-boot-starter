@@ -368,6 +368,7 @@
 		<commons-codec.version>1.11</commons-codec.version>
  		<commons-lang3.version>3.5</commons-lang3.version>
  		<commons-io.version>2.6</commons-io.version>
+ 		<guava.version>24.1-jre</guava.version>
  		<maven.version>3.0</maven.version>
        	<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
@@ -377,8 +378,9 @@
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
  		<j2cache.version>2.3.9-release</j2cache.version>
 		<shiro.version>1.4.0</shiro.version>
-		<shiro-biz.version>1.0.0.RELEASE</shiro-biz.version>
+		<shiro-biz.version>1.0.1.RELEASE</shiro-biz.version>
 		<shiro-j2cache.version>1.0.2</shiro-j2cache.version>
+		<spring-boot-starter-kaptcha.version>1.0.1.RELEASE</spring-boot-starter-kaptcha.version>
 	</properties>
 	
 	<dependencies>
@@ -474,7 +476,30 @@
 		    	</exclusion>
 		    </exclusions>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.apache.shiro/shiro-all -->
 		<dependency>
+		    <groupId>org.apache.shiro</groupId>
+		    <artifactId>shiro-all</artifactId>
+		    <version>${shiro.version}</version>
+		    <type>pom</type>
+		    <scope>import</scope>
+		</dependency>
+		<dependency>
+		    <groupId>com.github.vindell</groupId>
+			<artifactId>shiro-biz</artifactId>
+			<version>${shiro-biz.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.shiro</groupId>
+					<artifactId>shiro-quartz</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		
+		
+		<!-- <dependency>
 		    <groupId>org.apache.shiro</groupId>
 		    <artifactId>shiro-core</artifactId>
 		    <version>${shiro.version}</version>
@@ -495,29 +520,43 @@
 		    <version>${shiro.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>com.github.vindell</groupId>
-			<artifactId>shiro-biz</artifactId>
-			<version>${shiro-biz.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.shiro</groupId>
-					<artifactId>shiro-quartz</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		
-		<dependency>
 		    <groupId>org.apache.shiro</groupId>
 		    <artifactId>shiro-ehcache</artifactId>
 		    <version>${shiro.version}</version>
 		    <optional>true</optional>
-		</dependency>
+		</dependency> -->
 		<!-- https://mvnrepository.com/artifact/net.oschina.j2cache/j2cache-core -->
 		<dependency>
 		    <groupId>net.oschina.j2cache</groupId>
 		    <artifactId>j2cache-core</artifactId>
 		    <version>${j2cache.version}</version>
 		    <optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+			<optional>true</optional>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>${guava.version}</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.github.vindell/spring-boot-starter-kaptcha -->
+		<dependency>
+			<groupId>com.github.vindell</groupId>
+			<artifactId>spring-boot-starter-kaptcha</artifactId>
+			<version>${spring-boot-starter-kaptcha.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.overviewproject/mime-types -->
+		<dependency>
+		    <groupId>org.overviewproject</groupId>
+		    <artifactId>mime-types</artifactId>
+		    <version>0.0.2</version>
 		</dependency>
 		
 	</dependencies>

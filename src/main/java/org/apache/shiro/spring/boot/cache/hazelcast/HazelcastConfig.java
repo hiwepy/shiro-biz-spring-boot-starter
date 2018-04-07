@@ -13,8 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.apache.shiro.spring.boot;
+/**
+ * 
+ */
+package org.apache.shiro.spring.boot.cache.hazelcast;
 
-public class D {
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import com.hazelcast.config.Config;
+
+/**
+ * Hazelcast 配置
+ * @author <a href="https://github.com/vindell">vindell</a>
+ */
+@ConfigurationProperties(HazelcastConfig.PREFIX)
+public class HazelcastConfig extends Config {
+
+	public static final String PREFIX = "shiro.cache.hazelcast";
+	
 }

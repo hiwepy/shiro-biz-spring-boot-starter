@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2020, vindell (https://github.com/vindell).
+ * Copyright (c) 2017, vindell (https://github.com/vindell).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -32,13 +32,13 @@ import net.oschina.j2cache.CacheObject;
  * 封装j2cache为shiro的Cache接口
  */
 @SuppressWarnings("unchecked")
-public class ShiroJ2Cache<V> implements Cache<String, V> {
+public class J2CacheWrapper<V> implements Cache<String, V> {
 	
 	protected String region;
 	
 	protected CacheChannel channel;
 	
-	public ShiroJ2Cache(String region, CacheChannel channel) {
+	public J2CacheWrapper(String region, CacheChannel channel) {
 		this.region = region;
 		this.channel = channel;
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2020, vindell (https://github.com/vindell).
+ * Copyright (c) 2017, vindell (https://github.com/vindell).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -57,8 +57,8 @@ public class J2CacheManager extends AbstractCacheManager implements Initializabl
 	}
 
 	@Override
-	protected ShiroJ2Cache<Object> createCache(String name) throws CacheException {
-		return new ShiroJ2Cache<Object>(name, channel);
+	protected J2CacheWrapper<Object> createCache(String name) throws CacheException {
+		return new J2CacheWrapper<Object>(name, channel);
 	}
 
 }

@@ -13,8 +13,30 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.apache.shiro.spring.boot;
+package org.apache.shiro.spring.boot.cache;
 
-public class D {
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+@ConfigurationProperties(ShiroCacheProperties.PREFIX)
+public class ShiroCacheProperties {
+
+	public static final String PREFIX = "shiro.cache";
+
+	/*
+	 * ============================= Shiro Cache  ============================
+	 */
+	
+	/**
+	 * 缓存类型：memory、spring、ehcache、hazelcast、j2cache、redis
+	 */
+	private String type = "memory";
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 }

@@ -3,7 +3,6 @@
 ################################################################################################################
 shiro:
   enabled: true
-  validate-captcha: false
   login-url: /authz/login
   redirect-url: /authz/index
   success-url: /index
@@ -14,15 +13,29 @@ shiro:
   web: 
     enabled: true
   filter-chain-definition-map: 
-    / : anon
-    /*favicon.ico : anon
-    ['/webjars/**'] : anon
-    /assets/** : anon
-    /html/** : anon
-    /error* : anon
-    /logo/** : anon
-    /kaptcha* : anon
-    /sockets/** : anon
-    /logout : logout
-    /index : sessionExpired,sessionControl,authc
-    /** : sessionExpired,sessionControl,authc
+    '[/]' : anon
+    '[/**/favicon.ico]' : anon
+    '[/webjars/**]' : anon
+    '[/assets/**]' : anon
+    '[/error*]' : anon
+    '[/logo/**]' : anon
+    '[/kaptcha*]' : anon
+    '[/sockets/**]' : anon
+    '[/logout]' : logout
+    '[/index]' : sessionExpired,sessionControl,authc
+    '[/**]' : sessionExpired,sessionControl,authc
+  kaptcha: 
+    enabled: true
+  cache:
+    type: spring
+  authentication-cache-name: 
+  rememberMeManager:
+    cookie:
+      name: Removeddc
+      domain: "xdf"
+  sessionManager:
+    cookie:
+      domain: /
+        
+  
+  
