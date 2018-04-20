@@ -7,5 +7,6 @@ org.apache.shiro.spring.boot.cache.ShiroJ2CacheConfiguration,\
 org.apache.shiro.spring.boot.cache.ShiroMemoryCacheConfiguration,\
 org.apache.shiro.spring.boot.cache.ShiroRedisCacheConfiguration,\
 org.apache.shiro.spring.boot.cache.ShiroSpringCacheConfiguration,\
+org.apache.shiro.spring.boot.ShiroBizAnnotationProcessorAutoConfiguration,\
 org.apache.shiro.spring.boot.ShiroBizWebAutoConfiguration,\
 org.apache.shiro.spring.boot.ShiroBizWebFilterConfiguration
