@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.0.RELEASE</version>
+		<version>2.0.2.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	
@@ -378,7 +378,7 @@
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
  		<j2cache.version>2.3.9-release</j2cache.version>
 		<shiro.version>1.4.0</shiro.version>
-		<shiro-biz.version>1.0.1.RELEASE</shiro-biz.version>
+		<shiro-biz.version>1.0.2.RELEASE</shiro-biz.version>
 		<shiro-j2cache.version>1.0.2</shiro-j2cache.version>
 		<spring-boot-starter-kaptcha.version>1.0.1.RELEASE</spring-boot-starter-kaptcha.version>
 	</properties>

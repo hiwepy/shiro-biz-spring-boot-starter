@@ -15,7 +15,7 @@ shiro starter for spring boot
 ### Maven
 
 	<dependency>
-		<groupId>${project.groupId}</groupId>
+		<groupId>com.github.vindell</groupId>
 		<artifactId>spring-boot-starter-shiro-biz</artifactId>
 		<version>${project.version}</version>
 	</dependency>
