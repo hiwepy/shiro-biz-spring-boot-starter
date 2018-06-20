@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.biz.authc.exception.IncorrectCaptchaException;
 import org.apache.shiro.biz.authc.token.CaptchaAuthenticationToken;
 import org.apache.shiro.biz.utils.SubjectUtils;
-import org.apache.shiro.biz.web.filter.CaptchaResolver;
+import org.apache.shiro.biz.web.filter.authc.captcha.CaptchaResolver;
 import org.apache.shiro.spring.boot.ShiroBizProperties;
 import org.apache.shiro.web.util.WebUtils;
 
