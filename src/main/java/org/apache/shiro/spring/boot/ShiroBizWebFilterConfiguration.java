@@ -12,7 +12,7 @@ import org.apache.shiro.biz.web.filter.HttpServletSessionExpiredFilter;
 import org.apache.shiro.biz.web.filter.authc.listener.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
 import org.apache.shiro.spring.boot.biz.ShiroBizFilterFactoryBean;
-import org.apache.shiro.spring.boot.biz.filter.BizLogoutFilter;
+import org.apache.shiro.spring.boot.biz.authc.BizLogoutFilter;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.AbstractShiroWebFilterConfiguration;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
