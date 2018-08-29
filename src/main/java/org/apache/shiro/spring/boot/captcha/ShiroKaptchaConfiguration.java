@@ -10,8 +10,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
-
 
 @Configuration
 @AutoConfigureBefore( name = {
@@ -26,7 +24,7 @@ public class ShiroKaptchaConfiguration extends AbstractShiroWebConfiguration {
 	private ShiroKaptchaProperties captchaProperties;
 	
 	@Bean
-	@ConditionalOnClass({ freemarker.template.Configuration.class, FreeMarkerConfigurationFactory.class })
+	@ConditionalOnClass({ freemarker.template.Configuration.class, org.springframework.ui.freemarker.FreeMarkerConfigurationFactory.class })
 	@ConditionalOnProperty(prefix = "spring.freemarker", value = "enabled", havingValue = "true")
 	public CaptchaEnabled captchaEnabled() {
 		return new CaptchaEnabled();
