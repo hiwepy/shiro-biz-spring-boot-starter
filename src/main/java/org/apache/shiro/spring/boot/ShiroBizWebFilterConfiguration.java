@@ -210,7 +210,7 @@ import org.springframework.core.Ordered;
  */
 @Configuration
 @AutoConfigureBefore( name = {
-	"org.apache.shiro.spring.config.web.autoconfigure.ShiroWebFilterConfiguration", // shiro-spring-boot-web-starter
+	"org.apache.shiro.spring.config.web.autoconfigure.ShiroWebFilterConfiguration" // shiro-spring-boot-web-starter
 })
 @ConditionalOnWebApplication
 @ConditionalOnProperty(prefix = ShiroBizProperties.PREFIX, value = "enabled", havingValue = "true")
