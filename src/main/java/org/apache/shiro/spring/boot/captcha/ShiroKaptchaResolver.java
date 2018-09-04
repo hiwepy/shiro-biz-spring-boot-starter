@@ -11,6 +11,7 @@ import org.apache.shiro.biz.authc.exception.IncorrectCaptchaException;
 import org.apache.shiro.biz.authc.token.CaptchaAuthenticationToken;
 import org.apache.shiro.biz.utils.SubjectUtils;
 import org.apache.shiro.biz.web.filter.authc.captcha.CaptchaResolver;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.spring.boot.ShiroBizProperties;
 import org.apache.shiro.web.util.WebUtils;
 
@@ -53,9 +54,15 @@ public class ShiroKaptchaResolver implements KaptchaResolver, CaptchaResolver {
 	
 	@Override
 	public void init(String captchaStoreKey, String captchaDataStoreKey, long captchaTimeout) {
-		this.captchaStoreKey = captchaStoreKey;
-		this.captchaDataStoreKey = captchaDataStoreKey;
-		this.captchaTimeout = captchaTimeout;
+		if(StringUtils.isNoneEmpty(captchaStoreKey)) {
+			this.captchaStoreKey = captchaStoreKey;
+		}
+		if(StringUtils.isNoneEmpty(captchaDataStoreKey)) {
+			this.captchaDataStoreKey = captchaDataStoreKey;
+		}
+		if(captchaTimeout > 0) {
+			this.captchaTimeout = captchaTimeout;
+		}
 	}
 	
 	/**
@@ -84,13 +91,16 @@ public class ShiroKaptchaResolver implements KaptchaResolver, CaptchaResolver {
 		if(StringUtils.isEmpty(capText)) {
 			throw new KaptchaIncorrectException();
 		}
+		
+		Session session = SubjectUtils.getSubject().getSession(true);
+		
 		// 历史验证码无效
-		String sessionCapText = (String) SubjectUtils.getSession().getAttribute(getCaptchaStoreKey());
+		String sessionCapText = (String) session.getAttribute(getCaptchaStoreKey());
 		if(StringUtils.isEmpty(sessionCapText)) {
 			throw new KaptchaIncorrectException();
 		}
 		// 检查验证码是否过期
-		Date sessionCapDate = (Date) SubjectUtils.getSession().getAttribute(getCaptchaDataStoreKey());
+		Date sessionCapDate = (Date) session.getAttribute(getCaptchaDataStoreKey());
 		if(new Date().getTime() - sessionCapDate.getTime()  > getCaptchaTimeout()) {
 			throw new KaptchaTimeoutException();
 		}
@@ -103,14 +113,16 @@ public class ShiroKaptchaResolver implements KaptchaResolver, CaptchaResolver {
 	 */
 	@Override
 	public void setCaptcha(HttpServletRequest request, HttpServletResponse response, String capText, Date capDate) {
-
+		
+		Session session = SubjectUtils.getSubject().getSession(true);
+		
 		// store the text in the session
-		SubjectUtils.getSession().setAttribute( getCaptchaStoreKey(), (StringUtils.isNotEmpty(capText) ? capText : null));
+		session.setAttribute( getCaptchaStoreKey(), (StringUtils.isNotEmpty(capText) ? capText : null));
 
 		// store the date in the session so that it can be compared
 		// against to make sure someone hasn't taken too long to enter
 		// their kaptcha
-		SubjectUtils.getSession().setAttribute( getCaptchaDataStoreKey(), (capDate != null ? capDate : new Date()));
+		session.setAttribute( getCaptchaDataStoreKey(), (capDate != null ? capDate : new Date()));
 
 	}
 	

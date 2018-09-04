@@ -1,6 +1,5 @@
 package org.apache.shiro.spring.boot.captcha;
 
-import org.apache.shiro.spring.boot.template.method.CaptchaEnabled;
 import org.apache.shiro.spring.web.config.AbstractShiroWebConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -23,12 +22,13 @@ public class ShiroKaptchaConfiguration extends AbstractShiroWebConfiguration {
 	@Autowired
 	private ShiroKaptchaProperties captchaProperties;
 	
-	@Bean
-	@ConditionalOnClass({ freemarker.template.Configuration.class, org.springframework.ui.freemarker.FreeMarkerConfigurationFactory.class })
+	/*@Bean
+	@ConditionalOnClass({ freemarker.template.Configuration.class, freemarker.template.TemplateMethodModelEx.class,
+			org.springframework.ui.freemarker.FreeMarkerConfigurationFactory.class })
 	@ConditionalOnProperty(prefix = "spring.freemarker", value = "enabled", havingValue = "true")
 	public CaptchaEnabled captchaEnabled() {
 		return new CaptchaEnabled();
-	}
+	}*/
 	
 	@Bean
 	@ConditionalOnClass({ com.google.code.kaptcha.spring.boot.ext.KaptchaResolver.class})
