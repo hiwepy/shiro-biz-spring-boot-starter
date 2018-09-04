@@ -36,7 +36,7 @@ public class ShiroKaptchaResolver implements KaptchaResolver, CaptchaResolver {
 	/**
      * 验证码创建时间在Session中存储值的key
      */
-	private String captchaDataStoreKey = CAPTCHA_SESSION_ATTRIBUTE_NAME;
+	private String captchaDateStoreKey = CAPTCHA_SESSION_ATTRIBUTE_NAME;
 	/**
      * 验证码有效期；单位（毫秒），默认 60000
      */
@@ -47,18 +47,18 @@ public class ShiroKaptchaResolver implements KaptchaResolver, CaptchaResolver {
 		if(StringUtils.isNoneEmpty(captchaStoreKey)) {
 			this.captchaStoreKey = config.getSessionKey();
 		}
-		if(StringUtils.isNoneEmpty(captchaDataStoreKey)) {
-			this.captchaDataStoreKey = config.getSessionDate();
+		if(StringUtils.isNoneEmpty(captchaDateStoreKey)) {
+			this.captchaDateStoreKey = config.getSessionDate();
 		}
 	}
 	
 	@Override
-	public void init(String captchaStoreKey, String captchaDataStoreKey, long captchaTimeout) {
+	public void init(String captchaStoreKey, String captchaDateStoreKey, long captchaTimeout) {
 		if(StringUtils.isNoneEmpty(captchaStoreKey)) {
 			this.captchaStoreKey = captchaStoreKey;
 		}
-		if(StringUtils.isNoneEmpty(captchaDataStoreKey)) {
-			this.captchaDataStoreKey = captchaDataStoreKey;
+		if(StringUtils.isNoneEmpty(captchaDateStoreKey)) {
+			this.captchaDateStoreKey = captchaDateStoreKey;
 		}
 		if(captchaTimeout > 0) {
 			this.captchaTimeout = captchaTimeout;
@@ -100,7 +100,7 @@ public class ShiroKaptchaResolver implements KaptchaResolver, CaptchaResolver {
 			throw new KaptchaIncorrectException();
 		}
 		// 检查验证码是否过期
-		Date sessionCapDate = (Date) session.getAttribute(getCaptchaDataStoreKey());
+		Date sessionCapDate = (Date) session.getAttribute(getCaptchaDateStoreKey());
 		if(new Date().getTime() - sessionCapDate.getTime()  > getCaptchaTimeout()) {
 			throw new KaptchaTimeoutException();
 		}
@@ -122,7 +122,7 @@ public class ShiroKaptchaResolver implements KaptchaResolver, CaptchaResolver {
 		// store the date in the session so that it can be compared
 		// against to make sure someone hasn't taken too long to enter
 		// their kaptcha
-		session.setAttribute( getCaptchaDataStoreKey(), (capDate != null ? capDate : new Date()));
+		session.setAttribute( getCaptchaDateStoreKey(), (capDate != null ? capDate : new Date()));
 
 	}
 	
@@ -130,10 +130,10 @@ public class ShiroKaptchaResolver implements KaptchaResolver, CaptchaResolver {
 		return captchaStoreKey;
 	}
 	
-	public String getCaptchaDataStoreKey() {
-		return captchaDataStoreKey;
+	public String getCaptchaDateStoreKey() {
+		return captchaDateStoreKey;
 	}
-	
+
 	public long getCaptchaTimeout() {
 		return captchaTimeout;
 	}
