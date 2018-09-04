@@ -18,16 +18,10 @@ package org.apache.shiro.spring.boot.biz.authc;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.biz.web.filter.authc.AbstractAuthenticatingFilter;
 
 public class TicketAuthenticatingFilter extends AbstractAuthenticatingFilter{
-
-	@Override
-	protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) throws Exception {
-		return null;
-	}
-
+	 
 	@Override
 	protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
 		return false;
