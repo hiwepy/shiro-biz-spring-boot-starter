@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.biz.authc.exception.ExpiredCaptchaException;
 import org.apache.shiro.biz.authc.exception.IncorrectCaptchaException;
 import org.apache.shiro.biz.authc.token.CaptchaAuthenticationToken;
 import org.apache.shiro.biz.web.filter.authc.captcha.CaptchaResolver;
@@ -75,13 +77,13 @@ public class ShiroKaptchaCacheResolver implements KaptchaResolver, CaptchaResolv
 	 */
 	@Override
 	public boolean validCaptcha(ServletRequest request, CaptchaAuthenticationToken token)
-			throws IncorrectCaptchaException {
+			throws AuthenticationException {
 		try {
 			return this.validCaptcha(WebUtils.toHttp(request), token.getCaptcha());
 		} catch (KaptchaIncorrectException e) {
 			throw new IncorrectCaptchaException(e);
 		} catch (KaptchaTimeoutException e) {
-			throw new IncorrectCaptchaException(e);
+			throw new ExpiredCaptchaException(e);
 		}
 	}
 
