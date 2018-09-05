@@ -14,6 +14,7 @@ import org.apache.shiro.biz.realm.PrincipalRealmListener;
 import org.apache.shiro.biz.web.filter.authc.listener.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
 import org.apache.shiro.mgt.SessionsSecurityManager;
+import org.apache.shiro.mgt.SubjectFactory;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.web.config.AbstractShiroWebConfiguration;
@@ -108,12 +109,38 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 		return logoutListeners;
 	}
 	
+	@Bean
+    @ConditionalOnMissingBean
+    @Override
+    protected SubjectFactory subjectFactory() {
+        return super.subjectFactory();
+    }
+	
 	@Override
 	protected Authenticator authenticator() {
         ModularRealmAuthenticator authenticator = new DefaultModularRealmAuthenticator();
         authenticator.setAuthenticationStrategy(authenticationStrategy());
         return authenticator;
     }
+
+	@Bean
+	@Override
+	protected SessionManager sessionManager() {
+		SessionManager sessionManager = super.sessionManager();
+		if (sessionManager instanceof DefaultWebSessionManager) {
+			DefaultWebSessionManager webSessionManager = (DefaultWebSessionManager) sessionManager;
+			webSessionManager.setCacheManager(cacheManager);
+			return webSessionManager;
+
+		}
+		return sessionManager;
+	}
+	
+	@Bean
+	@Override
+	protected SessionsSecurityManager securityManager(List<Realm> realms) {
+		return super.securityManager(realms);
+	}
 	
 	/**
 	 * 责任链定义 ：定义Shiro的逻辑处理责任链
@@ -134,24 +161,6 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 		return chainDefinition;
 	}
 	
-	@Bean
-	@Override
-	protected SessionManager sessionManager() {
-		SessionManager sessionManager = super.sessionManager();
-		if (sessionManager instanceof DefaultWebSessionManager) {
-			DefaultWebSessionManager webSessionManager = (DefaultWebSessionManager) sessionManager;
-			webSessionManager.setCacheManager(cacheManager);
-			return webSessionManager;
-
-		}
-		return sessionManager;
-	}
-
-	@Bean
-	@Override
-	protected SessionsSecurityManager securityManager(List<Realm> realms) {
-		return super.securityManager(realms);
-	}
 
 	/*@Bean
     @ConditionalOnMissingBean(name = "sessionCookieTemplate")
