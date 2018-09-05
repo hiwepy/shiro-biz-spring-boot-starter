@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.collections.MapUtils;
+import org.apache.shiro.authc.Authenticator;
+import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
+import org.apache.shiro.biz.authc.pam.DefaultModularRealmAuthenticator;
 import org.apache.shiro.biz.realm.PrincipalRealmListener;
 import org.apache.shiro.biz.web.filter.authc.listener.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
@@ -104,7 +107,14 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 
 		return logoutListeners;
 	}
-
+	
+	@Override
+	protected Authenticator authenticator() {
+        ModularRealmAuthenticator authenticator = new DefaultModularRealmAuthenticator();
+        authenticator.setAuthenticationStrategy(authenticationStrategy());
+        return authenticator;
+    }
+	
 	/**
 	 * 责任链定义 ：定义Shiro的逻辑处理责任链
 	 */
