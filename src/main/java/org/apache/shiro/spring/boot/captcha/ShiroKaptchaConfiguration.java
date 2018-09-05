@@ -21,7 +21,7 @@ public class ShiroKaptchaConfiguration extends AbstractShiroWebConfiguration {
 
 	@Autowired
 	private ShiroKaptchaProperties captchaProperties;
-	
+
 	/*@Bean
 	@ConditionalOnClass({ freemarker.template.Configuration.class, freemarker.template.TemplateMethodModelEx.class,
 			org.springframework.ui.freemarker.FreeMarkerConfigurationFactory.class })
@@ -32,14 +32,22 @@ public class ShiroKaptchaConfiguration extends AbstractShiroWebConfiguration {
 	
 	@Bean
 	@ConditionalOnClass({ com.google.code.kaptcha.spring.boot.ext.KaptchaResolver.class})
-	public ShiroKaptchaResolver kaptchaResolver() {
+	public ShiroKaptchaSessionResolver kaptchaResolver() {
 		
-		ShiroKaptchaResolver kaptchaResolver = new ShiroKaptchaResolver(); 
+		ShiroKaptchaSessionResolver kaptchaResolver = new ShiroKaptchaSessionResolver(); 
 		// 初始化参数
 		kaptchaResolver.init(captchaProperties.getStoreKey(), 
 				captchaProperties.getDateStoreKey(), captchaProperties.getTimeout());
 		
 		return kaptchaResolver;
 	}
-	 
+
+	public ShiroKaptchaProperties getCaptchaProperties() {
+		return captchaProperties;
+	}
+
+	public void setCaptchaProperties(ShiroKaptchaProperties captchaProperties) {
+		this.captchaProperties = captchaProperties;
+	}
+	
 }

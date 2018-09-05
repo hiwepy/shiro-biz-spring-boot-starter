@@ -22,8 +22,8 @@ public class ShiroKaptchaProperties {
 
 	public static final String PREFIX = "shiro.kaptcha";
 
-	public static final long DEFAULT_CAPTCHA_TIMEOUT = 60 * 1000;
-
+	protected static final long DEFAULT_CAPTCHA_TIMEOUT = 60 * 1000;
+	
 	/*
 	 * ============================= Shiro Basic Captcha  ============================
 	 */
@@ -44,6 +44,10 @@ public class ShiroKaptchaProperties {
 	 * 验证码有效期；单位（毫秒），默认 60000
 	 */
 	private long timeout = DEFAULT_CAPTCHA_TIMEOUT;
+	/**
+	 * 验证码缓存名称
+	 */
+	private String cacheKey;
 
 	public boolean isEnabled() {
 		return enabled;
@@ -77,4 +81,12 @@ public class ShiroKaptchaProperties {
 		this.timeout = timeout;
 	}
 
+	public String getCacheKey() {
+		return cacheKey;
+	}
+
+	public void setCacheKey(String cacheKey) {
+		this.cacheKey = cacheKey;
+	}
+	
 }

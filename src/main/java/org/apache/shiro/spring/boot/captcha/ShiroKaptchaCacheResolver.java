@@ -9,9 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.biz.authc.exception.IncorrectCaptchaException;
 import org.apache.shiro.biz.authc.token.CaptchaAuthenticationToken;
-import org.apache.shiro.biz.utils.SubjectUtils;
 import org.apache.shiro.biz.web.filter.authc.captcha.CaptchaResolver;
-import org.apache.shiro.session.Session;
+import org.apache.shiro.cache.Cache;
 import org.apache.shiro.spring.boot.ShiroBizProperties;
 import org.apache.shiro.web.util.WebUtils;
 
@@ -20,14 +19,14 @@ import com.google.code.kaptcha.spring.boot.ext.exception.KaptchaIncorrectExcepti
 import com.google.code.kaptcha.spring.boot.ext.exception.KaptchaTimeoutException;
 import com.google.code.kaptcha.util.Config;
 
-public class ShiroKaptchaResolver implements KaptchaResolver, CaptchaResolver {
+public class ShiroKaptchaCacheResolver implements KaptchaResolver, CaptchaResolver {
 
 	/**
 	 * Name of the session attribute that holds the Captcha name. Only used
 	 * internally by this implementation.
 	 */
-	public static final String CAPTCHA_SESSION_ATTRIBUTE_NAME = ShiroKaptchaResolver.class.getName() + ".Captcha";
-	public static final String CAPTCHA_DATE_SESSION_ATTRIBUTE_NAME = ShiroKaptchaResolver.class.getName() + ".Captcha_DATE";
+	public static final String CAPTCHA_SESSION_ATTRIBUTE_NAME = ShiroKaptchaCacheResolver.class.getName() + ".Captcha";
+	public static final String CAPTCHA_DATE_SESSION_ATTRIBUTE_NAME = ShiroKaptchaCacheResolver.class.getName() + ".Captcha_DATE";
 
 	/**
      * 验证码在Session中存储值的key
@@ -41,6 +40,8 @@ public class ShiroKaptchaResolver implements KaptchaResolver, CaptchaResolver {
      * 验证码有效期；单位（毫秒），默认 60000
      */
 	private long captchaTimeout = ShiroBizProperties.DEFAULT_CAPTCHA_TIMEOUT;
+	
+	private Cache<String, Object> captchaCache;
 	
 	@Override
 	public void init(Config config ) {
@@ -92,15 +93,13 @@ public class ShiroKaptchaResolver implements KaptchaResolver, CaptchaResolver {
 			throw new KaptchaIncorrectException();
 		}
 		
-		Session session = SubjectUtils.getSubject().getSession(true);
-		
 		// 历史验证码无效
-		String sessionCapText = (String) session.getAttribute(getCaptchaStoreKey());
+		String sessionCapText = (String) getCaptchaCache().get(getCaptchaStoreKey());
 		if(StringUtils.isEmpty(sessionCapText)) {
 			throw new KaptchaIncorrectException();
 		}
 		// 检查验证码是否过期
-		Date sessionCapDate = (Date) session.getAttribute(getCaptchaDateStoreKey());
+		Date sessionCapDate = (Date) getCaptchaCache().get(getCaptchaDateStoreKey());
 		if(new Date().getTime() - sessionCapDate.getTime()  > getCaptchaTimeout()) {
 			throw new KaptchaTimeoutException();
 		}
@@ -114,15 +113,12 @@ public class ShiroKaptchaResolver implements KaptchaResolver, CaptchaResolver {
 	@Override
 	public void setCaptcha(HttpServletRequest request, HttpServletResponse response, String capText, Date capDate) {
 		
-		Session session = SubjectUtils.getSubject().getSession(true);
-		
-		// store the text in the session
-		session.setAttribute( getCaptchaStoreKey(), (StringUtils.isNotEmpty(capText) ? capText : null));
+		// store the text in the cache
+		getCaptchaCache().put( getCaptchaStoreKey(), (StringUtils.isNotEmpty(capText) ? capText : null));
 
-		// store the date in the session so that it can be compared
-		// against to make sure someone hasn't taken too long to enter
-		// their kaptcha
-		session.setAttribute( getCaptchaDateStoreKey(), (capDate != null ? capDate : new Date()));
+		// store the date in the cache so that it can be compared
+		// against to make sure someone hasn't taken too long to enter  their kaptcha
+		getCaptchaCache().put( getCaptchaDateStoreKey(), (capDate != null ? capDate : new Date()));
 
 	}
 	
@@ -137,6 +133,13 @@ public class ShiroKaptchaResolver implements KaptchaResolver, CaptchaResolver {
 	public long getCaptchaTimeout() {
 		return captchaTimeout;
 	}
-	
+
+	public Cache<String, Object> getCaptchaCache() {
+		return captchaCache;
+	}
+
+	public void setCaptchaCache(Cache<String, Object> captchaCache) {
+		this.captchaCache = captchaCache;
+	}
 	
 }
