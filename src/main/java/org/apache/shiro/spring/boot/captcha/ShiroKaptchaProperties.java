@@ -32,6 +32,8 @@ public class ShiroKaptchaProperties {
 	 * Enable Shiro Captcha.
 	 */
 	private boolean enabled = false;
+	/** 失败重试次数：超出限制后要求输入验证码 . */
+	private int retryTimesWhenAccessDenied = 3;
 	/**
 	 * 验证码缓存的key
 	 */
@@ -55,6 +57,14 @@ public class ShiroKaptchaProperties {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+	
+	public int getRetryTimesWhenAccessDenied() {
+		return retryTimesWhenAccessDenied;
+	}
+
+	public void setRetryTimesWhenAccessDenied(int retryTimesWhenAccessDenied) {
+		this.retryTimesWhenAccessDenied = retryTimesWhenAccessDenied;
 	}
 
 	public String getStoreKey() {

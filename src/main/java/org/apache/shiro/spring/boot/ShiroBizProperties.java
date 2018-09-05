@@ -77,8 +77,6 @@ public class ShiroBizProperties {
 	private String unauthorizedUrl;
 	/** 异常页面：认证失败时的跳转路径 */
 	private String failureUrl;
-	/** 登陆最大重试次数 . */
-	private int retryTimesWhenAccessDenied = 3;
 	private Integer sessionTimeout = DEFAULT_SESSION_TIMEOUT;// session超时时间
 	private Integer sessionValidationInterval = DEFAULT_SESSION_VALIDATION_INTERVAL;// session清扫时间
 	
@@ -305,14 +303,6 @@ public class ShiroBizProperties {
 
 	public void setFailureUrl(String failureUrl) {
 		this.failureUrl = failureUrl;
-	}
-
-	public int getRetryTimesWhenAccessDenied() {
-		return retryTimesWhenAccessDenied;
-	}
-
-	public void setRetryTimesWhenAccessDenied(int retryTimesWhenAccessDenied) {
-		this.retryTimesWhenAccessDenied = retryTimesWhenAccessDenied;
 	}
 
 	public Integer getSessionTimeout() {
