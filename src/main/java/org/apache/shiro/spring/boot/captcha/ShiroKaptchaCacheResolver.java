@@ -41,7 +41,11 @@ public class ShiroKaptchaCacheResolver implements KaptchaResolver, CaptchaResolv
      */
 	private long captchaTimeout = ShiroBizProperties.DEFAULT_CAPTCHA_TIMEOUT;
 	
-	private Cache<String, Object> captchaCache;
+	private final Cache<String, Object> captchaCache;
+	
+	public ShiroKaptchaCacheResolver(Cache<String, Object> captchaCache) {
+		this.captchaCache = captchaCache;
+	}
 	
 	@Override
 	public void init(Config config ) {
@@ -136,10 +140,6 @@ public class ShiroKaptchaCacheResolver implements KaptchaResolver, CaptchaResolv
 
 	public Cache<String, Object> getCaptchaCache() {
 		return captchaCache;
-	}
-
-	public void setCaptchaCache(Cache<String, Object> captchaCache) {
-		this.captchaCache = captchaCache;
 	}
 	
 }
