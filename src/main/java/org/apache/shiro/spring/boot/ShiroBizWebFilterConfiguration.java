@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.shiro.biz.web.filter.HttpServletSessionControlFilter;
 import org.apache.shiro.biz.web.filter.HttpServletSessionExpiredFilter;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
+import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.spring.boot.biz.ShiroBizFilterFactoryBean;
 import org.apache.shiro.spring.boot.biz.authc.BizLogoutFilter;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -219,6 +220,8 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 
 	@Autowired
 	private ShiroBizProperties bizProperties;
+	@Autowired
+	private CacheManager shiroCacheManager;
 	
 	/**
 	 * 系统登录注销过滤器；默认：org.apache.shiro.spring.boot.cas.filter.CasLogoutFilter
@@ -262,14 +265,18 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	public FilterRegistrationBean<HttpServletSessionControlFilter> sessionControlFilter(){
 		
 		FilterRegistrationBean<HttpServletSessionControlFilter> registration = new FilterRegistrationBean<HttpServletSessionControlFilter>();
-		registration.setFilter(new HttpServletSessionControlFilter() {
+		
+		HttpServletSessionControlFilter sessionControl = new HttpServletSessionControlFilter() {
 
 			@Override
 			protected String getSessionControlCacheKey(Object principal) {
 				return bizProperties.getSessionControlCacheName();
 			}
 			
-		});
+		};
+		sessionControl.setCacheManager(shiroCacheManager);
+		
+		registration.setFilter(sessionControl);
 		
 	    registration.setEnabled(false); 
 	    return registration;
