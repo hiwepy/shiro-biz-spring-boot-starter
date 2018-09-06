@@ -1,6 +1,5 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.apache.shiro.spring.boot.captcha.ShiroKaptchaConfiguration,\
 org.apache.shiro.spring.boot.cache.ShiroEhCacheConfiguration,\
 org.apache.shiro.spring.boot.cache.ShiroHazelcastCacheConfiguration,\
 org.apache.shiro.spring.boot.cache.ShiroJ2CacheConfiguration,\
