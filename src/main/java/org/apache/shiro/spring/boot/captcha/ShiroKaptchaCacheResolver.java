@@ -78,7 +78,12 @@ public class ShiroKaptchaCacheResolver implements KaptchaResolver, CaptchaResolv
 	@Override
 	public boolean validCaptcha(ServletRequest request, CaptchaAuthenticationToken token)
 			throws AuthenticationException {
+		// 验证码无效
+		if(StringUtils.isEmpty(token.getCaptcha())) {
+			throw new IncorrectCaptchaException();
+		}
 		try {
+			
 			return this.validCaptcha(WebUtils.toHttp(request), token.getCaptcha());
 		} catch (KaptchaIncorrectException e) {
 			throw new IncorrectCaptchaException(e);
