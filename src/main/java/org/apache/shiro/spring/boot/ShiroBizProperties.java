@@ -32,10 +32,20 @@ public class ShiroBizProperties {
 	public static final String PREFIX = "shiro";
 	public static final long DEFAULT_CAPTCHA_TIMEOUT = 60 * 1000;
 
-	// 默认session超时时间：1小时=3600000毫秒(ms)
-	private static final Integer DEFAULT_SESSION_TIMEOUT = 3600000;
-	// 默认session清扫时间：1小时=3600000毫秒(ms)
-	private static final Integer DEFAULT_SESSION_VALIDATION_INTERVAL = 3600000;
+	protected static final long MILLIS_PER_SECOND = 1000;
+	protected static final long MILLIS_PER_MINUTE = 60 * MILLIS_PER_SECOND;
+	protected static final long MILLIS_PER_HOUR = 60 * MILLIS_PER_MINUTE;
+
+	/**
+	 * Default main session timeout value, equal to {@code 30} minutes.
+	 */
+	public static final long DEFAULT_GLOBAL_SESSION_TIMEOUT = 30 * MILLIS_PER_MINUTE;
+	/**
+	 * Default session validation interval value, equal to {@code 30} seconds.
+	 */
+	private static final long DEFAULT_SESSION_VALIDATION_INTERVAL = 30 * MILLIS_PER_SECOND;
+
+	public static final List<String> DEFAULT_IGNORED = Arrays.asList("/**/favicon.ico", "/assets/**", "/webjars/**");
 
 	/*
 	 * ============================== Shiro Basic =================================
@@ -76,10 +86,15 @@ public class ShiroBizProperties {
 	private String failureUrl;
 	/** Session控制过滤器使用的缓存数据对象名称 */
 	private String sessionControlCacheName = KickoutSessionControlFilter.DEFAULT_SESSION_CONTROL_CACHE_NAME;
-	private Integer sessionTimeout = DEFAULT_SESSION_TIMEOUT;// session超时时间
-	private Integer sessionValidationInterval = DEFAULT_SESSION_VALIDATION_INTERVAL;// session清扫时间
-
-	public static final List<String> DEFAULT_IGNORED = Arrays.asList("/**/favicon.ico", "/assets/**", "/webjars/**");
+	/** Default main session timeout value, equal to {@code 30} minutes. */
+	private long sessionTimeout = DEFAULT_GLOBAL_SESSION_TIMEOUT;
+	/** Default session validation interval value, equal to {@code 30} seconds. */
+	private long sessionValidationInterval = DEFAULT_SESSION_VALIDATION_INTERVAL;
+	/** 是否开启session定时清理任务 */
+	private boolean sessionValidationSchedulerEnabled = true;
+	/** If Session Stateless */
+	private boolean stateless = false;
+	
 	private Map<String /* pattert */, String /* Chain names */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
 	public ShiroBizProperties() {
@@ -170,20 +185,36 @@ public class ShiroBizProperties {
 		this.sessionControlCacheName = sessionControlCacheName;
 	}
 
-	public Integer getSessionTimeout() {
+	public long getSessionTimeout() {
 		return sessionTimeout;
 	}
 
-	public void setSessionTimeout(Integer sessionTimeout) {
+	public void setSessionTimeout(long sessionTimeout) {
 		this.sessionTimeout = sessionTimeout;
 	}
 
-	public Integer getSessionValidationInterval() {
+	public long getSessionValidationInterval() {
 		return sessionValidationInterval;
 	}
 
-	public void setSessionValidationInterval(Integer sessionValidationInterval) {
+	public void setSessionValidationInterval(long sessionValidationInterval) {
 		this.sessionValidationInterval = sessionValidationInterval;
+	}
+
+	public boolean isSessionValidationSchedulerEnabled() {
+		return sessionValidationSchedulerEnabled;
+	}
+
+	public void setSessionValidationSchedulerEnabled(boolean sessionValidationSchedulerEnabled) {
+		this.sessionValidationSchedulerEnabled = sessionValidationSchedulerEnabled;
+	}
+	
+	public boolean isStateless() {
+		return stateless;
+	}
+
+	public void setStateless(boolean stateless) {
+		this.stateless = stateless;
 	}
 
 	public Map<String, String> getFilterChainDefinitionMap() {

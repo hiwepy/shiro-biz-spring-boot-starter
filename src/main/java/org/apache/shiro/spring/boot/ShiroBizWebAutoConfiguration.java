@@ -16,9 +16,11 @@ import org.apache.shiro.biz.session.mgt.SimpleOnlineSessionFactory;
 import org.apache.shiro.biz.session.mgt.eis.SequenceSessionIdGenerator;
 import org.apache.shiro.biz.web.filter.authc.listener.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
+import org.apache.shiro.biz.web.mgt.StatelessDefaultSubjectFactory;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.SessionStorageEvaluator;
 import org.apache.shiro.mgt.SessionsSecurityManager;
+import org.apache.shiro.mgt.SubjectFactory;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.SessionListener;
 import org.apache.shiro.session.mgt.DefaultSessionManager;
@@ -59,7 +61,7 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 
 	@Autowired
 	private ShiroBizProperties bizProperties;
-
+	
 	/**
 	 * 登录监听：实现该接口可监听账号登录失败和成功的状态，从而做业务系统自己的事情，比如记录日志
 	 */
@@ -128,6 +130,7 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
     }
     
    	@Bean
+   	@ConditionalOnMissingBean
    	@Override
     protected SessionDAO sessionDAO() {
    		// 缓存存在的时候使用外部Session管理器
@@ -142,12 +145,17 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
     }
    	
    	@Bean
+   	@ConditionalOnMissingBean
 	@Override
 	protected SessionStorageEvaluator sessionStorageEvaluator() {
-        return new DefaultSessionStorageEvaluator();
+   		DefaultSessionStorageEvaluator sessionStorageEvaluator = new DefaultSessionStorageEvaluator();
+		// 无状态逻辑情况下不持久化session
+		sessionStorageEvaluator.setSessionStorageEnabled(!bizProperties.isStateless());
+        return sessionStorageEvaluator;
     }
    	
    	@Bean
+   	@ConditionalOnMissingBean
 	@Override
     protected SessionFactory sessionFactory() {
         return new SimpleOnlineSessionFactory();
@@ -169,6 +177,7 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 	}
    	
 	@Bean
+	@ConditionalOnMissingBean
 	@Override
 	protected SessionManager sessionManager() {
 		SessionManager sessionManager = super.sessionManager();
@@ -180,6 +189,7 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 			defSessionManager.setSessionDAO(sessionDAO());
 			defSessionManager.setSessionListeners(sessionListeners());
 			defSessionManager.setSessionValidationInterval(bizProperties.getSessionValidationInterval());
+			defSessionManager.setSessionValidationSchedulerEnabled(bizProperties.isSessionValidationSchedulerEnabled());
 			
 			return defSessionManager;
 		}
@@ -187,10 +197,19 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 	}
 	
 	@Bean
+	@ConditionalOnMissingBean
 	@Override
 	protected SessionsSecurityManager securityManager(List<Realm> realms) {
 		return super.securityManager(realms);
 	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	@Override
+    protected SubjectFactory subjectFactory() {
+		return new StatelessDefaultSubjectFactory((DefaultSessionStorageEvaluator) sessionStorageEvaluator(),
+    		bizProperties.isStateless());
+    }
 	
 	/**
 	 * 责任链定义 ：定义Shiro的逻辑处理责任链
