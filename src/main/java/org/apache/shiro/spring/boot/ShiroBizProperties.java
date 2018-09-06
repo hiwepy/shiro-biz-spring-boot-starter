@@ -67,7 +67,7 @@ public class ShiroBizProperties {
 	 */
 	private boolean authorizationCachingEnabled;
 	private String authorizationCacheName;
-
+	
 	private boolean authenticationCachingEnabled;
 	private String authenticationCacheName;
 	/** 是否启用认证授权缓存 */
@@ -84,8 +84,14 @@ public class ShiroBizProperties {
 	private boolean uniqueSessin;
 	/** 异常页面：认证失败时的跳转路径 */
 	private String failureUrl;
+	
 	/** Session控制过滤器使用的缓存数据对象名称 */
 	private String sessionControlCacheName = KickoutSessionControlFilter.DEFAULT_SESSION_CONTROL_CACHE_NAME;
+	/**
+     * Global policy determining if Subject sessions may be used to persist Subject state if the Subject's Session
+     * does not yet exist.
+     */
+    private boolean sessionStorageEnabled = true;
 	/** Default main session timeout value, equal to {@code 30} minutes. */
 	private long sessionTimeout = DEFAULT_GLOBAL_SESSION_TIMEOUT;
 	/** Default session validation interval value, equal to {@code 30} seconds. */
@@ -93,7 +99,7 @@ public class ShiroBizProperties {
 	/** 是否开启session定时清理任务 */
 	private boolean sessionValidationSchedulerEnabled = true;
 	/** If Session Stateless */
-	private boolean stateless = false;
+	private boolean sessionStateless = false;
 	
 	private Map<String /* pattert */, String /* Chain names */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
@@ -185,6 +191,14 @@ public class ShiroBizProperties {
 		this.sessionControlCacheName = sessionControlCacheName;
 	}
 
+	public boolean isSessionStorageEnabled() {
+		return sessionStorageEnabled;
+	}
+
+	public void setSessionStorageEnabled(boolean sessionStorageEnabled) {
+		this.sessionStorageEnabled = sessionStorageEnabled;
+	}
+
 	public long getSessionTimeout() {
 		return sessionTimeout;
 	}
@@ -209,12 +223,12 @@ public class ShiroBizProperties {
 		this.sessionValidationSchedulerEnabled = sessionValidationSchedulerEnabled;
 	}
 	
-	public boolean isStateless() {
-		return stateless;
+	public boolean isSessionStateless() {
+		return sessionStateless;
 	}
 
-	public void setStateless(boolean stateless) {
-		this.stateless = stateless;
+	public void setSessionStateless(boolean sessionStateless) {
+		this.sessionStateless = sessionStateless;
 	}
 
 	public Map<String, String> getFilterChainDefinitionMap() {
@@ -353,7 +367,7 @@ public class ShiroBizProperties {
 	 *         {@link CacheManager} has been configured, {@code false} otherwise
 	 */
 	public boolean isCachingEnabled() {
-		return cachingEnabled;
+		return cachingEnabled && !sessionStateless;
 	}
 
 	/**

@@ -18,8 +18,10 @@ import org.apache.shiro.biz.web.filter.authc.listener.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
 import org.apache.shiro.biz.web.mgt.StatelessDefaultSubjectFactory;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
+import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SessionStorageEvaluator;
 import org.apache.shiro.mgt.SessionsSecurityManager;
+import org.apache.shiro.mgt.SubjectDAO;
 import org.apache.shiro.mgt.SubjectFactory;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.SessionListener;
@@ -30,9 +32,11 @@ import org.apache.shiro.session.mgt.eis.CachingSessionDAO;
 import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
 import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
+import org.apache.shiro.session.mgt.eis.SessionIdGenerator;
 import org.apache.shiro.spring.web.config.AbstractShiroWebConfiguration;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -49,19 +53,18 @@ import org.springframework.util.ObjectUtils;
 import com.google.common.collect.Lists;
 
 @Configuration
-@AutoConfigureBefore(name = {
-	"org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguration" // shiro-spring-boot-web-starter
+@AutoConfigureBefore(name = { "org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguration" // shiro-spring-boot-web-starter
 })
 @ConditionalOnWebApplication
 @ConditionalOnProperty(prefix = ShiroBizProperties.PREFIX, value = "enabled", havingValue = "true")
-@EnableConfigurationProperties({ ShiroBizProperties.class})
+@EnableConfigurationProperties({ ShiroBizProperties.class })
 public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext;
 
 	@Autowired
 	private ShiroBizProperties bizProperties;
-	
+
 	/**
 	 * 登录监听：实现该接口可监听账号登录失败和成功的状态，从而做业务系统自己的事情，比如记录日志
 	 */
@@ -121,48 +124,10 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 
 		return logoutListeners;
 	}
-	
-	@Override
-	protected Authenticator authenticator() {
-        ModularRealmAuthenticator authenticator = new DefaultModularRealmAuthenticator();
-        authenticator.setAuthenticationStrategy(authenticationStrategy());
-        return authenticator;
-    }
-    
-   	@Bean
-   	@ConditionalOnMissingBean
-   	@Override
-    protected SessionDAO sessionDAO() {
-   		// 缓存存在的时候使用外部Session管理器
-   		if(cacheManager != null) {
-   			CachingSessionDAO sessionDAO = new EnterpriseCacheSessionDAO();
-   			sessionDAO.setCacheManager(cacheManager);
-   			sessionDAO.setActiveSessionsCacheName(bizProperties.getActiveSessionsCacheName());
-   			sessionDAO.setSessionIdGenerator(new SequenceSessionIdGenerator());
-   			return sessionDAO;
-   		}
-        return new MemorySessionDAO();
-    }
-   	
-   	@Bean
-   	@ConditionalOnMissingBean
-	@Override
-	protected SessionStorageEvaluator sessionStorageEvaluator() {
-   		DefaultSessionStorageEvaluator sessionStorageEvaluator = new DefaultSessionStorageEvaluator();
-		// 无状态逻辑情况下不持久化session
-		sessionStorageEvaluator.setSessionStorageEnabled(!bizProperties.isStateless());
-        return sessionStorageEvaluator;
-    }
-   	
-   	@Bean
-   	@ConditionalOnMissingBean
-	@Override
-    protected SessionFactory sessionFactory() {
-        return new SimpleOnlineSessionFactory();
-    }
-    
-   	@Bean("sessionListeners")
-   	public List<SessionListener> sessionListeners() {
+
+	@Bean("sessionListeners")
+	@ConditionalOnMissingBean(name = "sessionListeners")
+	public List<SessionListener> sessionListeners() {
 		List<SessionListener> sessionListeners = Lists.newLinkedList();
 		Map<String, SessionListener> beansOfType = getApplicationContext().getBeansOfType(SessionListener.class);
 		if (!ObjectUtils.isEmpty(beansOfType)) {
@@ -175,42 +140,114 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 		sessionListeners.add(defSessionListener);
 		return sessionListeners;
 	}
-   	
+
+	@Bean
+	@ConditionalOnMissingBean
+	@Override
+	protected Authenticator authenticator() {
+		ModularRealmAuthenticator authenticator = new DefaultModularRealmAuthenticator();
+		authenticator.setAuthenticationStrategy(authenticationStrategy());
+		return authenticator;
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	protected SessionIdGenerator sessionIdGenerator() {
+		return new SequenceSessionIdGenerator();
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	@Override
+	protected SessionDAO sessionDAO() {
+		// 缓存存在的时候使用外部Session管理器
+		if (cacheManager != null) {
+			CachingSessionDAO sessionDAO = new EnterpriseCacheSessionDAO();
+			sessionDAO.setCacheManager(cacheManager);
+			sessionDAO.setActiveSessionsCacheName(bizProperties.getActiveSessionsCacheName());
+			sessionDAO.setSessionIdGenerator(new SequenceSessionIdGenerator());
+			return sessionDAO;
+		}
+		return new MemorySessionDAO();
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	@Override
+	protected SubjectDAO subjectDAO() {
+        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
+        subjectDAO.setSessionStorageEvaluator(sessionStorageEvaluator());
+        return subjectDAO;
+    }
+
+	@Bean
+	@ConditionalOnMissingBean
+	@Override
+	protected SessionStorageEvaluator sessionStorageEvaluator() {
+		DefaultSessionStorageEvaluator sessionStorageEvaluator = new DefaultSessionStorageEvaluator();
+		// 无状态逻辑情况下不持久化session
+		sessionStorageEvaluator.setSessionStorageEnabled(bizProperties.isSessionStateless() ? false : bizProperties.isSessionStorageEnabled());
+		return sessionStorageEvaluator;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	@Override
+	protected SessionFactory sessionFactory() {
+		return new SimpleOnlineSessionFactory();
+	}
+
 	@Bean
 	@ConditionalOnMissingBean
 	@Override
 	protected SessionManager sessionManager() {
 		SessionManager sessionManager = super.sessionManager();
 		if (sessionManager instanceof DefaultSessionManager) {
-			
+
 			DefaultSessionManager defSessionManager = (DefaultSessionManager) sessionManager;
-			defSessionManager.setCacheManager(cacheManager);
 			defSessionManager.setGlobalSessionTimeout(bizProperties.getSessionTimeout());
-			defSessionManager.setSessionDAO(sessionDAO());
 			defSessionManager.setSessionListeners(sessionListeners());
 			defSessionManager.setSessionValidationInterval(bizProperties.getSessionValidationInterval());
 			defSessionManager.setSessionValidationSchedulerEnabled(bizProperties.isSessionValidationSchedulerEnabled());
-			
+			if (cacheManager != null) {
+				defSessionManager.setCacheManager(cacheManager);
+			}
+			defSessionManager.setSessionDAO(sessionDAO());
 			return defSessionManager;
 		}
+
 		return sessionManager;
 	}
-	
+
 	@Bean
 	@ConditionalOnMissingBean
 	@Override
 	protected SessionsSecurityManager securityManager(List<Realm> realms) {
-		return super.securityManager(realms);
+
+		DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+
+		securityManager.setAuthenticator(authenticator());
+		securityManager.setAuthorizer(authorizer());
+		if (cacheManager != null) {
+			securityManager.setCacheManager(cacheManager);
+		}
+		securityManager.setEventBus(eventBus);
+		securityManager.setRealms(realms);
+		securityManager.setRememberMeManager(rememberMeManager());
+		securityManager.setSessionManager(sessionManager());
+		securityManager.setSubjectDAO(subjectDAO());
+		securityManager.setSubjectFactory(subjectFactory());
+		return securityManager;
+
 	}
 	
 	@Bean
 	@ConditionalOnMissingBean
 	@Override
-    protected SubjectFactory subjectFactory() {
-		return new StatelessDefaultSubjectFactory((DefaultSessionStorageEvaluator) sessionStorageEvaluator(),
-    		bizProperties.isStateless());
-    }
-	
+	protected SubjectFactory subjectFactory() {
+		return new StatelessDefaultSubjectFactory(bizProperties.isSessionStateless());
+	}
+
 	/**
 	 * 责任链定义 ：定义Shiro的逻辑处理责任链
 	 */
@@ -229,34 +266,37 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 		chainDefinition.addPathDefinition("/**", "authc");
 		return chainDefinition;
 	}
-	
 
-	/*@Bean
-    @ConditionalOnMissingBean(name = "sessionCookieTemplate")
-	@Override
-	protected Cookie sessionCookieTemplate() {
-		if (sessionManagerCookieProperties != null && StringUtils.hasText(sessionManagerCookieProperties.getName())
-				&& sessionManagerCookieProperties.getMaxAge() > 0) {
-			return buildCookie(sessionManagerCookieProperties.getName(), sessionManagerCookieProperties.getMaxAge(),
-					sessionManagerCookieProperties.getPath(), sessionManagerCookieProperties.getDomain(),
-					sessionManagerCookieProperties.isSecure());
-		}
-		return super.sessionCookieTemplate();
-	}
-
-	@Bean
-    @ConditionalOnMissingBean(name = "rememberMeCookieTemplate")
-	@Override
-	protected Cookie rememberMeCookieTemplate() {
-		if (rememberMeProperties != null && StringUtils.hasText(rememberMeProperties.getName())
-				&& rememberMeProperties.getMaxAge() > 0) {
-			return buildCookie(rememberMeProperties.getName(), rememberMeProperties.getMaxAge(),
-					rememberMeProperties.getPath(), rememberMeProperties.getDomain(), rememberMeProperties.isSecure());
-		}
-		return super.rememberMeCookieTemplate();
-
-	}
-*/
+	/*
+	 * @Bean
+	 * 
+	 * @ConditionalOnMissingBean(name = "sessionCookieTemplate")
+	 * 
+	 * @Override protected Cookie sessionCookieTemplate() { if
+	 * (sessionManagerCookieProperties != null &&
+	 * StringUtils.hasText(sessionManagerCookieProperties.getName()) &&
+	 * sessionManagerCookieProperties.getMaxAge() > 0) { return
+	 * buildCookie(sessionManagerCookieProperties.getName(),
+	 * sessionManagerCookieProperties.getMaxAge(),
+	 * sessionManagerCookieProperties.getPath(),
+	 * sessionManagerCookieProperties.getDomain(),
+	 * sessionManagerCookieProperties.isSecure()); } return
+	 * super.sessionCookieTemplate(); }
+	 * 
+	 * @Bean
+	 * 
+	 * @ConditionalOnMissingBean(name = "rememberMeCookieTemplate")
+	 * 
+	 * @Override protected Cookie rememberMeCookieTemplate() { if
+	 * (rememberMeProperties != null &&
+	 * StringUtils.hasText(rememberMeProperties.getName()) &&
+	 * rememberMeProperties.getMaxAge() > 0) { return
+	 * buildCookie(rememberMeProperties.getName(), rememberMeProperties.getMaxAge(),
+	 * rememberMeProperties.getPath(), rememberMeProperties.getDomain(),
+	 * rememberMeProperties.isSecure()); } return super.rememberMeCookieTemplate();
+	 * 
+	 * }
+	 */
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
@@ -264,6 +304,14 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
+	}
+
+	public ShiroBizProperties getBizProperties() {
+		return bizProperties;
+	}
+
+	public void setBizProperties(ShiroBizProperties bizProperties) {
+		this.bizProperties = bizProperties;
 	}
 
 }
