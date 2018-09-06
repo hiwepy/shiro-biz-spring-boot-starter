@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.biz.authc.exception.ExpiredCaptchaException;
 import org.apache.shiro.biz.authc.exception.IncorrectCaptchaException;
+import org.apache.shiro.biz.authc.exception.InvalidCaptchaException;
 import org.apache.shiro.biz.authc.token.CaptchaAuthenticationToken;
 import org.apache.shiro.biz.utils.SubjectUtils;
 import org.apache.shiro.biz.web.filter.authc.captcha.CaptchaResolver;
@@ -78,7 +78,7 @@ public class ShiroKaptchaSessionResolver implements KaptchaResolver, CaptchaReso
 		} catch (KaptchaIncorrectException e) {
 			throw new IncorrectCaptchaException(e);
 		} catch (KaptchaTimeoutException e) {
-			throw new ExpiredCaptchaException(e);
+			throw new InvalidCaptchaException(e);
 		}
 	}
 

@@ -498,7 +498,22 @@
 		    <version>${shiro.version}</version>
 		    <scope>provided</scope>
 		</dependency>
-		
+		<!-- <dependency>
+		    <groupId>org.apache.shiro</groupId>
+		    <artifactId>shiro-quartz</artifactId>
+		    <version>${shiro.version}</version>
+		    <exclusions>
+		    	<exclusion>
+		    		<groupId>org.opensymphony.quartz</groupId>
+		    		<artifactId>quartz</artifactId>
+		    	</exclusion>
+		    </exclusions>
+		</dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz 
+		<dependency>
+		    <groupId>org.quartz-scheduler</groupId>
+		    <artifactId>quartz</artifactId>
+		</dependency>-->
 		<!-- <dependency>
 		    <groupId>org.apache.shiro</groupId>
 		    <artifactId>shiro-core</artifactId>

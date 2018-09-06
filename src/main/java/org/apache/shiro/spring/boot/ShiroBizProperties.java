@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.shiro.biz.web.filter.authc.KickoutSessionControlFilter;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.session.mgt.eis.CachingSessionDAO;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(ShiroBizProperties.PREFIX)
@@ -35,7 +36,7 @@ public class ShiroBizProperties {
 	private static final Integer DEFAULT_SESSION_TIMEOUT = 3600000;
 	// 默认session清扫时间：1小时=3600000毫秒(ms)
 	private static final Integer DEFAULT_SESSION_VALIDATION_INTERVAL = 3600000;
-	
+
 	/*
 	 * ============================== Shiro Basic =================================
 	 */
@@ -44,19 +45,12 @@ public class ShiroBizProperties {
 	 * Enable Shiro.
 	 */
 	private boolean enabled = false;
-	/**
-	 * 是否启用用户唯一登陆，如果为true则最后一次登陆会踢出前面的Session
-	 */
-	private boolean uniqueSessin;
-	/**
-	 * Session控制过滤器使用的缓存数据对象名称
-	 */
-	private String sessionControlCacheName = KickoutSessionControlFilter.DEFAULT_SESSION_CONTROL_CACHE_NAME;
 
 	/**
-	 * 是否启用认证授权缓存
+	 * The name of the session cache, defaults to
+	 * {@link CachingSessionDAO#ACTIVE_SESSION_CACHE_NAME}.
 	 */
-	private boolean cachingEnabled;
+	private String activeSessionsCacheName = CachingSessionDAO.ACTIVE_SESSION_CACHE_NAME;
 	/**
 	 * The cache used by this realm to store AuthorizationInfo instances associated
 	 * with individual Subject principals.
@@ -66,7 +60,8 @@ public class ShiroBizProperties {
 
 	private boolean authenticationCachingEnabled;
 	private String authenticationCacheName;
-
+	/** 是否启用认证授权缓存 */
+	private boolean cachingEnabled;
 	/** 登录地址：会话不存在时访问的地址 */
 	private String loginUrl = "/login.jsp";
 	/** 重定向地址：会话注销后的重定向地址 */
@@ -75,11 +70,15 @@ public class ShiroBizProperties {
 	private String successUrl;
 	/** 未授权页面：无权限时的跳转路径 */
 	private String unauthorizedUrl;
+	/** 是否启用用户唯一登陆，如果为true则最后一次登陆会踢出前面的Session */
+	private boolean uniqueSessin;
 	/** 异常页面：认证失败时的跳转路径 */
 	private String failureUrl;
+	/** Session控制过滤器使用的缓存数据对象名称 */
+	private String sessionControlCacheName = KickoutSessionControlFilter.DEFAULT_SESSION_CONTROL_CACHE_NAME;
 	private Integer sessionTimeout = DEFAULT_SESSION_TIMEOUT;// session超时时间
 	private Integer sessionValidationInterval = DEFAULT_SESSION_VALIDATION_INTERVAL;// session清扫时间
-	
+
 	public static final List<String> DEFAULT_IGNORED = Arrays.asList("/**/favicon.ico", "/assets/**", "/webjars/**");
 	private Map<String /* pattert */, String /* Chain names */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
@@ -88,7 +87,7 @@ public class ShiroBizProperties {
 		for (String ingored : DEFAULT_IGNORED) {
 			filterChainDefinitionMap.put(ingored, "anon");
 		}
-		
+
 	}
 
 	public boolean isEnabled() {
@@ -99,12 +98,12 @@ public class ShiroBizProperties {
 		this.enabled = enabled;
 	}
 
-	public String getSessionControlCacheName() {
-		return sessionControlCacheName;
+	public String getActiveSessionsCacheName() {
+		return activeSessionsCacheName;
 	}
 
-	public void setSessionControlCacheName(String sessionControlCacheName) {
-		this.sessionControlCacheName = sessionControlCacheName;
+	public void setActiveSessionsCacheName(String activeSessionsCacheName) {
+		this.activeSessionsCacheName = activeSessionsCacheName;
 	}
 
 	public String getAuthorizationCacheName() {
@@ -113,6 +112,86 @@ public class ShiroBizProperties {
 
 	public void setAuthorizationCacheName(String authorizationCacheName) {
 		this.authorizationCacheName = authorizationCacheName;
+	}
+
+	public String getLoginUrl() {
+		return loginUrl;
+	}
+
+	public void setLoginUrl(String loginUrl) {
+		this.loginUrl = loginUrl;
+	}
+
+	public String getRedirectUrl() {
+		return redirectUrl;
+	}
+
+	public void setRedirectUrl(String redirectUrl) {
+		this.redirectUrl = redirectUrl;
+	}
+
+	public String getSuccessUrl() {
+		return successUrl;
+	}
+
+	public void setSuccessUrl(String successUrl) {
+		this.successUrl = successUrl;
+	}
+
+	public String getUnauthorizedUrl() {
+		return unauthorizedUrl;
+	}
+
+	public void setUnauthorizedUrl(String unauthorizedUrl) {
+		this.unauthorizedUrl = unauthorizedUrl;
+	}
+
+	public boolean isUniqueSessin() {
+		return uniqueSessin;
+	}
+
+	public void setUniqueSessin(boolean uniqueSessin) {
+		this.uniqueSessin = uniqueSessin;
+	}
+
+	public String getFailureUrl() {
+		return failureUrl;
+	}
+
+	public void setFailureUrl(String failureUrl) {
+		this.failureUrl = failureUrl;
+	}
+
+	public String getSessionControlCacheName() {
+		return sessionControlCacheName;
+	}
+
+	public void setSessionControlCacheName(String sessionControlCacheName) {
+		this.sessionControlCacheName = sessionControlCacheName;
+	}
+
+	public Integer getSessionTimeout() {
+		return sessionTimeout;
+	}
+
+	public void setSessionTimeout(Integer sessionTimeout) {
+		this.sessionTimeout = sessionTimeout;
+	}
+
+	public Integer getSessionValidationInterval() {
+		return sessionValidationInterval;
+	}
+
+	public void setSessionValidationInterval(Integer sessionValidationInterval) {
+		this.sessionValidationInterval = sessionValidationInterval;
+	}
+
+	public Map<String, String> getFilterChainDefinitionMap() {
+		return filterChainDefinitionMap;
+	}
+
+	public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
+		this.filterChainDefinitionMap = filterChainDefinitionMap;
 	}
 
 	/**
@@ -257,76 +336,4 @@ public class ShiroBizProperties {
 		this.cachingEnabled = cachingEnabled;
 	}
 
-	public boolean isUniqueSessin() {
-		return uniqueSessin;
-	}
-
-	public void setUniqueSessin(boolean uniqueSessin) {
-		this.uniqueSessin = uniqueSessin;
-	}
-
-	public String getLoginUrl() {
-		return loginUrl;
-	}
-
-	public void setLoginUrl(String loginUrl) {
-		this.loginUrl = loginUrl;
-	}
-
-	public String getRedirectUrl() {
-		return redirectUrl;
-	}
-
-	public void setRedirectUrl(String redirectUrl) {
-		this.redirectUrl = redirectUrl;
-	}
-
-	public String getSuccessUrl() {
-		return successUrl;
-	}
-
-	public void setSuccessUrl(String successUrl) {
-		this.successUrl = successUrl;
-	}
-
-	public String getUnauthorizedUrl() {
-		return unauthorizedUrl;
-	}
-
-	public void setUnauthorizedUrl(String unauthorizedUrl) {
-		this.unauthorizedUrl = unauthorizedUrl;
-	}
-
-	public String getFailureUrl() {
-		return failureUrl;
-	}
-
-	public void setFailureUrl(String failureUrl) {
-		this.failureUrl = failureUrl;
-	}
-
-	public Integer getSessionTimeout() {
-		return sessionTimeout;
-	}
-
-	public void setSessionTimeout(Integer sessionTimeout) {
-		this.sessionTimeout = sessionTimeout;
-	}
-
-	public Integer getSessionValidationInterval() {
-		return sessionValidationInterval;
-	}
-
-	public void setSessionValidationInterval(Integer sessionValidationInterval) {
-		this.sessionValidationInterval = sessionValidationInterval;
-	}
-
-	public Map<String, String> getFilterChainDefinitionMap() {
-		return filterChainDefinitionMap;
-	}
-
-	public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
-		this.filterChainDefinitionMap = filterChainDefinitionMap;
-	}
-	
 }
