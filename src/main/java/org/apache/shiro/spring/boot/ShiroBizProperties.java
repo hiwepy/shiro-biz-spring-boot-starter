@@ -92,18 +92,23 @@ public class ShiroBizProperties {
 	/** Session控制过滤器使用的缓存数据对象名称 */
 	private String sessionControlCacheName = KickoutSessionControlFilter.DEFAULT_SESSION_CONTROL_CACHE_NAME;
 	/**
+	 * Whether or not the constructed {@code Subject} instance should be allowed to create a session,
+     * {@code false} otherwise.
+	 */
+	private boolean sessionCreationEnabled = true;
+	/**
      * Global policy determining if Subject sessions may be used to persist Subject state if the Subject's Session
      * does not yet exist.
      */
     private boolean sessionStorageEnabled = true;
+    /** If Session Stateless */
+	private boolean sessionStateless = false;
 	/** Default main session timeout value, equal to {@code 30} minutes. */
 	private long sessionTimeout = DEFAULT_GLOBAL_SESSION_TIMEOUT;
 	/** Default session validation interval value, equal to {@code 30} seconds. */
 	private long sessionValidationInterval = DEFAULT_SESSION_VALIDATION_INTERVAL;
 	/** 是否开启session定时清理任务 */
 	private boolean sessionValidationSchedulerEnabled = true;
-	/** If Session Stateless */
-	private boolean sessionStateless = false;
 	
 	private Map<String /* pattert */, String /* Chain names */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
@@ -219,6 +224,28 @@ public class ShiroBizProperties {
 		this.sessionControlCacheName = sessionControlCacheName;
 	}
 
+    /**
+     * Returns {@code true} if the constructed {@code Subject} should be allowed to create a session, {@code false}
+     * otherwise.  Shiro's configuration defaults to {@code true} as most applications find value in Sessions.
+     *
+     * @return {@code true} if the constructed {@code Subject} should be allowed to create sessions, {@code false}
+     * otherwise.
+     */
+	public boolean isSessionCreationEnabled(){
+		return sessionCreationEnabled;
+	}
+
+    /**
+     * Sets whether or not the constructed {@code Subject} instance should be allowed to create a session,
+     * {@code false} otherwise.
+     *
+     * @param sessionCreationEnabled whether or not the constructed {@code Subject} instance should be allowed to create a session,
+     * {@code false} otherwise.
+     */
+	public void setSessionCreationEnabled(boolean sessionCreationEnabled) {
+		this.sessionCreationEnabled = sessionCreationEnabled;
+	}
+	
 	public boolean isSessionStorageEnabled() {
 		return sessionStorageEnabled;
 	}

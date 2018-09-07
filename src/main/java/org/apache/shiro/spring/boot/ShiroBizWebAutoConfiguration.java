@@ -16,7 +16,7 @@ import org.apache.shiro.biz.session.mgt.SimpleOnlineSessionFactory;
 import org.apache.shiro.biz.session.mgt.eis.SequenceSessionIdGenerator;
 import org.apache.shiro.biz.web.filter.authc.listener.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
-import org.apache.shiro.biz.web.mgt.StatelessDefaultSubjectFactory;
+import org.apache.shiro.biz.web.mgt.SessionDisableSubjectFactory;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SessionStorageEvaluator;
@@ -189,7 +189,7 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 	protected SessionStorageEvaluator sessionStorageEvaluator() {
 		DefaultSessionStorageEvaluator sessionStorageEvaluator = new DefaultSessionStorageEvaluator();
 		// 无状态逻辑情况下不持久化session
-		sessionStorageEvaluator.setSessionStorageEnabled(bizProperties.isSessionStateless() ? false : bizProperties.isSessionStorageEnabled());
+		sessionStorageEvaluator.setSessionStorageEnabled(bizProperties.isSessionStorageEnabled());
 		return sessionStorageEvaluator;
 	}
 
@@ -255,7 +255,7 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 	@ConditionalOnMissingBean
 	@Override
 	protected SubjectFactory subjectFactory() {
-		return new StatelessDefaultSubjectFactory(bizProperties.isSessionStateless());
+		return new SessionDisableSubjectFactory(bizProperties.isSessionCreationEnabled());
 	}
 
 	/**
