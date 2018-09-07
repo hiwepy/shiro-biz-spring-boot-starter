@@ -26,8 +26,6 @@ public class ShiroSessionManagerProperties {
     
     private boolean sessionIdUrlRewritingEnabled = true;
     
-    private boolean userNativeSessionManager = false;
-    
     protected boolean deleteInvalidSessions = true;
     
 	public boolean isSessionIdCookieEnabled() {
@@ -44,14 +42,6 @@ public class ShiroSessionManagerProperties {
 
 	public void setSessionIdUrlRewritingEnabled(boolean sessionIdUrlRewritingEnabled) {
 		this.sessionIdUrlRewritingEnabled = sessionIdUrlRewritingEnabled;
-	}
-
-	public boolean isUserNativeSessionManager() {
-		return userNativeSessionManager;
-	}
-
-	public void setUserNativeSessionManager(boolean userNativeSessionManager) {
-		this.userNativeSessionManager = userNativeSessionManager;
 	}
 
 	public boolean isDeleteInvalidSessions() {

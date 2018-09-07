@@ -58,7 +58,7 @@ public class ShiroBizProperties {
 
 	private String accessControlAllowOrigin = "*";
 	private String accessControlAllowMethods = "PUT,POST,GET,DELETE,OPTIONS";
-	private String accessControlAllowHeaders = "*";
+	private String accessControlAllowHeaders = "";
 	
 	/**
 	 * The name of the session cache, defaults to
@@ -85,7 +85,8 @@ public class ShiroBizProperties {
 	/** 未授权页面：无权限时的跳转路径 */
 	private String unauthorizedUrl;
 	/** 是否启用用户唯一登陆，如果为true则最后一次登陆会踢出前面的Session */
-	private boolean uniqueSessin;
+	private boolean uniqueSessin = false;
+	private boolean userNativeSessionManager = false;
 	/** 异常页面：认证失败时的跳转路径 */
 	private String failureUrl;
 	
@@ -198,14 +199,6 @@ public class ShiroBizProperties {
 
 	public void setUnauthorizedUrl(String unauthorizedUrl) {
 		this.unauthorizedUrl = unauthorizedUrl;
-	}
-
-	public boolean isUniqueSessin() {
-		return uniqueSessin;
-	}
-
-	public void setUniqueSessin(boolean uniqueSessin) {
-		this.uniqueSessin = uniqueSessin;
 	}
 
 	public String getFailureUrl() {
@@ -436,4 +429,20 @@ public class ShiroBizProperties {
 		this.cachingEnabled = cachingEnabled;
 	}
 
+	public boolean isUniqueSessin() {
+		return uniqueSessin;
+	}
+
+	public void setUniqueSessin(boolean uniqueSessin) {
+		this.uniqueSessin = uniqueSessin;
+	}
+
+	public boolean isUserNativeSessionManager() {
+		return userNativeSessionManager;
+	}
+
+	public void setUserNativeSessionManager(boolean userNativeSessionManager) {
+		this.userNativeSessionManager = userNativeSessionManager;
+	}
+	
 }

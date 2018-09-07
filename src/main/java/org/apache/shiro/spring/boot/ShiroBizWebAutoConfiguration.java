@@ -218,6 +218,7 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 			sManager.setSessionValidationInterval(bizProperties.getSessionValidationInterval());
 			sManager.setSessionValidationSchedulerEnabled(bizProperties.isSessionValidationSchedulerEnabled());
 		}
+		
 		if (sessionManager instanceof DefaultSessionManager) {
 			DefaultSessionManager defSessionManager = (DefaultSessionManager) sessionManager;
 			if (cacheManager != null) {
