@@ -56,6 +56,10 @@ public class ShiroBizProperties {
 	 */
 	private boolean enabled = false;
 
+	private String accessControlAllowOrigin = "*";
+	private String accessControlAllowMethods = "PUT,POST,GET,DELETE,OPTIONS";
+	private String accessControlAllowHeaders = "*";
+	
 	/**
 	 * The name of the session cache, defaults to
 	 * {@link CachingSessionDAO#ACTIVE_SESSION_CACHE_NAME}.
@@ -108,7 +112,7 @@ public class ShiroBizProperties {
 		for (String ingored : DEFAULT_IGNORED) {
 			filterChainDefinitionMap.put(ingored, "anon");
 		}
-
+		
 	}
 
 	public boolean isEnabled() {
@@ -117,6 +121,30 @@ public class ShiroBizProperties {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public String getAccessControlAllowOrigin() {
+		return accessControlAllowOrigin;
+	}
+
+	public void setAccessControlAllowOrigin(String accessControlAllowOrigin) {
+		this.accessControlAllowOrigin = accessControlAllowOrigin;
+	}
+
+	public String getAccessControlAllowMethods() {
+		return accessControlAllowMethods;
+	}
+
+	public void setAccessControlAllowMethods(String accessControlAllowMethods) {
+		this.accessControlAllowMethods = accessControlAllowMethods;
+	}
+
+	public String getAccessControlAllowHeaders() {
+		return accessControlAllowHeaders;
+	}
+
+	public void setAccessControlAllowHeaders(String accessControlAllowHeaders) {
+		this.accessControlAllowHeaders = accessControlAllowHeaders;
 	}
 
 	public String getActiveSessionsCacheName() {
