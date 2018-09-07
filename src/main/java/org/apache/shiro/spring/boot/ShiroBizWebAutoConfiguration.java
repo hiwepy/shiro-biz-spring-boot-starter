@@ -25,6 +25,9 @@ import org.apache.shiro.mgt.SubjectDAO;
 import org.apache.shiro.mgt.SubjectFactory;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.SessionListener;
+import org.apache.shiro.session.mgt.AbstractNativeSessionManager;
+import org.apache.shiro.session.mgt.AbstractSessionManager;
+import org.apache.shiro.session.mgt.AbstractValidatingSessionManager;
 import org.apache.shiro.session.mgt.DefaultSessionManager;
 import org.apache.shiro.session.mgt.SessionFactory;
 import org.apache.shiro.session.mgt.SessionManager;
@@ -202,20 +205,27 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 	@Override
 	protected SessionManager sessionManager() {
 		SessionManager sessionManager = super.sessionManager();
+		if (sessionManager instanceof AbstractSessionManager) {
+			AbstractSessionManager absSessionManager = (AbstractSessionManager) sessionManager;
+			absSessionManager.setGlobalSessionTimeout(bizProperties.getSessionTimeout());
+		}
+		if (sessionManager instanceof AbstractNativeSessionManager) {
+			AbstractNativeSessionManager sManager = (AbstractNativeSessionManager) sessionManager;
+			sManager.setSessionListeners(sessionListeners());
+		}
+		if (sessionManager instanceof AbstractValidatingSessionManager) {
+			AbstractValidatingSessionManager sManager = (AbstractValidatingSessionManager) sessionManager;
+			sManager.setSessionValidationInterval(bizProperties.getSessionValidationInterval());
+			sManager.setSessionValidationSchedulerEnabled(bizProperties.isSessionValidationSchedulerEnabled());
+		}
 		if (sessionManager instanceof DefaultSessionManager) {
-
 			DefaultSessionManager defSessionManager = (DefaultSessionManager) sessionManager;
-			defSessionManager.setGlobalSessionTimeout(bizProperties.getSessionTimeout());
-			defSessionManager.setSessionListeners(sessionListeners());
-			defSessionManager.setSessionValidationInterval(bizProperties.getSessionValidationInterval());
-			defSessionManager.setSessionValidationSchedulerEnabled(bizProperties.isSessionValidationSchedulerEnabled());
 			if (cacheManager != null) {
 				defSessionManager.setCacheManager(cacheManager);
 			}
 			defSessionManager.setSessionDAO(sessionDAO());
 			return defSessionManager;
 		}
-
 		return sessionManager;
 	}
 
