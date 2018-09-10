@@ -220,8 +220,8 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 
 	@Autowired
 	private ShiroBizProperties bizProperties;
-	@Autowired
-	private CacheManager shiroCacheManager;
+	@Autowired(required = false)
+    protected CacheManager cacheManager;
 	
 	/**
 	 * 系统登录注销过滤器；默认：org.apache.shiro.spring.boot.cas.filter.CasLogoutFilter
@@ -274,7 +274,9 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 			}
 			
 		};
-		sessionControl.setCacheManager(shiroCacheManager);
+		if(cacheManager != null) {
+			sessionControl.setCacheManager(cacheManager);
+		}
 		
 		registration.setFilter(sessionControl);
 		
