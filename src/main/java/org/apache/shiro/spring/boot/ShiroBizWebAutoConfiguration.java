@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.collections.MapUtils;
+import org.apache.shiro.authc.AuthenticationListener;
 import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.biz.authc.pam.DefaultModularRealmAuthenticator;
@@ -144,12 +145,27 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 		return sessionListeners;
 	}
 
+	@Bean("authenticationListeners")
+	@ConditionalOnMissingBean(name = "authenticationListeners")
+	public List<AuthenticationListener> authenticationListeners() {
+		List<AuthenticationListener> authenticationListeners = Lists.newLinkedList();
+		Map<String, AuthenticationListener> beansOfType = getApplicationContext().getBeansOfType(AuthenticationListener.class);
+		if (!ObjectUtils.isEmpty(beansOfType)) {
+			Iterator<Entry<String, AuthenticationListener>> ite = beansOfType.entrySet().iterator();
+			while (ite.hasNext()) {
+				authenticationListeners.add(ite.next().getValue());
+			}
+		}
+		return authenticationListeners;
+	}
+	
 	@Bean
 	@ConditionalOnMissingBean
 	@Override
 	protected Authenticator authenticator() {
 		ModularRealmAuthenticator authenticator = new DefaultModularRealmAuthenticator();
 		authenticator.setAuthenticationStrategy(authenticationStrategy());
+		authenticator.setAuthenticationListeners(authenticationListeners());
 		return authenticator;
 	}
 	
