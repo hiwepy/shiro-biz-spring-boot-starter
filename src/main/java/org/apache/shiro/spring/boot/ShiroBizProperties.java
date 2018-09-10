@@ -69,13 +69,13 @@ public class ShiroBizProperties {
 	 * The cache used by this realm to store AuthorizationInfo instances associated
 	 * with individual Subject principals.
 	 */
-	private boolean authorizationCachingEnabled;
-	private String authorizationCacheName;
+	private boolean authorizationCachingEnabled = false;
+	private String authorizationCacheName = "shiro-authorizationCache";
 	
-	private boolean authenticationCachingEnabled;
-	private String authenticationCacheName;
+	private boolean authenticationCachingEnabled = false;
+	private String authenticationCacheName = "shiro-authenticationCache";
 	/** 是否启用认证授权缓存 */
-	private boolean cachingEnabled;
+	private boolean cachingEnabled = false;
 	/** 登录地址：会话不存在时访问的地址 */
 	private String loginUrl = "/login.jsp";
 	/** 重定向地址：会话注销后的重定向地址 */
@@ -415,7 +415,7 @@ public class ShiroBizProperties {
 	 *         {@link CacheManager} has been configured, {@code false} otherwise
 	 */
 	public boolean isCachingEnabled() {
-		return cachingEnabled && !sessionStateless;
+		return cachingEnabled;
 	}
 
 	/**
