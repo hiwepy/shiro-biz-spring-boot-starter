@@ -2,6 +2,7 @@ package org.apache.shiro.spring.boot;
 
 import java.util.List;
 
+import org.apache.shiro.biz.web.filter.HttpServletRequestCrosFilter;
 import org.apache.shiro.biz.web.filter.HttpServletSessionControlFilter;
 import org.apache.shiro.biz.web.filter.HttpServletSessionExpiredFilter;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
@@ -239,6 +240,25 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		//注销监听：实现该接口可监听账号注销失败和成功的状态，从而做业务系统自己的事情，比如记录日志
 		logoutFilter.setLogoutListeners(logoutListeners);
 	    
+	    registration.setEnabled(false); 
+	    return registration;
+	}
+	
+	/**
+	 * 默认的Request跨域支持过滤器 ：解决Ajax请求跨域问题
+	 */
+	@Bean("cros")
+	@ConditionalOnMissingBean(name = "cros")
+	public FilterRegistrationBean<HttpServletRequestCrosFilter> crosFilter(){
+		
+		FilterRegistrationBean<HttpServletRequestCrosFilter> registration = new FilterRegistrationBean<HttpServletRequestCrosFilter>();
+		
+		HttpServletRequestCrosFilter crosFilter = new HttpServletRequestCrosFilter();
+		crosFilter.setAccessControlAllowHeaders(bizProperties.getAccessControlAllowHeaders());
+		crosFilter.setAccessControlAllowMethods(bizProperties.getAccessControlAllowMethods());
+		crosFilter.setAccessControlAllowOrigin(bizProperties.getAccessControlAllowOrigin());
+		
+		registration.setFilter(crosFilter);
 	    registration.setEnabled(false); 
 	    return registration;
 	}
