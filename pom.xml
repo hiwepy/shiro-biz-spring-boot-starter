@@ -573,10 +573,21 @@
 			<version>${spring-boot-starter-kaptcha.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>com.github.vindell</groupId>
 			<artifactId>spring-boot-starter-jcaptcha</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.vindell</groupId>
+			<artifactId>spring-boot-starter-simplecaptcha</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.vindell</groupId>
+			<artifactId>spring-boot-starter-smartcaptcha</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
