@@ -21,6 +21,10 @@ import com.google.code.kaptcha.spring.boot.ext.exception.KaptchaIncorrectExcepti
 import com.google.code.kaptcha.spring.boot.ext.exception.KaptchaTimeoutException;
 import com.google.code.kaptcha.util.Config;
 
+/**
+ * 验证Kaptcha生成的验证码
+ * @author 		： <a href="https://github.com/vindell">vindell</a>
+ */
 public class ShiroKaptchaCacheResolver implements KaptchaResolver, CaptchaResolver {
 
 	/**
