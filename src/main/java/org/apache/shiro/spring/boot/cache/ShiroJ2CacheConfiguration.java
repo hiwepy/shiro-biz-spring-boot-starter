@@ -16,7 +16,7 @@
 package org.apache.shiro.spring.boot.cache;
 
 import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.spring.boot.cache.j2cache.J2CacheManager;
+import org.apache.shiro.cache.j2cache.J2CacheManager;
 import org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;

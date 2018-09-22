@@ -20,7 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.shiro.biz.web.filter.authc.KickoutSessionControlFilter;
+import org.apache.shiro.biz.web.filter.HttpServletSessionControlFilter;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.session.mgt.eis.CachingSessionDAO;
@@ -91,7 +91,7 @@ public class ShiroBizProperties {
 	private String failureUrl;
 	
 	/** Session控制过滤器使用的缓存数据对象名称 */
-	private String sessionControlCacheName = KickoutSessionControlFilter.DEFAULT_SESSION_CONTROL_CACHE_NAME;
+	private String sessionControlCacheName = HttpServletSessionControlFilter.DEFAULT_SESSION_CONTROL_CACHE_NAME;
 	/**
 	 * Whether or not the constructed {@code Subject} instance should be allowed to create a session,
      * {@code false} otherwise.

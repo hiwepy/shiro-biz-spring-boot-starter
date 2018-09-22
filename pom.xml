@@ -364,11 +364,13 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
 		<commons-codec.version>1.11</commons-codec.version>
  		<commons-lang3.version>3.5</commons-lang3.version>
  		<commons-io.version>2.6</commons-io.version>
+ 		<ehcache3.version>3.6.0</ehcache3.version>
+		<freemarker.version>2.3.28</freemarker.version>
  		<guava.version>26.0-jre</guava.version>
+		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
  		<maven.version>3.0</maven.version>
        	<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
@@ -376,10 +378,16 @@
         <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <maven-surefire-plugin.vertsion>2.21.0</maven-surefire-plugin.vertsion>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
- 		<j2cache.version>2.5.5-release</j2cache.version>
+ 		<j2cache.version>2.7.0-release</j2cache.version>
+ 		<redisson.version>3.8.1</redisson.version>
 		<shiro.version>1.4.0</shiro.version>
 		<shiro-biz.version>1.0.4-SNAPSHOT</shiro-biz.version>
-		<shiro-j2cache.version>1.0.2</shiro-j2cache.version>
+		<shiro-ehcache.version>${shiro.version}</shiro-ehcache.version>
+		<shiro-ehcache3.version>1.0.0</shiro-ehcache3.version>
+		<shiro-hazelcast.version>${shiro.version}</shiro-hazelcast.version>
+		<shiro-j2cache.version>1.0.0-SNAPSHOT</shiro-j2cache.version>
+		<shiro-redis.version>3.1.0</shiro-redis.version>
+		<shiro-redisson.version>1.0.0.RELEASE</shiro-redisson.version>
 		<spring-boot-starter-kaptcha.version>1.0.1.RELEASE</spring-boot-starter-kaptcha.version>
 	</properties>
 	
@@ -448,6 +456,13 @@
 		    <version>${guava.version}</version>
 		</dependency>
 		
+		<!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
+		<dependency>
+		    <groupId>org.freemarker</groupId>
+		    <artifactId>freemarker</artifactId>
+		    <scope>provided</scope>
+		</dependency>
+		
 		<!-- https://mvnrepository.com/artifact/org.apache.shiro -->
 		
 		<!-- Apache Shiro是一个强大的，易用的Java安全框架。它被用作于认证，授权，加密，session管理。依赖于Shiro简单易懂的API，就可以快速的构建包括手机，大型web和商业应用。 -->
@@ -468,73 +483,44 @@
 		    </exclusions>
 		</dependency>
 		
-		<!-- https://mvnrepository.com/artifact/org.apache.shiro/shiro-all -->
-		<!-- <dependency>
-		    <groupId>org.apache.shiro</groupId>
-		    <artifactId>shiro-all</artifactId>
-		    <version>${shiro.version}</version>
-		    <type>pom</type>
-		    <scope>import</scope>
-		</dependency>  -->
 		<dependency>
 		    <groupId>com.github.vindell</groupId>
 			<artifactId>shiro-biz</artifactId>
 			<version>${shiro-biz.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.shiro</groupId>
-					<artifactId>shiro-quartz</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.shiro/shiro-ehcache -->
 		<dependency>
-		    <groupId>org.apache.shiro</groupId>
-		    <artifactId>shiro-ehcache</artifactId>
-		    <version>${shiro.version}</version>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-ehcache</artifactId>
+			<version>${shiro-ehcache.version}</version>
+			<scope>provided</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.ehcache.integrations.shiro/shiro-ehcache3 -->
+		<dependency>
+		    <groupId>org.ehcache.integrations.shiro</groupId>
+		    <artifactId>shiro-ehcache3</artifactId>
+		    <version>${shiro-ehcache3.version}</version>
+		    <scope>provided</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.ehcache/ehcache -->
+		<dependency>
+		    <groupId>org.ehcache</groupId>
+		    <artifactId>ehcache</artifactId>
+		    <scope>provided</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.shiro/shiro-hazelcast -->
 		<dependency>
 		    <groupId>org.apache.shiro</groupId>
 		    <artifactId>shiro-hazelcast</artifactId>
-		    <version>${shiro.version}</version>
+		    <version>${shiro-hazelcast.version}</version>
 		    <scope>provided</scope>
 		</dependency>
-		<!-- <dependency>
-		    <groupId>org.apache.shiro</groupId>
-		    <artifactId>shiro-quartz</artifactId>
-		    <version>${shiro.version}</version>
-		    <exclusions>
-		    	<exclusion>
-		    		<groupId>org.opensymphony.quartz</groupId>
-		    		<artifactId>quartz</artifactId>
-		    	</exclusion>
-		    </exclusions>
-		</dependency> -->
-		<!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz 
 		<dependency>
-		    <groupId>org.quartz-scheduler</groupId>
-		    <artifactId>quartz</artifactId>
-		</dependency>-->
-		<!-- <dependency>
-		    <groupId>org.apache.shiro</groupId>
-		    <artifactId>shiro-core</artifactId>
-		    <version>${shiro.version}</version>
+			<groupId>com.github.vindell</groupId>
+			<artifactId>shiro-j2cache</artifactId>
+			<version>${shiro-j2cache.version}</version>
+			<scope>provided</scope>
 		</dependency>
-		<dependency>
-		    <groupId>org.apache.shiro</groupId>
-		    <artifactId>shiro-web</artifactId>
-		    <version>${shiro.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.apache.shiro</groupId>
-		    <artifactId>shiro-spring</artifactId>
-		    <version>${shiro.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.apache.shiro</groupId>
-		    <artifactId>shiro-aspectj</artifactId>
-		    <version>${shiro.version}</version>
-		</dependency>
-		 -->
 		<!-- https://mvnrepository.com/artifact/net.oschina.j2cache/j2cache-core -->
 		<dependency>
 		    <groupId>net.oschina.j2cache</groupId>
@@ -542,16 +528,42 @@
 		    <version>${j2cache.version}</version>
 		    <scope>provided</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.crazycake/shiro-redis -->
 		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-redis</artifactId>
-			<scope>provided</scope>
+		    <groupId>org.crazycake</groupId>
+		    <artifactId>shiro-redis</artifactId>
+		    <version>${shiro-redis.version}</version>
+		    <scope>provided</scope>
+		    <exclusions>
+		    	<exclusion>
+		    		<groupId>org.apache.shiro</groupId>
+		    		<artifactId>shiro-core</artifactId>
+		    	</exclusion>
+		    </exclusions>
 		</dependency>
-		<!-- FreeMarker是一个用Java语言编写的模板引擎，它基于模板来生成文本输出 -->
+		<!-- https://mvnrepository.com/artifact/com.github.streamone/shiro-redisson -->
 		<dependency>
-			<groupId>org.freemarker</groupId>
-			<artifactId>freemarker</artifactId>
-			<scope>provided</scope>
+		    <groupId>com.github.streamone</groupId>
+		    <artifactId>shiro-redisson</artifactId>
+		    <version>${shiro-redisson.version}</version>
+		    <scope>provided</scope>
+		    <exclusions>
+		    	<exclusion>
+		    		<groupId>org.apache.shiro</groupId>
+		    		<artifactId>shiro-core</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+		    		<groupId>org.apache.shiro</groupId>
+		    		<artifactId>shiro-web</artifactId>
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.redisson/redisson -->
+		<dependency>
+		    <groupId>org.redisson</groupId>
+		    <artifactId>redisson</artifactId>
+		    <version>${redisson.version}</version>
+		    <scope>provided</scope>
 		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/com.github.vindell/spring-boot-starter-kaptcha -->
