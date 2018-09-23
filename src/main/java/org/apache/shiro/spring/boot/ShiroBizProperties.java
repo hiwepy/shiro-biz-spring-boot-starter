@@ -101,7 +101,7 @@ public class ShiroBizProperties {
 	/**
 	 * The request parameter name of the captcha
 	 */
-	private String captchaParam = AbstractTrustableAuthenticatingFilter.DEFAULT_CAPTCHA_PARAM;
+	private String captchaParamName = AbstractTrustableAuthenticatingFilter.DEFAULT_CAPTCHA_PARAM;
 	
 	/**
      * The credentials retry limit, defaults to {@link CredentialsRetryLimitCredentialsMatcher#CREDENTIALS_RETRY_TIMES_LIMIT}.
@@ -397,12 +397,12 @@ public class ShiroBizProperties {
 		this.captchaEnabled = captchaEnabled;
 	}
 
-	public String getCaptchaParam() {
-		return captchaParam;
+	public String getCaptchaParamName() {
+		return captchaParamName;
 	}
 
-	public void setCaptchaParam(String captchaParam) {
-		this.captchaParam = captchaParam;
+	public void setCaptchaParamName(String captchaParamName) {
+		this.captchaParamName = captchaParamName;
 	}
 	
 	public int getCredentialsRetryTimesLimit() {
