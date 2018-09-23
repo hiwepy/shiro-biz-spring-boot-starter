@@ -20,10 +20,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.biz.web.filter.HttpServletSessionControlFilter;
+import org.apache.shiro.biz.web.filter.authc.AbstractTrustableAuthenticatingFilter;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.session.mgt.eis.CachingSessionDAO;
+import org.apache.shiro.web.filter.AccessControlFilter;
+import org.apache.shiro.web.filter.authc.AuthenticationFilter;
+import org.apache.shiro.web.filter.authc.LogoutFilter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(ShiroBizProperties.PREFIX)
@@ -50,19 +56,20 @@ public class ShiroBizProperties {
 	/*
 	 * ============================== Shiro Basic =================================
 	 */
-
 	/**
-	 * Enable Shiro.
+	 * The value of “Access-Control-Allow-Origin”
 	 */
-	private boolean enabled = false;
-
 	private String accessControlAllowOrigin = "*";
-	private String accessControlAllowMethods = "PUT,POST,GET,DELETE,OPTIONS";
-	private String accessControlAllowHeaders = "";
-	
 	/**
-	 * The name of the session cache, defaults to
-	 * {@link CachingSessionDAO#ACTIVE_SESSION_CACHE_NAME}.
+	 * The value of “Access-Control-Allow-Methods”
+	 */
+	private String accessControlAllowMethods = "PUT,POST,GET,DELETE,OPTIONS";
+	/**
+	 * The value of “Access-Control-Allow-Headers”
+	 */
+	private String accessControlAllowHeaders = "";
+	/**
+	 * The name of the session cache, defaults to {@link CachingSessionDAO#ACTIVE_SESSION_CACHE_NAME}.
 	 */
 	private String activeSessionsCacheName = CachingSessionDAO.ACTIVE_SESSION_CACHE_NAME;
 	/**
@@ -70,27 +77,71 @@ public class ShiroBizProperties {
 	 * with individual Subject principals.
 	 */
 	private boolean authorizationCachingEnabled = false;
+	/**
+	 * the name of a authorization {@link Cache} to lookup from any available
+	 */
 	private String authorizationCacheName = "shiro-authorizationCache";
-	
+	/**
+	 * Whether authentication caching should be utilized
+	 */
 	private boolean authenticationCachingEnabled = false;
+	/**
+	 * the name of a authentication {@link Cache} to lookup from any available
+	 */
 	private String authenticationCacheName = "shiro-authenticationCache";
-	/** 是否启用认证授权缓存 */
+	/** 
+	 * Whether to enable the authentication authorization cache 
+	 */
 	private boolean cachingEnabled = false;
-	/** 登录地址：会话不存在时访问的地址 */
-	private String loginUrl = "/login.jsp";
-	/** 重定向地址：会话注销后的重定向地址 */
-	private String redirectUrl = "/";
-	/** 系统主页：登录成功后跳转路径 */
-	private String successUrl;
-	/** 未授权页面：无权限时的跳转路径 */
-	private String unauthorizedUrl;
-	/** 是否启用用户唯一登陆，如果为true则最后一次登陆会踢出前面的Session */
-	private boolean uniqueSessin = false;
-	private boolean userNativeSessionManager = false;
-	/** 异常页面：认证失败时的跳转路径 */
+	/**
+	 * Whether to enable captcha
+	 */
+	private boolean captchaEnabled = false;
+	/**
+	 * The request parameter name of the captcha
+	 */
+	private String captchaParam = AbstractTrustableAuthenticatingFilter.DEFAULT_CAPTCHA_PARAM;
+	/**
+	 * The default permissions for authenticated role
+	 */
+	private Map<String /* role */, String /* permissions */> defaultRolePermissions = new LinkedHashMap<String, String>();;
+	/**
+	 * Enable Shiro Biz.
+	 */
+	private boolean enabled = false;
+	/**
+	 * Failure Url: Jump path when authentication fails
+	 */
 	private String failureUrl;
-	
-	/** Session控制过滤器使用的缓存数据对象名称 */
+	/**
+	 * filter chain
+	 */
+	private Map<String /* pattert */, String /* Chain names */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
+	/**
+     * The login url to used to authenticate a user, used when redirecting users if authentication is required.
+     */
+	private String loginUrl = AccessControlFilter.DEFAULT_LOGIN_URL;
+	/**
+     * Due to browser pre-fetching, using a GET requests for logout my cause a user to be logged accidentally, for example:
+     * out while typing in an address bar.  If <code>postOnlyLogout</code> is <code>true</code>. Only POST requests will cause
+     * a logout to occur.
+     */
+    private boolean postOnlyLogout = false;
+    /**
+     * The URL to where the user will be redirected after logout.
+     */
+	private String redirectUrl = LogoutFilter.DEFAULT_REDIRECT_URL;
+	/**
+	 * The attribute name of Retry Times 
+	 */
+	private String retryTimesKeyAttribute = AbstractTrustableAuthenticatingFilter.DEFAULT_RETRY_TIMES_KEY_ATTRIBUTE_NAME;
+    /** 
+     * Maximum number of retry to login . 
+     */
+	private int retryTimesWhenAccessDenied = 3;
+	/** 
+	 * The data object cache name of session control filter 
+	 */
 	private String sessionControlCacheName = HttpServletSessionControlFilter.DEFAULT_SESSION_CONTROL_CACHE_NAME;
 	/**
 	 * Whether or not the constructed {@code Subject} instance should be allowed to create a session,
@@ -102,20 +153,40 @@ public class ShiroBizProperties {
      * does not yet exist.
      */
     private boolean sessionStorageEnabled = true;
-    /** If Session Stateless */
+    /** 
+     * Whether stateless session
+     */
 	private boolean sessionStateless = false;
-	/** Default main session timeout value, equal to {@code 30} minutes. */
-	private long sessionTimeout = DEFAULT_GLOBAL_SESSION_TIMEOUT;
-	/** Default session validation interval value, equal to {@code 30} seconds. */
-	private long sessionValidationInterval = DEFAULT_SESSION_VALIDATION_INTERVAL;
-	/** 是否开启session定时清理任务 */
-	private boolean sessionValidationSchedulerEnabled = true;
-	
-	private Map<String /* pattert */, String /* Chain names */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
-	/**
-	 * The default permissions for authenticated role
+	/** 
+	 * Default main session timeout value, equal to {@code 30} minutes. 
 	 */
-	private Map<String /* role */, String /* permissions */> defaultRolePermissions = new LinkedHashMap<String, String>();;
+	private long sessionTimeout = DEFAULT_GLOBAL_SESSION_TIMEOUT;
+	/** 
+	 * Default session validation interval value, equal to {@code 30} seconds. 
+	 */
+	private long sessionValidationInterval = DEFAULT_SESSION_VALIDATION_INTERVAL;
+	/** 
+	 * Whether to open the session timer cleaner
+	 */
+	private boolean sessionValidationSchedulerEnabled = true;
+	/** 
+	 * Redirect address after successful login
+	 */
+	private String successUrl = AuthenticationFilter.DEFAULT_SUCCESS_URL;
+	/**
+     * The URL to which users should be redirected if they are denied access to an underlying path or resource,
+     * {@code null} by default which will issue a raw {@link HttpServletResponse#SC_UNAUTHORIZED} response
+     * (401 Unauthorized).
+     */
+    private String unauthorizedUrl;
+	/** 
+	 * Whether to enable user unique login, if true, the last login will kick out the previous Session 
+	 */
+	private boolean uniqueSessin = false;
+	/** 
+	 * Whether use native session manager
+	 */
+	private boolean userNativeSessionManager = false;
 	
 	public ShiroBizProperties() {
 
@@ -123,14 +194,6 @@ public class ShiroBizProperties {
 			filterChainDefinitionMap.put(ingored, "anon");
 		}
 		
-	}
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
 	}
 
 	public String getAccessControlAllowOrigin() {
@@ -172,117 +235,7 @@ public class ShiroBizProperties {
 	public void setAuthorizationCacheName(String authorizationCacheName) {
 		this.authorizationCacheName = authorizationCacheName;
 	}
-
-	public String getLoginUrl() {
-		return loginUrl;
-	}
-
-	public void setLoginUrl(String loginUrl) {
-		this.loginUrl = loginUrl;
-	}
-
-	public String getRedirectUrl() {
-		return redirectUrl;
-	}
-
-	public void setRedirectUrl(String redirectUrl) {
-		this.redirectUrl = redirectUrl;
-	}
-
-	public String getSuccessUrl() {
-		return successUrl;
-	}
-
-	public void setSuccessUrl(String successUrl) {
-		this.successUrl = successUrl;
-	}
-
-	public String getUnauthorizedUrl() {
-		return unauthorizedUrl;
-	}
-
-	public void setUnauthorizedUrl(String unauthorizedUrl) {
-		this.unauthorizedUrl = unauthorizedUrl;
-	}
-
-	public String getFailureUrl() {
-		return failureUrl;
-	}
-
-	public void setFailureUrl(String failureUrl) {
-		this.failureUrl = failureUrl;
-	}
-
-	public String getSessionControlCacheName() {
-		return sessionControlCacheName;
-	}
-
-	public void setSessionControlCacheName(String sessionControlCacheName) {
-		this.sessionControlCacheName = sessionControlCacheName;
-	}
-
-    /**
-     * Returns {@code true} if the constructed {@code Subject} should be allowed to create a session, {@code false}
-     * otherwise.  Shiro's configuration defaults to {@code true} as most applications find value in Sessions.
-     *
-     * @return {@code true} if the constructed {@code Subject} should be allowed to create sessions, {@code false}
-     * otherwise.
-     */
-	public boolean isSessionCreationEnabled(){
-		return sessionCreationEnabled;
-	}
-
-    /**
-     * Sets whether or not the constructed {@code Subject} instance should be allowed to create a session,
-     * {@code false} otherwise.
-     *
-     * @param sessionCreationEnabled whether or not the constructed {@code Subject} instance should be allowed to create a session,
-     * {@code false} otherwise.
-     */
-	public void setSessionCreationEnabled(boolean sessionCreationEnabled) {
-		this.sessionCreationEnabled = sessionCreationEnabled;
-	}
 	
-	public boolean isSessionStorageEnabled() {
-		return sessionStorageEnabled;
-	}
-
-	public void setSessionStorageEnabled(boolean sessionStorageEnabled) {
-		this.sessionStorageEnabled = sessionStorageEnabled;
-	}
-
-	public long getSessionTimeout() {
-		return sessionTimeout;
-	}
-
-	public void setSessionTimeout(long sessionTimeout) {
-		this.sessionTimeout = sessionTimeout;
-	}
-
-	public long getSessionValidationInterval() {
-		return sessionValidationInterval;
-	}
-
-	public void setSessionValidationInterval(long sessionValidationInterval) {
-		this.sessionValidationInterval = sessionValidationInterval;
-	}
-
-	public boolean isSessionValidationSchedulerEnabled() {
-		return sessionValidationSchedulerEnabled;
-	}
-
-	public void setSessionValidationSchedulerEnabled(boolean sessionValidationSchedulerEnabled) {
-		this.sessionValidationSchedulerEnabled = sessionValidationSchedulerEnabled;
-	}
-	
-	public boolean isSessionStateless() {
-		return sessionStateless;
-	}
-
-	public void setSessionStateless(boolean sessionStateless) {
-		this.sessionStateless = sessionStateless;
-	}
-
 	/**
 	 * Returns {@code true} if authorization caching should be utilized if a
 	 * {@link CacheManager} has been
@@ -311,6 +264,44 @@ public class ShiroBizProperties {
 	 */
 	public void setAuthorizationCachingEnabled(boolean authenticationCachingEnabled) {
 		this.authorizationCachingEnabled = authenticationCachingEnabled;
+		if (authenticationCachingEnabled) {
+			setCachingEnabled(true);
+		}
+	}
+
+	/**
+	 * Returns {@code true} if authentication caching should be utilized if a
+	 * {@link CacheManager} has been
+	 * {@link #setCacheManager(org.apache.shiro.cache.CacheManager) configured},
+	 * {@code false} otherwise.
+	 * <p/>
+	 * The default value is {@code true}.
+	 *
+	 * @return {@code true} if authentication caching should be utilized,
+	 *         {@code false} otherwise.
+	 */
+	public boolean isAuthenticationCachingEnabled() {
+		return this.authenticationCachingEnabled && isCachingEnabled();
+	}
+
+	/**
+	 * Sets whether or not authentication caching should be utilized if a
+	 * {@link CacheManager} has been
+	 * {@link #setCacheManager(org.apache.shiro.cache.CacheManager) configured},
+	 * {@code false} otherwise.
+	 * <p/>
+	 * The default value is {@code false} to retain backwards compatibility with
+	 * Shiro 1.1 and earlier.
+	 * <p/>
+	 * <b>WARNING:</b> Only set this property to {@code true} if safe caching
+	 * conditions apply, as documented at the top of this page in the class-level
+	 * JavaDoc.
+	 *
+	 * @param authenticationCachingEnabled
+	 *            the value to set
+	 */
+	public void setAuthenticationCachingEnabled(boolean authenticationCachingEnabled) {
+		this.authenticationCachingEnabled = authenticationCachingEnabled;
 		if (authenticationCachingEnabled) {
 			setCachingEnabled(true);
 		}
@@ -359,44 +350,6 @@ public class ShiroBizProperties {
 	}
 
 	/**
-	 * Returns {@code true} if authentication caching should be utilized if a
-	 * {@link CacheManager} has been
-	 * {@link #setCacheManager(org.apache.shiro.cache.CacheManager) configured},
-	 * {@code false} otherwise.
-	 * <p/>
-	 * The default value is {@code true}.
-	 *
-	 * @return {@code true} if authentication caching should be utilized,
-	 *         {@code false} otherwise.
-	 */
-	public boolean isAuthenticationCachingEnabled() {
-		return this.authenticationCachingEnabled && isCachingEnabled();
-	}
-
-	/**
-	 * Sets whether or not authentication caching should be utilized if a
-	 * {@link CacheManager} has been
-	 * {@link #setCacheManager(org.apache.shiro.cache.CacheManager) configured},
-	 * {@code false} otherwise.
-	 * <p/>
-	 * The default value is {@code false} to retain backwards compatibility with
-	 * Shiro 1.1 and earlier.
-	 * <p/>
-	 * <b>WARNING:</b> Only set this property to {@code true} if safe caching
-	 * conditions apply, as documented at the top of this page in the class-level
-	 * JavaDoc.
-	 *
-	 * @param authenticationCachingEnabled
-	 *            the value to set
-	 */
-	public void setAuthenticationCachingEnabled(boolean authenticationCachingEnabled) {
-		this.authenticationCachingEnabled = authenticationCachingEnabled;
-		if (authenticationCachingEnabled) {
-			setCachingEnabled(true);
-		}
-	}
-
-	/**
 	 * Returns {@code true} if caching should be used if a {@link CacheManager} has
 	 * been {@link #setCacheManager(org.apache.shiro.cache.CacheManager)
 	 * configured}, {@code false} otherwise.
@@ -424,6 +377,241 @@ public class ShiroBizProperties {
 	public void setCachingEnabled(boolean cachingEnabled) {
 		this.cachingEnabled = cachingEnabled;
 	}
+	
+	public boolean isCaptchaEnabled() {
+		return captchaEnabled;
+	}
+
+	public void setCaptchaEnabled(boolean captchaEnabled) {
+		this.captchaEnabled = captchaEnabled;
+	}
+
+	public String getCaptchaParam() {
+		return captchaParam;
+	}
+
+	public void setCaptchaParam(String captchaParam) {
+		this.captchaParam = captchaParam;
+	}
+
+	public Map<String, String> getDefaultRolePermissions() {
+		return defaultRolePermissions;
+	}
+
+	public void setDefaultRolePermissions(Map<String, String> defaultRolePermissions) {
+		this.defaultRolePermissions = defaultRolePermissions;
+	}
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+	
+	public String getFailureUrl() {
+		return failureUrl;
+	}
+
+	public void setFailureUrl(String failureUrl) {
+		this.failureUrl = failureUrl;
+	}
+	
+	public Map<String, String> getFilterChainDefinitionMap() {
+		return filterChainDefinitionMap;
+	}
+
+	public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
+		this.filterChainDefinitionMap = filterChainDefinitionMap;
+	}
+	
+	/**
+     * Returns the login URL used to authenticate a user.
+     * <p/>
+     * Most Shiro filters use this url
+     * as the location to redirect a user when the filter requires authentication.  Unless overridden, the
+     * {@link #DEFAULT_LOGIN_URL DEFAULT_LOGIN_URL} is assumed, which can be overridden via
+     * {@link #setLoginUrl(String) setLoginUrl}.
+     *
+     * @return the login URL used to authenticate a user, used when redirecting users if authentication is required.
+     */
+    public String getLoginUrl() {
+        return loginUrl;
+    }
+
+    /**
+     * Sets the login URL used to authenticate a user.
+     * <p/>
+     * Most Shiro filters use this url as the location to redirect a user when the filter requires
+     * authentication.  Unless overridden, the {@link #DEFAULT_LOGIN_URL DEFAULT_LOGIN_URL} is assumed.
+     *
+     * @param loginUrl the login URL used to authenticate a user, used when redirecting users if authentication is required.
+     */
+    public void setLoginUrl(String loginUrl) {
+        this.loginUrl = loginUrl;
+    }
+	
+	public boolean isPostOnlyLogout() {
+		return postOnlyLogout;
+	}
+
+	public void setPostOnlyLogout(boolean postOnlyLogout) {
+		this.postOnlyLogout = postOnlyLogout;
+	}
+
+	public String getRedirectUrl() {
+		return redirectUrl;
+	}
+
+	public void setRedirectUrl(String redirectUrl) {
+		this.redirectUrl = redirectUrl;
+	}
+
+	public String getRetryTimesKeyAttribute() {
+		return retryTimesKeyAttribute;
+	}
+
+	public void setRetryTimesKeyAttribute(String retryTimesKeyAttribute) {
+		this.retryTimesKeyAttribute = retryTimesKeyAttribute;
+	}
+
+	public int getRetryTimesWhenAccessDenied() {
+		return retryTimesWhenAccessDenied;
+	}
+
+	public void setRetryTimesWhenAccessDenied(int retryTimesWhenAccessDenied) {
+		this.retryTimesWhenAccessDenied = retryTimesWhenAccessDenied;
+	}
+
+	public String getSessionControlCacheName() {
+		return sessionControlCacheName;
+	}
+
+	public void setSessionControlCacheName(String sessionControlCacheName) {
+		this.sessionControlCacheName = sessionControlCacheName;
+	}
+
+	/**
+     * Returns {@code true} if the constructed {@code Subject} should be allowed to create a session, {@code false}
+     * otherwise.  Shiro's configuration defaults to {@code true} as most applications find value in Sessions.
+     *
+     * @return {@code true} if the constructed {@code Subject} should be allowed to create sessions, {@code false}
+     * otherwise.
+     */
+	public boolean isSessionCreationEnabled(){
+		return sessionCreationEnabled;
+	}
+
+    /**
+     * Sets whether or not the constructed {@code Subject} instance should be allowed to create a session,
+     * {@code false} otherwise.
+     *
+     * @param sessionCreationEnabled whether or not the constructed {@code Subject} instance should be allowed to create a session,
+     * {@code false} otherwise.
+     */
+	public void setSessionCreationEnabled(boolean sessionCreationEnabled) {
+		this.sessionCreationEnabled = sessionCreationEnabled;
+	}
+	
+	public boolean isSessionStorageEnabled() {
+		return sessionStorageEnabled;
+	}
+
+	public void setSessionStorageEnabled(boolean sessionStorageEnabled) {
+		this.sessionStorageEnabled = sessionStorageEnabled;
+	}
+	
+	public boolean isSessionStateless() {
+		return sessionStateless;
+	}
+
+	public void setSessionStateless(boolean sessionStateless) {
+		this.sessionStateless = sessionStateless;
+	}
+
+	public long getSessionTimeout() {
+		return sessionTimeout;
+	}
+
+	public void setSessionTimeout(long sessionTimeout) {
+		this.sessionTimeout = sessionTimeout;
+	}
+
+	public long getSessionValidationInterval() {
+		return sessionValidationInterval;
+	}
+
+	public void setSessionValidationInterval(long sessionValidationInterval) {
+		this.sessionValidationInterval = sessionValidationInterval;
+	}
+
+	public boolean isSessionValidationSchedulerEnabled() {
+		return sessionValidationSchedulerEnabled;
+	}
+
+	public void setSessionValidationSchedulerEnabled(boolean sessionValidationSchedulerEnabled) {
+		this.sessionValidationSchedulerEnabled = sessionValidationSchedulerEnabled;
+	}
+	
+	/**
+     * Returns the success url to use as the default location a user is sent after logging in.  Typically a redirect
+     * after login will redirect to the originally request URL; this property is provided mainly as a fallback in case
+     * the original request URL is not available or not specified.
+     * <p/>
+     * The default value is {@link #DEFAULT_SUCCESS_URL}.
+     *
+     * @return the success url to use as the default location a user is sent after logging in.
+     */
+    public String getSuccessUrl() {
+        return successUrl;
+    }
+
+    /**
+     * Sets the default/fallback success url to use as the default location a user is sent after logging in.  Typically
+     * a redirect after login will redirect to the originally request URL; this property is provided mainly as a
+     * fallback in case the original request URL is not available or not specified.
+     * <p/>
+     * The default value is {@link #DEFAULT_SUCCESS_URL}.
+     *
+     * @param successUrl the success URL to redirect the user to after a successful login.
+     */
+    public void setSuccessUrl(String successUrl) {
+        this.successUrl = successUrl;
+    }
+
+    /**
+     * Returns the URL to which users should be redirected if they are denied access to an underlying path or resource,
+     * or {@code null} if a raw {@link HttpServletResponse#SC_UNAUTHORIZED} response should be issued (401 Unauthorized).
+     * <p/>
+     * The default is {@code null}, ensuring default web server behavior.  Override this default by calling the
+     * {@link #setUnauthorizedUrl(String) setUnauthorizedUrl} method with a meaningful path within your application
+     * if you would like to show the user a 'nice' page in the event of unauthorized access.
+     *
+     * @return the URL to which users should be redirected if they are denied access to an underlying path or resource,
+     *         or {@code null} if a raw {@link HttpServletResponse#SC_UNAUTHORIZED} response should be issued (401 Unauthorized).
+     */
+    public String getUnauthorizedUrl() {
+        return unauthorizedUrl;
+    }
+
+    /**
+     * Sets the URL to which users should be redirected if they are denied access to an underlying path or resource.
+     * <p/>
+     * If the value is {@code null} a raw {@link HttpServletResponse#SC_UNAUTHORIZED} response will
+     * be issued (401 Unauthorized), retaining default web server behavior.
+     * <p/>
+     * Unless overridden by calling this method, the default value is {@code null}.  If desired, you can specify a
+     * meaningful path within your application if you would like to show the user a 'nice' page in the event of
+     * unauthorized access.
+     *
+     * @param unauthorizedUrl the URL to which users should be redirected if they are denied access to an underlying
+     *                        path or resource, or {@code null} to a ensure raw {@link HttpServletResponse#SC_UNAUTHORIZED} response is
+     *                        issued (401 Unauthorized).
+     */
+    public void setUnauthorizedUrl(String unauthorizedUrl) {
+        this.unauthorizedUrl = unauthorizedUrl;
+    }
 
 	public boolean isUniqueSessin() {
 		return uniqueSessin;
@@ -440,23 +628,5 @@ public class ShiroBizProperties {
 	public void setUserNativeSessionManager(boolean userNativeSessionManager) {
 		this.userNativeSessionManager = userNativeSessionManager;
 	}
-
-	public Map<String, String> getFilterChainDefinitionMap() {
-		return filterChainDefinitionMap;
-	}
-
-	public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
-		this.filterChainDefinitionMap = filterChainDefinitionMap;
-	}
-	
-	public Map<String, String> getDefaultRolePermissions() {
-		return defaultRolePermissions;
-	}
-
-	public void setDefaultRolePermissions(Map<String, String> defaultRolePermissions) {
-		this.defaultRolePermissions = defaultRolePermissions;
-	}
-	
-	
 	
 }

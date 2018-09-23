@@ -234,12 +234,13 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		FilterRegistrationBean<BizLogoutFilter> registration = new FilterRegistrationBean<BizLogoutFilter>(); 
 		BizLogoutFilter logoutFilter = new BizLogoutFilter();
 		
-		//登录注销后的重定向地址：直接进入登录页面
-		logoutFilter.setRedirectUrl(bizProperties.getRedirectUrl());
-		registration.setFilter(logoutFilter);
 		//注销监听：实现该接口可监听账号注销失败和成功的状态，从而做业务系统自己的事情，比如记录日志
 		logoutFilter.setLogoutListeners(logoutListeners);
-	    
+		logoutFilter.setPostOnlyLogout(bizProperties.isPostOnlyLogout());
+		//登录注销后的重定向地址：直接进入登录页面
+		logoutFilter.setRedirectUrl(bizProperties.getRedirectUrl());
+		
+		registration.setFilter(logoutFilter);
 	    registration.setEnabled(false); 
 	    return registration;
 	}
