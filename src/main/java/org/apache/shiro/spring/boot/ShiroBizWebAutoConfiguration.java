@@ -63,7 +63,8 @@ import org.springframework.util.ObjectUtils;
 import com.google.common.collect.Lists;
 
 @Configuration
-@AutoConfigureBefore(name = { "org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguration" // shiro-spring-boot-web-starter
+@AutoConfigureBefore(name = { 
+	"org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguration" // shiro-spring-boot-web-starter
 })
 @ConditionalOnWebApplication
 @ConditionalOnProperty(prefix = ShiroBizProperties.PREFIX, value = "enabled", havingValue = "true")
@@ -173,7 +174,7 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 	
 	@Bean
 	@ConditionalOnMissingBean
-	public RolePermissionResolver rolePermissionResolver() {
+	public RolePermissionResolver rolePermissionResolver(ShiroBizProperties bizProperties) {
 		DefaultRolePermissionResolver permissionResolver = new DefaultRolePermissionResolver();
 		permissionResolver.setDefaultRolePermissions(bizProperties.getDefaultRolePermissions());
 		return permissionResolver; 
