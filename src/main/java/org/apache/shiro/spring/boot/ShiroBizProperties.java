@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.biz.authc.credential.CredentialsRetryLimitCredentialsMatcher;
 import org.apache.shiro.biz.web.filter.HttpServletSessionControlFilter;
 import org.apache.shiro.biz.web.filter.authc.AbstractTrustableAuthenticatingFilter;
 import org.apache.shiro.cache.Cache;
@@ -101,6 +102,16 @@ public class ShiroBizProperties {
 	 * The request parameter name of the captcha
 	 */
 	private String captchaParam = AbstractTrustableAuthenticatingFilter.DEFAULT_CAPTCHA_PARAM;
+	
+	/**
+     * The credentials retry limit, defaults to {@link CredentialsRetryLimitCredentialsMatcher#CREDENTIALS_RETRY_TIMES_LIMIT}.
+     */
+	protected int credentialsRetryTimesLimit = CredentialsRetryLimitCredentialsMatcher.CREDENTIALS_RETRY_TIMES_LIMIT;
+	 /**
+     * The name of the retry times, defaults to {@link CredentialsRetryLimitCredentialsMatcher#CREDENTIALS_RETRY_CACHE_NAME}.
+     */
+	protected String credentialsRetryCacheName = CredentialsRetryLimitCredentialsMatcher.CREDENTIALS_RETRY_CACHE_NAME;
+	
 	/**
 	 * The default permissions for authenticated role
 	 */
@@ -392,6 +403,22 @@ public class ShiroBizProperties {
 
 	public void setCaptchaParam(String captchaParam) {
 		this.captchaParam = captchaParam;
+	}
+	
+	public int getCredentialsRetryTimesLimit() {
+		return credentialsRetryTimesLimit;
+	}
+
+	public void setCredentialsRetryTimesLimit(int credentialsRetryTimesLimit) {
+		this.credentialsRetryTimesLimit = credentialsRetryTimesLimit;
+	}
+
+	public String getCredentialsRetryCacheName() {
+		return credentialsRetryCacheName;
+	}
+
+	public void setCredentialsRetryCacheName(String credentialsRetryCacheName) {
+		this.credentialsRetryCacheName = credentialsRetryCacheName;
 	}
 
 	public Map<String, String> getDefaultRolePermissions() {
