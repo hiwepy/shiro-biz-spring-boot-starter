@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 import org.apache.commons.collections.MapUtils;
 import org.apache.shiro.authc.AuthenticationListener;
 import org.apache.shiro.authc.Authenticator;
+import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.authz.permission.RolePermissionResolver;
@@ -175,6 +177,12 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 		DefaultRolePermissionResolver permissionResolver = new DefaultRolePermissionResolver();
 		permissionResolver.setDefaultRolePermissions(bizProperties.getDefaultRolePermissions());
 		return permissionResolver; 
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	public CredentialsMatcher credentialsMatcher() {
+		return new AllowAllCredentialsMatcher();
 	}
 	
 	@Bean
