@@ -21,6 +21,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.redisson.spring.cache.CacheConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * Redisson 配置
+ * @author <a href="https://github.com/vindell">vindell</a>
+ */
 @ConfigurationProperties(ShiroRedissonCacheProperties.PREFIX)
 public class ShiroRedissonCacheProperties {
 

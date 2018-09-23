@@ -17,14 +17,12 @@ package org.apache.shiro.spring.boot.cache;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import com.hazelcast.config.Config;
-
 /**
- * Hazelcast 配置
+ * EhCache3 配置
  * @author <a href="https://github.com/vindell">vindell</a>
  */
 @ConfigurationProperties(ShiroEhCache3CacheProperties.PREFIX)
-public class ShiroEhCache3CacheProperties extends Config {
+public class ShiroEhCache3CacheProperties {
 
 	public static final String PREFIX = "shiro.cache.ehcache3";
 	
