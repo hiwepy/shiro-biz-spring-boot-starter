@@ -165,6 +165,20 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 	
 	@Bean
 	@ConditionalOnMissingBean
+	public PermissionResolver permissionResolver() {
+		return new BitAndWildPermissionResolver();
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	public RolePermissionResolver rolePermissionResolver() {
+		DefaultRolePermissionResolver permissionResolver = new DefaultRolePermissionResolver();
+		permissionResolver.setDefaultRolePermissions(bizProperties.getDefaultRolePermissions());
+		return permissionResolver; 
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean
 	@Override
 	protected Authenticator authenticator() {
 		ModularRealmAuthenticator authenticator = new DefaultModularRealmAuthenticator();
@@ -172,7 +186,7 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 		authenticator.setAuthenticationListeners(authenticationListeners());
 		return authenticator;
 	}
-	
+    
 	@Bean
 	@ConditionalOnMissingBean
 	protected SessionIdGenerator sessionIdGenerator() {
@@ -219,7 +233,7 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 	protected SessionFactory sessionFactory() {
 		return new SimpleOnlineSessionFactory();
 	}
-
+	
 	@Bean
 	@ConditionalOnMissingBean
 	@Override
@@ -250,20 +264,6 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 		return sessionManager;
 	}
 
-	@Bean
-	@ConditionalOnMissingBean
-	public PermissionResolver permissionResolver() {
-		return new BitAndWildPermissionResolver();
-	}
-	
-	@Bean
-	@ConditionalOnMissingBean
-	public RolePermissionResolver permissionRoleResolver() {
-		DefaultRolePermissionResolver permissionResolver = new DefaultRolePermissionResolver();
-		permissionResolver.setDefaultRolePermissions(bizProperties.getDefaultRolePermissions());
-		return permissionResolver; 
-	}
-	
 	@Bean
 	@ConditionalOnMissingBean
 	@Override
