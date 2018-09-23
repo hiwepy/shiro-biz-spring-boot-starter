@@ -23,7 +23,7 @@ import org.apache.shiro.biz.session.mgt.SimpleOnlineSessionFactory;
 import org.apache.shiro.biz.session.mgt.eis.SequenceSessionIdGenerator;
 import org.apache.shiro.biz.web.filter.authc.listener.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
-import org.apache.shiro.biz.web.mgt.SessionDisableSubjectFactory;
+import org.apache.shiro.biz.web.mgt.SessionCreationEnabledSubjectFactory;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SessionStorageEvaluator;
@@ -298,7 +298,7 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 	@ConditionalOnMissingBean
 	@Override
 	protected SubjectFactory subjectFactory() {
-		return new SessionDisableSubjectFactory(bizProperties.isSessionCreationEnabled());
+		return new SessionCreationEnabledSubjectFactory(bizProperties.isSessionCreationEnabled());
 	}
 
 	/**
