@@ -1,10 +1,13 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.apache.shiro.spring.boot.cache.ShiroEhCacheConfiguration,\
+org.apache.shiro.spring.boot.cache.ShiroEhCache2CacheConfiguration,\
+org.apache.shiro.spring.boot.cache.ShiroEhCache3CacheConfiguration,\
 org.apache.shiro.spring.boot.cache.ShiroHazelcastCacheConfiguration,\
-org.apache.shiro.spring.boot.cache.ShiroJ2CacheConfiguration,\
+org.apache.shiro.spring.boot.cache.ShiroJ2CacheCacheConfiguration,\
 org.apache.shiro.spring.boot.cache.ShiroMemoryCacheConfiguration,\
 org.apache.shiro.spring.boot.cache.ShiroRedisCacheConfiguration,\
+org.apache.shiro.spring.boot.cache.ShiroRedissonCacheConfiguration,\
+org.apache.shiro.spring.boot.cache.ShiroSpringCacheConfiguration,\
 org.apache.shiro.spring.boot.ShiroBizAnnotationProcessorAutoConfiguration,\
 org.apache.shiro.spring.boot.ShiroBizWebAutoConfiguration,\
 org.apache.shiro.spring.boot.ShiroBizWebFilterConfiguration

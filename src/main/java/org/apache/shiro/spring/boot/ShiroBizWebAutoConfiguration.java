@@ -10,7 +10,11 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.shiro.authc.AuthenticationListener;
 import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
+import org.apache.shiro.authz.permission.PermissionResolver;
+import org.apache.shiro.authz.permission.RolePermissionResolver;
 import org.apache.shiro.biz.authc.pam.DefaultModularRealmAuthenticator;
+import org.apache.shiro.biz.authz.permission.BitAndWildPermissionResolver;
+import org.apache.shiro.biz.authz.permission.DefaultRolePermissionResolver;
 import org.apache.shiro.biz.realm.PrincipalRealmListener;
 import org.apache.shiro.biz.session.DefaultSessionListener;
 import org.apache.shiro.biz.session.mgt.SimpleOnlineSessionFactory;
@@ -246,6 +250,20 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 		return sessionManager;
 	}
 
+	@Bean
+	@ConditionalOnMissingBean
+	public PermissionResolver permissionResolver() {
+		return new BitAndWildPermissionResolver();
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	public RolePermissionResolver permissionRoleResolver() {
+		DefaultRolePermissionResolver permissionResolver = new DefaultRolePermissionResolver();
+		permissionResolver.setDefaultRolePermissions(bizProperties.getDefaultRolePermissions());
+		return permissionResolver; 
+	}
+	
 	@Bean
 	@ConditionalOnMissingBean
 	@Override

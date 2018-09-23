@@ -112,7 +112,11 @@ public class ShiroBizProperties {
 	private boolean sessionValidationSchedulerEnabled = true;
 	
 	private Map<String /* pattert */, String /* Chain names */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
-
+	/**
+	 * The default permissions for authenticated role
+	 */
+	private Map<String /* role */, String /* permissions */> defaultRolePermissions = new LinkedHashMap<String, String>();;
+	
 	public ShiroBizProperties() {
 
 		for (String ingored : DEFAULT_IGNORED) {
@@ -279,14 +283,6 @@ public class ShiroBizProperties {
 		this.sessionStateless = sessionStateless;
 	}
 
-	public Map<String, String> getFilterChainDefinitionMap() {
-		return filterChainDefinitionMap;
-	}
-
-	public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
-		this.filterChainDefinitionMap = filterChainDefinitionMap;
-	}
-
 	/**
 	 * Returns {@code true} if authorization caching should be utilized if a
 	 * {@link CacheManager} has been
@@ -444,5 +440,23 @@ public class ShiroBizProperties {
 	public void setUserNativeSessionManager(boolean userNativeSessionManager) {
 		this.userNativeSessionManager = userNativeSessionManager;
 	}
+
+	public Map<String, String> getFilterChainDefinitionMap() {
+		return filterChainDefinitionMap;
+	}
+
+	public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
+		this.filterChainDefinitionMap = filterChainDefinitionMap;
+	}
+	
+	public Map<String, String> getDefaultRolePermissions() {
+		return defaultRolePermissions;
+	}
+
+	public void setDefaultRolePermissions(Map<String, String> defaultRolePermissions) {
+		this.defaultRolePermissions = defaultRolePermissions;
+	}
+	
+	
 	
 }

@@ -34,7 +34,7 @@ import net.oschina.j2cache.CacheChannel;
 @AutoConfigureBefore(ShiroWebAutoConfiguration.class)
 @ConditionalOnClass(net.oschina.j2cache.CacheChannel.class)
 @ConditionalOnProperty(prefix = ShiroCacheProperties.PREFIX, value = "type", havingValue = "j2cache")
-public class ShiroJ2CacheConfiguration {
+public class ShiroJ2CacheCacheConfiguration {
 
 	@Bean
 	public CacheManager shiroCacheManager(@Autowired(required = false) CacheChannel channel) {
