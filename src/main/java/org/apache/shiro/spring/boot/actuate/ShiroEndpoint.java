@@ -61,6 +61,8 @@ public class ShiroEndpoint {
 	    		if(session instanceof SimpleOnlineSession) {
 	    			SimpleOnlineSession onlineSession = (SimpleOnlineSession) session;
 	    			sessionDesc.setStatus(onlineSession.getStatus().getInfo());
+	    			sessionDesc.setUserAgent(onlineSession.getUserAgent());
+	    			sessionDesc.setSystemHost(onlineSession.getSystemHost());
 	    		}
 	    		if(Boolean.TRUE.equals(session.getAttribute(Constants.SESSION_FORCE_LOGOUT_KEY))) {
 	    			sessionDesc.setStatus(OnlineStatus.force_logout.getInfo());
@@ -133,6 +135,8 @@ public class ShiroEndpoint {
 		private long timeout;
 		/** 用户浏览器类型 */
 		protected String userAgent;
+		/** 用户登录时系统IP */
+		protected String systemHost;
 		/** 在线状态 */
 		protected String status;
 		/** 已强制退出:1:是，0:否 */
@@ -212,6 +216,14 @@ public class ShiroEndpoint {
 
 		public void setUserAgent(String userAgent) {
 			this.userAgent = userAgent;
+		}
+		
+		public String getSystemHost() {
+			return systemHost;
+		}
+
+		public void setSystemHost(String systemHost) {
+			this.systemHost = systemHost;
 		}
 
 		public String getStatus() {
