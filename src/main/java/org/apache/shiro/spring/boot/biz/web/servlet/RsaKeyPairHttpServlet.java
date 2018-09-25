@@ -1,8 +1,11 @@
-package org.apache.shiro.spring.boot.biz.servlet;
+package org.apache.shiro.spring.boot.biz.web.servlet;
 import org.apache.shiro.biz.web.servlet.AuthenticatingHttpServlet;
 
 
-/*******RSA登录工具**********/
+/**
+ * RSA登录工具
+ * @author 		： <a href="https://github.com/vindell">vindell</a>
+ */
 public class RsaKeyPairHttpServlet extends AuthenticatingHttpServlet {
 
 	private static final String PRIVATE_KEY_ATTRIBUTE_NAME = "privateKey";

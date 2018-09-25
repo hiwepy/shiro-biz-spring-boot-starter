@@ -58,18 +58,6 @@ public class ShiroBizProperties {
 	 * ============================== Shiro Basic =================================
 	 */
 	/**
-	 * The value of “Access-Control-Allow-Origin”
-	 */
-	private String accessControlAllowOrigin = "*";
-	/**
-	 * The value of “Access-Control-Allow-Methods”
-	 */
-	private String accessControlAllowMethods = "PUT,POST,GET,DELETE,OPTIONS";
-	/**
-	 * The value of “Access-Control-Allow-Headers”
-	 */
-	private String accessControlAllowHeaders = "";
-	/**
 	 * The name of the session cache, defaults to {@link CachingSessionDAO#ACTIVE_SESSION_CACHE_NAME}.
 	 */
 	private String activeSessionsCacheName = CachingSessionDAO.ACTIVE_SESSION_CACHE_NAME;
@@ -205,30 +193,6 @@ public class ShiroBizProperties {
 			filterChainDefinitionMap.put(ingored, "anon");
 		}
 		
-	}
-
-	public String getAccessControlAllowOrigin() {
-		return accessControlAllowOrigin;
-	}
-
-	public void setAccessControlAllowOrigin(String accessControlAllowOrigin) {
-		this.accessControlAllowOrigin = accessControlAllowOrigin;
-	}
-
-	public String getAccessControlAllowMethods() {
-		return accessControlAllowMethods;
-	}
-
-	public void setAccessControlAllowMethods(String accessControlAllowMethods) {
-		this.accessControlAllowMethods = accessControlAllowMethods;
-	}
-
-	public String getAccessControlAllowHeaders() {
-		return accessControlAllowHeaders;
-	}
-
-	public void setAccessControlAllowHeaders(String accessControlAllowHeaders) {
-		this.accessControlAllowHeaders = accessControlAllowHeaders;
 	}
 
 	public String getActiveSessionsCacheName() {

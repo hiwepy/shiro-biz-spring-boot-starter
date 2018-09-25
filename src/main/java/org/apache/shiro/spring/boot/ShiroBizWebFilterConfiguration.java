@@ -2,12 +2,22 @@ package org.apache.shiro.spring.boot;
 
 import java.util.List;
 
+import org.apache.shiro.biz.authz.principal.ShiroPrincipal;
+import org.apache.shiro.biz.utils.StringUtils;
 import org.apache.shiro.biz.web.filter.HttpServletRequestCrosFilter;
+import org.apache.shiro.biz.web.filter.HttpServletRequestHeaderFilter;
+import org.apache.shiro.biz.web.filter.HttpServletRequestMethodFilter;
+import org.apache.shiro.biz.web.filter.HttpServletRequestOptionsFilter;
+import org.apache.shiro.biz.web.filter.HttpServletRequestReferrerFilter;
 import org.apache.shiro.biz.web.filter.HttpServletSessionControlFilter;
 import org.apache.shiro.biz.web.filter.HttpServletSessionExpiredFilter;
+import org.apache.shiro.biz.web.filter.HttpServletSessionOnlineFilter;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
 import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.spring.boot.biz.ShiroBizFilterFactoryBean;
+import org.apache.shiro.spring.boot.biz.ShiroHttpServletHeaderProperties;
+import org.apache.shiro.spring.boot.biz.ShiroHttpServletReferrerProperties;
 import org.apache.shiro.spring.boot.biz.authc.BizLogoutFilter;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.AbstractShiroWebFilterConfiguration;
@@ -216,7 +226,7 @@ import org.springframework.core.Ordered;
 })
 @ConditionalOnWebApplication
 @ConditionalOnProperty(prefix = ShiroBizProperties.PREFIX, value = "enabled", havingValue = "true")
-@EnableConfigurationProperties({ ShiroBizProperties.class })
+@EnableConfigurationProperties({ ShiroBizProperties.class, ShiroHttpServletHeaderProperties.class, ShiroHttpServletReferrerProperties.class })
 public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfiguration {
 
 	@Autowired
@@ -250,16 +260,85 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	 */
 	@Bean("cros")
 	@ConditionalOnMissingBean(name = "cros")
-	public FilterRegistrationBean<HttpServletRequestCrosFilter> crosFilter(){
+	public FilterRegistrationBean<HttpServletRequestCrosFilter> crosFilter(ShiroHttpServletHeaderProperties properties){
 		
 		FilterRegistrationBean<HttpServletRequestCrosFilter> registration = new FilterRegistrationBean<HttpServletRequestCrosFilter>();
 		
 		HttpServletRequestCrosFilter crosFilter = new HttpServletRequestCrosFilter();
-		crosFilter.setAccessControlAllowHeaders(bizProperties.getAccessControlAllowHeaders());
-		crosFilter.setAccessControlAllowMethods(bizProperties.getAccessControlAllowMethods());
-		crosFilter.setAccessControlAllowOrigin(bizProperties.getAccessControlAllowOrigin());
+		
+		crosFilter.setAccessControlAllowCredentials(properties.isAccessControlAllowCredentials());
+		crosFilter.setAccessControlAllowHeaders(properties.getAccessControlAllowHeaders());
+		crosFilter.setAccessControlAllowMethods(properties.getAccessControlAllowMethods());
+		crosFilter.setAccessControlAllowOrigin(properties.getAccessControlAllowOrigin());
 		
 		registration.setFilter(crosFilter);
+	    registration.setEnabled(false); 
+	    return registration;
+	}
+	
+	@Bean("headers")
+	@ConditionalOnMissingBean(name = "headers")
+	public FilterRegistrationBean<HttpServletRequestHeaderFilter> headerFilter(ShiroHttpServletHeaderProperties properties){
+		
+		FilterRegistrationBean<HttpServletRequestHeaderFilter> registration = new FilterRegistrationBean<HttpServletRequestHeaderFilter>();
+		HttpServletRequestHeaderFilter headFilter = new HttpServletRequestHeaderFilter(properties);
+		registration.setFilter(headFilter);
+	    registration.setEnabled(false); 
+	    return registration;
+	}
+	
+	@Bean("methods")
+	@ConditionalOnMissingBean(name = "methods")
+	public FilterRegistrationBean<HttpServletRequestMethodFilter> methodFilter(ShiroHttpServletHeaderProperties properties){
+		
+		FilterRegistrationBean<HttpServletRequestMethodFilter> registration = new FilterRegistrationBean<HttpServletRequestMethodFilter>();
+		
+		HttpServletRequestMethodFilter methodFilter = new HttpServletRequestMethodFilter();
+		methodFilter.setAllowedHTTPMethods(StringUtils.tokenizeToStringArray(properties.getAccessControlAllowMethods()));
+		
+		registration.setFilter(methodFilter);
+	    registration.setEnabled(false); 
+	    return registration;
+	}
+	
+	@Bean("options")
+	@ConditionalOnMissingBean(name = "options")
+	public FilterRegistrationBean<HttpServletRequestOptionsFilter> optionsFilter(ShiroHttpServletHeaderProperties properties){
+		
+		FilterRegistrationBean<HttpServletRequestOptionsFilter> registration = new FilterRegistrationBean<HttpServletRequestOptionsFilter>();
+		
+		HttpServletRequestOptionsFilter optionsFilter = new HttpServletRequestOptionsFilter();
+		optionsFilter.setXContentTypeOptions(properties.getXContentTypeOptions());
+		optionsFilter.setXFrameOptions(properties.getXFrameOptions());
+		
+		registration.setFilter(optionsFilter);
+	    registration.setEnabled(false); 
+	    return registration;
+	}
+	
+	@Bean("referrers")
+	@ConditionalOnMissingBean(name = "referrers")
+	public FilterRegistrationBean<HttpServletRequestReferrerFilter> referrerFilter(ShiroHttpServletReferrerProperties properties){
+		
+		FilterRegistrationBean<HttpServletRequestReferrerFilter> registration = new FilterRegistrationBean<HttpServletRequestReferrerFilter>();
+		HttpServletRequestReferrerFilter referrerFilter = new HttpServletRequestReferrerFilter(properties);
+		registration.setFilter(referrerFilter);
+	    registration.setEnabled(false); 
+	    return registration;
+	}
+	
+	/**
+	 * 默认的Session在线状态过滤器 ：解决回话被强制登出问题
+	 */
+	@Bean("sessionOnline")
+	@ConditionalOnMissingBean(name = "sessionOnline")
+	public FilterRegistrationBean<HttpServletSessionOnlineFilter> sessionOnlineFilter(SessionDAO sessionDAO){
+		
+		FilterRegistrationBean<HttpServletSessionOnlineFilter> registration = new FilterRegistrationBean<HttpServletSessionOnlineFilter>();
+		HttpServletSessionOnlineFilter sessionOnlineFilter = new HttpServletSessionOnlineFilter();
+		sessionOnlineFilter.setLoginUrl(bizProperties.getLoginUrl());
+		sessionOnlineFilter.setSessionDAO(sessionDAO);
+		registration.setFilter(sessionOnlineFilter);
 	    registration.setEnabled(false); 
 	    return registration;
 	}
@@ -291,10 +370,13 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 
 			@Override
 			protected String getSessionControlCacheKey(Object principal) {
-				return bizProperties.getSessionControlCacheName();
+				ShiroPrincipal sp = (ShiroPrincipal) principal;
+				return sp.getUserid();
 			}
 			
 		};
+		
+		sessionControl.setSessionControlCacheName(bizProperties.getSessionControlCacheName());
 		if(cacheManager != null) {
 			sessionControl.setCacheManager(cacheManager);
 		}
