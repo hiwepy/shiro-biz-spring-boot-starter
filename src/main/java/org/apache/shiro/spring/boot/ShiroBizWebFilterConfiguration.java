@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.shiro.biz.authz.principal.ShiroPrincipal;
 import org.apache.shiro.biz.utils.StringUtils;
 import org.apache.shiro.biz.web.filter.HttpServletRequestCrosFilter;
+import org.apache.shiro.biz.web.filter.HttpServletRequestEscapeHtml4Filter;
 import org.apache.shiro.biz.web.filter.HttpServletRequestHeaderFilter;
 import org.apache.shiro.biz.web.filter.HttpServletRequestMethodFilter;
 import org.apache.shiro.biz.web.filter.HttpServletRequestOptionsFilter;
@@ -272,6 +273,15 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		crosFilter.setAccessControlAllowOrigin(properties.getAccessControlAllowOrigin());
 		
 		registration.setFilter(crosFilter);
+	    registration.setEnabled(false); 
+	    return registration;
+	}
+	
+	@Bean("escapeHtml4")
+	@ConditionalOnMissingBean(name = "escapeHtml4")
+	public FilterRegistrationBean<HttpServletRequestEscapeHtml4Filter> escapeHtml4Filter(){
+		FilterRegistrationBean<HttpServletRequestEscapeHtml4Filter> registration = new FilterRegistrationBean<HttpServletRequestEscapeHtml4Filter>();
+		registration.setFilter(new HttpServletRequestEscapeHtml4Filter());
 	    registration.setEnabled(false); 
 	    return registration;
 	}
