@@ -10,4 +10,5 @@ org.apache.shiro.spring.boot.cache.ShiroRedissonCacheConfiguration,\
 org.apache.shiro.spring.boot.cache.ShiroSpringCacheConfiguration,\
 org.apache.shiro.spring.boot.ShiroBizAnnotationProcessorAutoConfiguration,\
 org.apache.shiro.spring.boot.ShiroBizWebAutoConfiguration,\
-org.apache.shiro.spring.boot.ShiroBizWebFilterConfiguration
+org.apache.shiro.spring.boot.ShiroBizWebFilterConfiguration,\
+org.apache.shiro.spring.boot.actuate.ShiroEndpointAutoConfiguration
