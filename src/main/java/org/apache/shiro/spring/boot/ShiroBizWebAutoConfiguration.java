@@ -17,7 +17,7 @@ import org.apache.shiro.authz.permission.RolePermissionResolver;
 import org.apache.shiro.biz.authc.pam.DefaultModularRealmAuthenticator;
 import org.apache.shiro.biz.authz.permission.BitAndWildPermissionResolver;
 import org.apache.shiro.biz.authz.permission.DefaultRolePermissionResolver;
-import org.apache.shiro.biz.realm.PrincipalRealmListener;
+import org.apache.shiro.biz.realm.AuthorizingRealmListener;
 import org.apache.shiro.biz.session.DefaultSessionListener;
 import org.apache.shiro.biz.session.mgt.SimpleOnlineSessionFactory;
 import org.apache.shiro.biz.session.mgt.eis.SequenceSessionIdGenerator;
@@ -100,14 +100,14 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 	 */
 	@Bean("realmListeners")
 	@ConditionalOnMissingBean(name = "realmListeners")
-	public List<PrincipalRealmListener> realmListeners() {
+	public List<AuthorizingRealmListener> realmListeners() {
 
-		List<PrincipalRealmListener> realmListeners = new ArrayList<PrincipalRealmListener>();
+		List<AuthorizingRealmListener> realmListeners = new ArrayList<AuthorizingRealmListener>();
 
-		Map<String, PrincipalRealmListener> beansOfType = getApplicationContext()
-				.getBeansOfType(PrincipalRealmListener.class);
+		Map<String, AuthorizingRealmListener> beansOfType = getApplicationContext()
+				.getBeansOfType(AuthorizingRealmListener.class);
 		if (!ObjectUtils.isEmpty(beansOfType)) {
-			Iterator<Entry<String, PrincipalRealmListener>> ite = beansOfType.entrySet().iterator();
+			Iterator<Entry<String, AuthorizingRealmListener>> ite = beansOfType.entrySet().iterator();
 			while (ite.hasNext()) {
 				realmListeners.add(ite.next().getValue());
 			}
