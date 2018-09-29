@@ -141,7 +141,7 @@ public class ShiroBizProperties {
 	/** 
 	 * The data object cache name of session control filter 
 	 */
-	private String sessionControlCacheName = HttpServletSessionControlFilter.DEFAULT_SESSION_CONTROL_CACHE_NAME;
+	private String sessionControlCacheName = HttpServletSessionControlFilter.SESSION_CONTROL_CACHE_NAME;
 	/**
 	 * Whether or not the constructed {@code Subject} instance should be allowed to create a session,
      * {@code false} otherwise.
