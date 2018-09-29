@@ -10,12 +10,12 @@ import org.apache.shiro.biz.web.filter.HttpServletRequestHeaderFilter;
 import org.apache.shiro.biz.web.filter.HttpServletRequestMethodFilter;
 import org.apache.shiro.biz.web.filter.HttpServletRequestOptionsFilter;
 import org.apache.shiro.biz.web.filter.HttpServletRequestReferrerFilter;
-import org.apache.shiro.biz.web.filter.HttpServletSessionControlFilter;
+import org.apache.shiro.biz.web.filter.HttpServletSessionDequeFilter;
 import org.apache.shiro.biz.web.filter.HttpServletSessionExpiredFilter;
-import org.apache.shiro.biz.web.filter.HttpServletSessionOnlineFilter;
+import org.apache.shiro.biz.web.filter.HttpServletSessionStatusFilter;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
 import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.session.mgt.eis.SessionDAO;
+import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.boot.biz.ShiroBizFilterFactoryBean;
 import org.apache.shiro.spring.boot.biz.ShiroHttpServletHeaderProperties;
 import org.apache.shiro.spring.boot.biz.ShiroHttpServletReferrerProperties;
@@ -232,8 +232,6 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 
 	@Autowired
 	private ShiroBizProperties bizProperties;
-	@Autowired(required = false)
-    protected CacheManager cacheManager;
 	
 	/**
 	 * 系统登录注销过滤器；默认：org.apache.shiro.spring.boot.cas.filter.CasLogoutFilter
@@ -340,15 +338,49 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	/**
 	 * 默认的Session在线状态过滤器 ：解决回话被强制登出问题
 	 */
-	@Bean("sessionOnline")
-	@ConditionalOnMissingBean(name = "sessionOnline")
-	public FilterRegistrationBean<HttpServletSessionOnlineFilter> sessionOnlineFilter(SessionDAO sessionDAO){
+	@Bean("sessionStatus")
+	@ConditionalOnMissingBean(name = "sessionStatus")
+	public FilterRegistrationBean<HttpServletSessionStatusFilter> sessionOnlineFilter(SessionManager sessionManager){
 		
-		FilterRegistrationBean<HttpServletSessionOnlineFilter> registration = new FilterRegistrationBean<HttpServletSessionOnlineFilter>();
-		HttpServletSessionOnlineFilter sessionOnlineFilter = new HttpServletSessionOnlineFilter();
+		FilterRegistrationBean<HttpServletSessionStatusFilter> registration = new FilterRegistrationBean<HttpServletSessionStatusFilter>();
+		
+		HttpServletSessionStatusFilter sessionOnlineFilter = new HttpServletSessionStatusFilter();
 		sessionOnlineFilter.setLoginUrl(bizProperties.getLoginUrl());
-		sessionOnlineFilter.setSessionDAO(sessionDAO);
+		sessionOnlineFilter.setSessionManager(sessionManager);
+		
 		registration.setFilter(sessionOnlineFilter);
+	    registration.setEnabled(false); 
+	    return registration;
+	}
+	
+	/**
+	 * 默认的Session控制实现，解决唯一登录问题
+	 */
+	@Bean("sessionDeque")
+	@ConditionalOnMissingBean(name = "sessionDeque")
+	public FilterRegistrationBean<HttpServletSessionDequeFilter> sessionDequeFilter(CacheManager cacheManager, SessionManager sessionManager){
+		
+		FilterRegistrationBean<HttpServletSessionDequeFilter> registration = new FilterRegistrationBean<HttpServletSessionDequeFilter>();
+		
+		HttpServletSessionDequeFilter sessionDequeFilter = new HttpServletSessionDequeFilter() {
+
+			@Override
+			protected String getSessionDequeCacheKey(Object principal) {
+				ShiroPrincipal sp = (ShiroPrincipal) principal;
+				return sp.getUserid();
+			}
+			
+		};
+		
+		sessionDequeFilter.setCacheManager(cacheManager);
+		sessionDequeFilter.setKickoutFirst(bizProperties.isKickoutFirst());
+		sessionDequeFilter.setSessionDequeCacheName(bizProperties.getSessionDequeCacheName());
+		sessionDequeFilter.setSessionManager(sessionManager);
+		sessionDequeFilter.setSessionMaximumKickout(bizProperties.getSessionMaximumKickout());
+		sessionDequeFilter.setRedirectUrl(bizProperties.getRedirectUrl());
+		
+		registration.setFilter(sessionDequeFilter);
+		
 	    registration.setEnabled(false); 
 	    return registration;
 	}
@@ -366,36 +398,7 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	    registration.setEnabled(false); 
 	    return registration;
 	}
-	
-	/**
-	 * 默认的Session控制实现，解决唯一登录问题
-	 */
-	@Bean("sessionControl")
-	@ConditionalOnMissingBean(name = "sessionControl")
-	public FilterRegistrationBean<HttpServletSessionControlFilter> sessionControlFilter(){
-		
-		FilterRegistrationBean<HttpServletSessionControlFilter> registration = new FilterRegistrationBean<HttpServletSessionControlFilter>();
-		
-		HttpServletSessionControlFilter sessionControl = new HttpServletSessionControlFilter() {
 
-			@Override
-			protected String getSessionControlCacheKey(Object principal) {
-				ShiroPrincipal sp = (ShiroPrincipal) principal;
-				return sp.getUserid();
-			}
-			
-		};
-		
-		sessionControl.setSessionControlCacheName(bizProperties.getSessionControlCacheName());
-		if(cacheManager != null) {
-			sessionControl.setCacheManager(cacheManager);
-		}
-		
-		registration.setFilter(sessionControl);
-		
-	    registration.setEnabled(false); 
-	    return registration;
-	}
 	
 	@Bean
     @ConditionalOnMissingBean

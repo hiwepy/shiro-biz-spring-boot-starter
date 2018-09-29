@@ -23,7 +23,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.biz.authc.credential.CredentialsRetryLimitCredentialsMatcher;
-import org.apache.shiro.biz.web.filter.HttpServletSessionControlFilter;
+import org.apache.shiro.biz.web.filter.HttpServletSessionDequeFilter;
 import org.apache.shiro.biz.web.filter.authc.AbstractTrustableAuthenticatingFilter;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
@@ -138,15 +138,23 @@ public class ShiroBizProperties {
      * Maximum number of retry to login . 
      */
 	private int retryTimesWhenAccessDenied = 3;
-	/** 
-	 * The data object cache name of session control filter 
-	 */
-	private String sessionControlCacheName = HttpServletSessionControlFilter.SESSION_CONTROL_CACHE_NAME;
 	/**
 	 * Whether or not the constructed {@code Subject} instance should be allowed to create a session,
      * {@code false} otherwise.
 	 */
 	private boolean sessionCreationEnabled = true;
+	/** 
+	 * The data object cache name of session control filter 
+	 */
+	private String sessionDequeCacheName = HttpServletSessionDequeFilter.DEFAULT_SESSION_DEQUE_CACHE_NAME;
+	/** 
+	 * Whether to kickout the first login session. 
+	 */
+    private boolean kickoutFirst = false;
+    /** 
+     * Maximum number of sessions for the same account . 
+     */
+	private int sessionMaximumKickout = 1;
 	/**
      * Global policy determining if Subject sessions may be used to persist Subject state if the Subject's Session
      * does not yet exist.
@@ -475,14 +483,6 @@ public class ShiroBizProperties {
 		this.retryTimesWhenAccessDenied = retryTimesWhenAccessDenied;
 	}
 
-	public String getSessionControlCacheName() {
-		return sessionControlCacheName;
-	}
-
-	public void setSessionControlCacheName(String sessionControlCacheName) {
-		this.sessionControlCacheName = sessionControlCacheName;
-	}
-
 	/**
      * Returns {@code true} if the constructed {@code Subject} should be allowed to create a session, {@code false}
      * otherwise.  Shiro's configuration defaults to {@code true} as most applications find value in Sessions.
@@ -505,6 +505,30 @@ public class ShiroBizProperties {
 		this.sessionCreationEnabled = sessionCreationEnabled;
 	}
 	
+	public String getSessionDequeCacheName() {
+		return sessionDequeCacheName;
+	}
+
+	public void setSessionDequeCacheName(String sessionDequeCacheName) {
+		this.sessionDequeCacheName = sessionDequeCacheName;
+	}
+	
+	public boolean isKickoutFirst() {
+		return kickoutFirst;
+	}
+
+	public void setKickoutFirst(boolean kickoutFirst) {
+		this.kickoutFirst = kickoutFirst;
+	}
+
+	public int getSessionMaximumKickout() {
+		return sessionMaximumKickout;
+	}
+
+	public void setSessionMaximumKickout(int sessionMaximumKickout) {
+		this.sessionMaximumKickout = sessionMaximumKickout;
+	}
+
 	public boolean isSessionStorageEnabled() {
 		return sessionStorageEnabled;
 	}
