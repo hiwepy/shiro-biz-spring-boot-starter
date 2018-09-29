@@ -603,6 +603,10 @@
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-logging</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>io.micrometer</groupId>
+					<artifactId>micrometer-core</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		
