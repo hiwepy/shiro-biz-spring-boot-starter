@@ -40,6 +40,7 @@ import org.apache.shiro.session.mgt.SessionFactory;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.session.mgt.eis.CachingSessionDAO;
 import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
+import org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator;
 import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.session.mgt.eis.SessionIdGenerator;
@@ -198,8 +199,15 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
     
 	@Bean
 	@ConditionalOnMissingBean
+	@Override
+	protected SessionFactory sessionFactory() {
+		return new SimpleOnlineSessionFactory();
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean
 	protected SessionIdGenerator sessionIdGenerator() {
-		return new SequenceSessionIdGenerator();
+		return new JavaUuidSessionIdGenerator();
 	}
 	
 	@Bean
@@ -207,11 +215,11 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 	@Override
 	protected SessionDAO sessionDAO() {
 		// 缓存存在的时候使用外部Session管理器
-		if (cacheManager != null) {
+		if (useNativeSessionManager && bizProperties.isSessionCachingEnabled() && cacheManager != null) {
 			CachingSessionDAO sessionDAO = new EnterpriseCacheSessionDAO();
 			sessionDAO.setCacheManager(cacheManager);
 			sessionDAO.setActiveSessionsCacheName(bizProperties.getActiveSessionsCacheName());
-			sessionDAO.setSessionIdGenerator(new SequenceSessionIdGenerator());
+			sessionDAO.setSessionIdGenerator(sessionIdGenerator());
 			return sessionDAO;
 		}
 		return new MemorySessionDAO();
@@ -234,13 +242,6 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 		// 无状态逻辑情况下不持久化session
 		sessionStorageEvaluator.setSessionStorageEnabled(bizProperties.isSessionStorageEnabled());
 		return sessionStorageEvaluator;
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	@Override
-	protected SessionFactory sessionFactory() {
-		return new SimpleOnlineSessionFactory();
 	}
 	
 	@Bean

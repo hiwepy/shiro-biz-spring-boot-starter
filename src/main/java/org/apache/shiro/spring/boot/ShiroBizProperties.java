@@ -139,6 +139,10 @@ public class ShiroBizProperties {
      */
 	private int retryTimesWhenAccessDenied = 3;
 	/**
+	 * Whether Session caching should be utilized
+	 */
+	private boolean sessionCachingEnabled = false;
+	/**
 	 * Whether or not the constructed {@code Subject} instance should be allowed to create a session,
      * {@code false} otherwise.
 	 */
@@ -481,6 +485,17 @@ public class ShiroBizProperties {
 
 	public void setRetryTimesWhenAccessDenied(int retryTimesWhenAccessDenied) {
 		this.retryTimesWhenAccessDenied = retryTimesWhenAccessDenied;
+	}
+
+	public boolean isSessionCachingEnabled() {
+		return isCachingEnabled() && sessionCachingEnabled;
+	}
+
+	public void setSessionCachingEnabled(boolean sessionCachingEnabled) {
+		this.sessionCachingEnabled = sessionCachingEnabled;
+		if (sessionCachingEnabled) {
+			setCachingEnabled(true);
+		}
 	}
 
 	/**
