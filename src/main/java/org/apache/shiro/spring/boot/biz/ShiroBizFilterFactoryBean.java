@@ -23,7 +23,7 @@ import java.util.Map.Entry;
 import javax.servlet.Filter;
 
 import org.apache.shiro.biz.spring.ShiroFilterProxyFactoryBean;
-import org.apache.shiro.web.filter.AccessControlFilter;
+import org.apache.shiro.web.servlet.AdviceFilter;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
@@ -45,7 +45,7 @@ public class ShiroBizFilterFactoryBean extends ShiroFilterProxyFactoryBean imple
 			Iterator<Entry<String, FilterRegistrationBean>> ite = beansOfType.entrySet().iterator();
 			while (ite.hasNext()) {
 				Entry<String, FilterRegistrationBean> entry = ite.next();
-				if (entry.getValue().getFilter() instanceof AccessControlFilter) {
+				if (entry.getValue().getFilter() instanceof AdviceFilter) {
 					filters.put(entry.getKey(), entry.getValue().getFilter());
 				}
 			}

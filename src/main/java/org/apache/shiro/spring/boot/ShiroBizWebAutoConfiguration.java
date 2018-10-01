@@ -20,7 +20,6 @@ import org.apache.shiro.biz.authz.permission.DefaultRolePermissionResolver;
 import org.apache.shiro.biz.realm.AuthorizingRealmListener;
 import org.apache.shiro.biz.session.DefaultSessionListener;
 import org.apache.shiro.biz.session.mgt.SimpleOnlineSessionFactory;
-import org.apache.shiro.biz.session.mgt.eis.SequenceSessionIdGenerator;
 import org.apache.shiro.biz.web.filter.authc.listener.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
 import org.apache.shiro.biz.web.mgt.SessionCreationEnabledSubjectFactory;
@@ -317,7 +316,6 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 			chainDefinition.addPathDefinitions(pathDefinitions);
 			return chainDefinition;
 		}
-		chainDefinition.addPathDefinition("/logout", "logout");
 		chainDefinition.addPathDefinition("/**", "authc");
 		return chainDefinition;
 	}
