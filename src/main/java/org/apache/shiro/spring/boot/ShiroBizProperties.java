@@ -224,11 +224,9 @@ public class ShiroBizProperties {
 	}
 	
 	/**
-	 * Returns {@code true} if authorization caching should be utilized if a
-	 * {@link CacheManager} has been
-	 * {@link #setCacheManager(org.apache.shiro.cache.CacheManager) configured},
-	 * {@code false} otherwise.
-	 * <p/>
+	 * <p>Returns {@code true} if authorization caching should be utilized if a
+	 * {@link CacheManager} has been configured, {@code false} otherwise.
+	 * </p>
 	 * The default value is {@code true}.
 	 *
 	 * @return {@code true} if authorization caching should be utilized,
@@ -239,11 +237,9 @@ public class ShiroBizProperties {
 	}
 
 	/**
-	 * Sets whether or not authorization caching should be utilized if a
-	 * {@link CacheManager} has been
-	 * {@link #setCacheManager(org.apache.shiro.cache.CacheManager) configured},
-	 * {@code false} otherwise.
-	 * <p/>
+	 * <p>Sets whether or not authorization caching should be utilized if a
+	 * {@link CacheManager} has been configured, {@code false} otherwise.
+	 * </p>
 	 * The default value is {@code true}.
 	 *
 	 * @param authenticationCachingEnabled
@@ -257,11 +253,9 @@ public class ShiroBizProperties {
 	}
 
 	/**
-	 * Returns {@code true} if authentication caching should be utilized if a
-	 * {@link CacheManager} has been
-	 * {@link #setCacheManager(org.apache.shiro.cache.CacheManager) configured},
-	 * {@code false} otherwise.
-	 * <p/>
+	 * <p>Returns {@code true} if authentication caching should be utilized if a
+	 * {@link CacheManager} has been configured, {@code false} otherwise.
+	 * </p>
 	 * The default value is {@code true}.
 	 *
 	 * @return {@code true} if authentication caching should be utilized,
@@ -272,14 +266,12 @@ public class ShiroBizProperties {
 	}
 
 	/**
-	 * Sets whether or not authentication caching should be utilized if a
-	 * {@link CacheManager} has been
-	 * {@link #setCacheManager(org.apache.shiro.cache.CacheManager) configured},
-	 * {@code false} otherwise.
-	 * <p/>
-	 * The default value is {@code false} to retain backwards compatibility with
+	 * <p>Sets whether or not authentication caching should be utilized if a
+	 * {@link CacheManager} has been configured, {@code false} otherwise.
+	 * </p>
+	 * <p>The default value is {@code false} to retain backwards compatibility with
 	 * Shiro 1.1 and earlier.
-	 * <p/>
+	 * </p>
 	 * <b>WARNING:</b> Only set this property to {@code true} if safe caching
 	 * conditions apply, as documented at the top of this page in the class-level
 	 * JavaDoc.
@@ -295,71 +287,52 @@ public class ShiroBizProperties {
 	}
 
 	/**
-	 * Returns the name of a {@link Cache} to lookup from any available
-	 * {@link #getCacheManager() cacheManager} if a cache is not explicitly
-	 * configured via {@link #setAuthenticationCache(org.apache.shiro.cache.Cache)}.
-	 * <p/>
-	 * This name will only be used to look up a cache if authentication caching is
+	 * <p>Returns the name of a {@link Cache} to lookup from any available
+	 * cacheManager if a cache is not explicitly
+	 * configured via org.apache.shiro.cache.Cache.
+	 * </p>
+	 * <p>This name will only be used to look up a cache if authentication caching is
 	 * {@link #isAuthenticationCachingEnabled() enabled}.
-	 * <p/>
+	 * </p>
 	 * <b>WARNING:</b> Only set this property if safe caching conditions apply, as
 	 * documented at the top of this page in the class-level JavaDoc.
 	 *
 	 * @return the name of a {@link Cache} to lookup from any available
-	 *         {@link #getCacheManager() cacheManager} if a cache is not explicitly
+	 *         cacheManager if a cache is not explicitly
 	 *         configured via
-	 *         {@link #setAuthenticationCache(org.apache.shiro.cache.Cache)}.
+	 *         org.apache.shiro.cache.Cache.
 	 * @see #isAuthenticationCachingEnabled()
-	 * @since 1.2
 	 */
 	public String getAuthenticationCacheName() {
 		return this.authenticationCacheName;
 	}
 
 	/**
-	 * Sets the name of a {@link Cache} to lookup from any available
-	 * {@link #getCacheManager() cacheManager} if a cache is not explicitly
-	 * configured via {@link #setAuthenticationCache(org.apache.shiro.cache.Cache)}.
-	 * <p/>
+	 * <p>Sets the name of a {@link Cache} to lookup from any available
+	 * cacheManager if a cache is not explicitly
+	 * configured via org.apache.shiro.cache.Cache.
+	 * </p>
 	 * This name will only be used to look up a cache if authentication caching is
 	 * {@link #isAuthenticationCachingEnabled() enabled}.
 	 *
 	 * @param authenticationCacheName
 	 *            the name of a {@link Cache} to lookup from any available
-	 *            {@link #getCacheManager() cacheManager} if a cache is not
+	 *            cacheManager if a cache is not
 	 *            explicitly configured via
-	 *            {@link #setAuthenticationCache(org.apache.shiro.cache.Cache)}.
+	 *            org.apache.shiro.cache.Cache.
 	 * @see #isAuthenticationCachingEnabled()
-	 * @since 1.2
 	 */
 	public void setAuthenticationCacheName(String authenticationCacheName) {
 		this.authenticationCacheName = authenticationCacheName;
 	}
 
-	/**
-	 * Returns {@code true} if caching should be used if a {@link CacheManager} has
-	 * been {@link #setCacheManager(org.apache.shiro.cache.CacheManager)
-	 * configured}, {@code false} otherwise.
-	 * <p/>
-	 * The default value is {@code true} since the large majority of Realms will
-	 * benefit from caching if a CacheManager has been configured. However,
-	 * memory-only realms should set this value to {@code false} since they would
-	 * manage account data in memory already lookups would already be as efficient
-	 * as possible.
-	 *
-	 * @return {@code true} if caching will be globally enabled if a
-	 *         {@link CacheManager} has been configured, {@code false} otherwise
-	 */
 	public boolean isCachingEnabled() {
 		return cachingEnabled;
 	}
 
 	/**
-	 * Sets whether or not caching should be used if a {@link CacheManager} has been
-	 * {@link #setCacheManager(org.apache.shiro.cache.CacheManager) configured}.
-	 *
-	 * @param cachingEnabled
-	 *            whether or not to globally enable caching for this realm.
+	 * Sets whether or not caching should be used if a {@link CacheManager} has been configured.
+	 * @param cachingEnabled  whether or not to globally enable caching for this realm.
 	 */
 	public void setCachingEnabled(boolean cachingEnabled) {
 		this.cachingEnabled = cachingEnabled;
@@ -430,13 +403,12 @@ public class ShiroBizProperties {
 	}
 	
 	/**
-     * Returns the login URL used to authenticate a user.
-     * <p/>
-     * Most Shiro filters use this url
+     * <p>Returns the login URL used to authenticate a user.</p>
+     * <p>Most Shiro filters use this url
      * as the location to redirect a user when the filter requires authentication.  Unless overridden, the
-     * {@link #DEFAULT_LOGIN_URL DEFAULT_LOGIN_URL} is assumed, which can be overridden via
+     * {@link AccessControlFilter#DEFAULT_LOGIN_URL DEFAULT_LOGIN_URL} is assumed, which can be overridden via
      * {@link #setLoginUrl(String) setLoginUrl}.
-     *
+     * </p>
      * @return the login URL used to authenticate a user, used when redirecting users if authentication is required.
      */
     public String getLoginUrl() {
@@ -444,11 +416,10 @@ public class ShiroBizProperties {
     }
 
     /**
-     * Sets the login URL used to authenticate a user.
-     * <p/>
-     * Most Shiro filters use this url as the location to redirect a user when the filter requires
-     * authentication.  Unless overridden, the {@link #DEFAULT_LOGIN_URL DEFAULT_LOGIN_URL} is assumed.
-     *
+     * <p>Sets the login URL used to authenticate a user.</p>
+     * <p>Most Shiro filters use this url as the location to redirect a user when the filter requires
+     * authentication.  Unless overridden, the {@link AccessControlFilter#DEFAULT_LOGIN_URL DEFAULT_LOGIN_URL} is assumed.
+     * </p>
      * @param loginUrl the login URL used to authenticate a user, used when redirecting users if authentication is required.
      */
     public void setLoginUrl(String loginUrl) {
@@ -585,11 +556,12 @@ public class ShiroBizProperties {
 	}
 	
 	/**
-     * Returns the success url to use as the default location a user is sent after logging in.  Typically a redirect
-     * after login will redirect to the originally request URL; this property is provided mainly as a fallback in case
+	 * <p>
+     * Returns the success url to use as the default location a user is sent after logging in.  
+     * Typically a redirect after login will redirect to the originally request URL; this property is provided mainly as a fallback in case
      * the original request URL is not available or not specified.
-     * <p/>
-     * The default value is {@link #DEFAULT_SUCCESS_URL}.
+     * </p>
+     * The default value is {@link AuthenticationFilter#DEFAULT_SUCCESS_URL}.
      *
      * @return the success url to use as the default location a user is sent after logging in.
      */
@@ -598,11 +570,12 @@ public class ShiroBizProperties {
     }
 
     /**
-     * Sets the default/fallback success url to use as the default location a user is sent after logging in.  Typically
-     * a redirect after login will redirect to the originally request URL; this property is provided mainly as a
+     * <p>
+     * Sets the default/fallback success url to use as the default location a user is sent after logging in.  
+     * Typically a redirect after login will redirect to the originally request URL; this property is provided mainly as a
      * fallback in case the original request URL is not available or not specified.
-     * <p/>
-     * The default value is {@link #DEFAULT_SUCCESS_URL}.
+     * </p>
+     * The default value is {@link AuthenticationFilter#DEFAULT_SUCCESS_URL}.
      *
      * @param successUrl the success URL to redirect the user to after a successful login.
      */
@@ -611,13 +584,15 @@ public class ShiroBizProperties {
     }
 
     /**
+     * <p>
      * Returns the URL to which users should be redirected if they are denied access to an underlying path or resource,
      * or {@code null} if a raw {@link HttpServletResponse#SC_UNAUTHORIZED} response should be issued (401 Unauthorized).
-     * <p/>
+     * </p>
+     * <p>
      * The default is {@code null}, ensuring default web server behavior.  Override this default by calling the
      * {@link #setUnauthorizedUrl(String) setUnauthorizedUrl} method with a meaningful path within your application
      * if you would like to show the user a 'nice' page in the event of unauthorized access.
-     *
+     * </p>
      * @return the URL to which users should be redirected if they are denied access to an underlying path or resource,
      *         or {@code null} if a raw {@link HttpServletResponse#SC_UNAUTHORIZED} response should be issued (401 Unauthorized).
      */
@@ -626,11 +601,11 @@ public class ShiroBizProperties {
     }
 
     /**
-     * Sets the URL to which users should be redirected if they are denied access to an underlying path or resource.
-     * <p/>
+     * <p>Sets the URL to which users should be redirected if they are denied access to an underlying path or resource.</p>
+     * <p>
      * If the value is {@code null} a raw {@link HttpServletResponse#SC_UNAUTHORIZED} response will
      * be issued (401 Unauthorized), retaining default web server behavior.
-     * <p/>
+     * </p>
      * Unless overridden by calling this method, the default value is {@code null}.  If desired, you can specify a
      * meaningful path within your application if you would like to show the user a 'nice' page in the event of
      * unauthorized access.

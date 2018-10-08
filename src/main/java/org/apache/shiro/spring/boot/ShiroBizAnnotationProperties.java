@@ -21,8 +21,6 @@ import org.springframework.lang.Nullable;
 
 /**
  * 扩展shiro主机自动注入，解决Spring Aop冲突
- * @author 		： <a href="https://github.com/vindell">vindell</a>
- * @see {@link org.springframework.aop.framework.ProxyConfig}
  */
 @ConfigurationProperties(ShiroBizAnnotationProperties.PREFIX)
 public class ShiroBizAnnotationProperties {
@@ -67,7 +65,7 @@ public class ShiroBizAnnotationProperties {
 	 * <p>Note: Depending on the configuration of the concrete proxy factory,
 	 * the proxy-target-class behavior will also be applied if no interfaces
 	 * have been specified (and no interface autodetection is activated).
-	 * @see org.springframework.aop.TargetSource#getTargetClass()
+	 * @param proxyTargetClass : Whether to proxy the target class directly
 	 */
 	public void setProxyTargetClass(boolean proxyTargetClass) {
 		this.proxyTargetClass = proxyTargetClass;
@@ -75,6 +73,7 @@ public class ShiroBizAnnotationProperties {
 
 	/**
 	 * Return whether to proxy the target class directly as well as any interfaces.
+	 * @return Whether to proxy the target class directly
 	 */
 	public boolean isProxyTargetClass() {
 		return this.proxyTargetClass;
@@ -90,6 +89,7 @@ public class ShiroBizAnnotationProperties {
 	 * is disabled by default. An optimize value of "true" may be ignored
 	 * if other settings preclude optimization: for example, if "exposeProxy"
 	 * is set to "true" and that's not compatible with the optimization.
+	 * @param optimize : Whether proxies should perform aggressive optimizations.
 	 */
 	public void setOptimize(boolean optimize) {
 		this.optimize = optimize;
@@ -97,6 +97,7 @@ public class ShiroBizAnnotationProperties {
 
 	/**
 	 * Return whether proxies should perform aggressive optimizations.
+	 * @return whether proxies should perform aggressive optimizations.
 	 */
 	public boolean isOptimize() {
 		return this.optimize;
@@ -107,6 +108,8 @@ public class ShiroBizAnnotationProperties {
 	 * from being cast to {@link Advised} to query proxy status.
 	 * <p>Default is "false", meaning that any AOP proxy can be cast to
 	 * {@link Advised}.
+	 * @param opaque : Whether proxies created by this configuration should be prevented
+	 * from being cast to {@link Advised} to query proxy status.
 	 */
 	public void setOpaque(boolean opaque) {
 		this.opaque = opaque;
@@ -115,6 +118,7 @@ public class ShiroBizAnnotationProperties {
 	/**
 	 * Return whether proxies created by this configuration should be
 	 * prevented from being cast to {@link Advised}.
+	 * @return true or false
 	 */
 	public boolean isOpaque() {
 		return this.opaque;
@@ -128,13 +132,15 @@ public class ShiroBizAnnotationProperties {
 	 * <p>Default is "true", in order to avoid unnecessary extra interception.
 	 * This means that no guarantees are provided that AopContext access will
 	 * work consistently within any method of the advised object.
+	 * @param exposeProxy : Whether the proxy should be exposed by the AOP framework as a
+	 * ThreadLocal for retrieval via the AopContext class.
 	 */
 	public void setExposeProxy(boolean exposeProxy) {
 		this.exposeProxy = exposeProxy;
 	}
 
 	/**
-	 * Return whether the AOP proxy will expose the AOP proxy for
+	 * @return Return whether the AOP proxy will expose the AOP proxy for
 	 * each invocation.
 	 */
 	public boolean isExposeProxy() {
@@ -146,6 +152,7 @@ public class ShiroBizAnnotationProperties {
 	 * <p>When a config is frozen, no advice changes can be made. This is
 	 * useful for optimization, and useful when we don't want callers to
 	 * be able to manipulate configuration after casting to Advised.
+	 * @param frozen : Whether this config should be frozen.
 	 */
 	public void setFrozen(boolean frozen) {
 		this.frozen = frozen;
@@ -153,6 +160,7 @@ public class ShiroBizAnnotationProperties {
 
 	/**
 	 * Return whether the config is frozen, and no advice changes can be made.
+	 * @return Whether this config should be frozen.
 	 */
 	public boolean isFrozen() {
 		return this.frozen;
@@ -162,6 +170,7 @@ public class ShiroBizAnnotationProperties {
 	 * Set whether to only include advisors with a certain prefix in the bean name.
 	 * <p>Default is {@code false}, including all beans of type {@code Advisor}.
 	 * @see #setAdvisorBeanNamePrefix
+	 * @param usePrefix : Whether to only include advisors with a certain prefix in the bean name.
 	 */
 	public void setUsePrefix(boolean usePrefix) {
 		this.usePrefix = usePrefix;
@@ -169,6 +178,7 @@ public class ShiroBizAnnotationProperties {
 
 	/**
 	 * Return whether to only include advisors with a certain prefix in the bean name.
+	 * @return Whether to only include advisors with a certain prefix in the bean name.
 	 */
 	public boolean isUsePrefix() {
 		return this.usePrefix;
@@ -187,6 +197,7 @@ public class ShiroBizAnnotationProperties {
 	/**
 	 * Return the prefix for bean names that will cause them to be included
 	 * for auto-proxying by this object.
+	 * @return the exclusion prefix
 	 */
 	public String getAdvisorBeanNamePrefix() {
 		return this.advisorBeanNamePrefix;
