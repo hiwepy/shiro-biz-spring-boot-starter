@@ -381,15 +381,18 @@
  		<j2cache.version>2.7.0-release</j2cache.version>
  		<redisson.version>3.8.1</redisson.version>
 		<shiro.version>1.4.0</shiro.version>
-		<shiro-biz.version>1.0.4-SNAPSHOT</shiro-biz.version>
+		<shiro-biz.version>1.0.4.RELEASE</shiro-biz.version>
 		<shiro-ehcache.version>${shiro.version}</shiro-ehcache.version>
 		<shiro-ehcache3.version>1.0.0</shiro-ehcache3.version>
 		<shiro-hazelcast.version>${shiro.version}</shiro-hazelcast.version>
-		<shiro-j2cache.version>1.0.0-SNAPSHOT</shiro-j2cache.version>
+		<shiro-j2cache.version>1.0.0.RELEASE</shiro-j2cache.version>
 		<shiro-redis.version>3.1.0</shiro-redis.version>
 		<shiro-redisson.version>1.0.0.RELEASE</shiro-redisson.version>
-		<spring-boot-starter-kaptcha.version>1.0.1.RELEASE</spring-boot-starter-kaptcha.version>
-	</properties>
+		<spring-boot-starter-kaptcha.version>1.0.2.RELEASE</spring-boot-starter-kaptcha.version>
+		<spring-boot-starter-jcaptcha.version>1.0.0.RELEASE</spring-boot-starter-jcaptcha.version>
+		<spring-boot-starter-simplecaptcha.version>1.0.0.RELEASE</spring-boot-starter-simplecaptcha.version>
+		<spring-boot-starter-smartcaptcha.version>1.0.0.RELEASE</spring-boot-starter-smartcaptcha.version>
+	</properties>  
 	
 	<dependencies>
 		
@@ -580,19 +583,19 @@
 		<dependency>
 			<groupId>com.github.vindell</groupId>
 			<artifactId>spring-boot-starter-jcaptcha</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${spring-boot-starter-jcaptcha.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.vindell</groupId>
 			<artifactId>spring-boot-starter-simplecaptcha</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${spring-boot-starter-simplecaptcha.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.vindell</groupId>
 			<artifactId>spring-boot-starter-smartcaptcha</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${spring-boot-starter-smartcaptcha.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		

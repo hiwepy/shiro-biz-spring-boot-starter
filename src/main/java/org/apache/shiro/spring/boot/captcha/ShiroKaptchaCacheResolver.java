@@ -17,8 +17,8 @@ import org.apache.shiro.spring.boot.ShiroBizProperties;
 import org.apache.shiro.web.util.WebUtils;
 
 import com.google.code.kaptcha.spring.boot.ext.KaptchaResolver;
-import com.google.code.kaptcha.spring.boot.ext.exception.KaptchaIncorrectException;
-import com.google.code.kaptcha.spring.boot.ext.exception.KaptchaTimeoutException;
+import com.google.code.kaptcha.spring.boot.ext.exception.CaptchaIncorrectException;
+import com.google.code.kaptcha.spring.boot.ext.exception.CaptchaTimeoutException;
 import com.google.code.kaptcha.util.Config;
 
 /**
@@ -89,9 +89,9 @@ public class ShiroKaptchaCacheResolver implements KaptchaResolver, CaptchaResolv
 		try {
 			
 			return this.validCaptcha(WebUtils.toHttp(request), token.getCaptcha());
-		} catch (KaptchaIncorrectException e) {
+		} catch (CaptchaIncorrectException e) {
 			throw new IncorrectCaptchaException(e);
-		} catch (KaptchaTimeoutException e) {
+		} catch (CaptchaTimeoutException e) {
 			throw new InvalidCaptchaException(e);
 		}
 	}
@@ -101,22 +101,22 @@ public class ShiroKaptchaCacheResolver implements KaptchaResolver, CaptchaResolv
 	 */
 	@Override
 	public boolean validCaptcha(HttpServletRequest request, String capText)
-			throws KaptchaIncorrectException, KaptchaTimeoutException {
+			throws CaptchaIncorrectException, CaptchaTimeoutException {
 		
 		// 验证码无效
 		if(StringUtils.isEmpty(capText)) {
-			throw new KaptchaIncorrectException();
+			throw new CaptchaIncorrectException();
 		}
 		
 		// 历史验证码无效
 		String sessionCapText = (String) getCaptchaCache().get(getCaptchaStoreKey());
 		if(StringUtils.isEmpty(sessionCapText)) {
-			throw new KaptchaIncorrectException();
+			throw new CaptchaIncorrectException();
 		}
 		// 检查验证码是否过期
 		Date sessionCapDate = (Date) getCaptchaCache().get(getCaptchaDateStoreKey());
 		if(new Date().getTime() - sessionCapDate.getTime()  > getCaptchaTimeout()) {
-			throw new KaptchaTimeoutException();
+			throw new CaptchaTimeoutException();
 		}
 		
 		return StringUtils.equalsIgnoreCase(sessionCapText, capText);
