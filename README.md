@@ -17,7 +17,7 @@ shiro starter for spring boot
 	<dependency>
 		<groupId>com.github.vindell</groupId>
 		<artifactId>spring-boot-starter-shiro-biz</artifactId>
-		<version>${project.version}</version>
+		<version>1.0.0.RELEASE</version>
 	</dependency>
 
 ### 配置参考
