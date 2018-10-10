@@ -13,7 +13,7 @@
 	<groupId>com.github.vindell</groupId>
 	<artifactId>spring-boot-starter-shiro-biz</artifactId>
 	<description>Spring Boot Starter For Shiro Biz</description>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.1.RELEASE</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<url>https://github.com/vindell/${project.artifactId}</url>
 	<packaging>jar</packaging>
@@ -381,7 +381,7 @@
  		<j2cache.version>2.7.0-release</j2cache.version>
  		<redisson.version>3.8.1</redisson.version>
 		<shiro.version>1.4.0</shiro.version>
-		<shiro-biz.version>1.0.4.RELEASE</shiro-biz.version>
+		<shiro-biz.version>1.0.5.RELEASE</shiro-biz.version>
 		<shiro-ehcache.version>${shiro.version}</shiro-ehcache.version>
 		<shiro-ehcache3.version>1.0.0</shiro-ehcache3.version>
 		<shiro-hazelcast.version>${shiro.version}</shiro-hazelcast.version>
