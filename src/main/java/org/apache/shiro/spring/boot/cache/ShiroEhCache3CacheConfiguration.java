@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter(AbstractCachingConfiguration.class)
 @AutoConfigureBefore(ShiroWebAutoConfiguration.class)
 @ConditionalOnClass(org.ehcache.CacheManager.class)
-@ConditionalOnProperty(prefix = ShiroCacheProperties.PREFIX, value = "type", havingValue = "ehcache")
+@ConditionalOnProperty(prefix = ShiroCacheProperties.PREFIX, value = "type", havingValue = "ehcache3")
 @EnableConfigurationProperties({ ShiroEhCache3CacheProperties.class })
 public class ShiroEhCache3CacheConfiguration {
 

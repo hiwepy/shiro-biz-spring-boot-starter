@@ -19,9 +19,11 @@ package org.apache.shiro.spring.boot.actuate;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.spring.boot.ShiroBizWebAutoConfiguration;
 import org.apache.shiro.subject.Subject;
+import org.springframework.boot.actuate.autoconfigure.endpoint.EndpointAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
 import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.actuate.autoconfigure.health.HealthIndicatorAutoConfiguration;
+import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -35,10 +37,10 @@ import org.springframework.context.annotation.Configuration;
  * @author 		： <a href="https://github.com/vindell">vindell</a>
  */
 @Configuration
-@ConditionalOnClass(Subject.class)
+@ConditionalOnClass({Subject.class, HealthIndicator.class, EndpointAutoConfiguration.class})
 @ConditionalOnEnabledHealthIndicator("shiro")
-@AutoConfigureBefore(HealthIndicatorAutoConfiguration.class)
-@AutoConfigureAfter(ShiroBizWebAutoConfiguration.class)
+@AutoConfigureBefore(EndpointAutoConfiguration.class)
+@AutoConfigureAfter({ShiroBizWebAutoConfiguration.class, HealthIndicatorAutoConfiguration.class})
 public class ShiroEndpointAutoConfiguration {
 
 	@Bean
