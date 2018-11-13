@@ -4,11 +4,9 @@ import java.util.List;
 
 import org.apache.shiro.biz.authz.principal.ShiroPrincipal;
 import org.apache.shiro.biz.utils.StringUtils;
-import org.apache.shiro.biz.web.filter.HttpServletRequestCrosFilter;
 import org.apache.shiro.biz.web.filter.HttpServletRequestEscapeHtml4Filter;
 import org.apache.shiro.biz.web.filter.HttpServletRequestHeaderFilter;
 import org.apache.shiro.biz.web.filter.HttpServletRequestMethodFilter;
-import org.apache.shiro.biz.web.filter.HttpServletRequestOptionsFilter;
 import org.apache.shiro.biz.web.filter.HttpServletRequestReferrerFilter;
 import org.apache.shiro.biz.web.filter.HttpServletSessionDequeFilter;
 import org.apache.shiro.biz.web.filter.HttpServletSessionExpiredFilter;
@@ -73,27 +71,6 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	    return registration;
 	}
 	
-	/*
-	 * 默认的Request跨域支持过滤器 ：解决Ajax请求跨域问题
-	 */
-	@Bean("cros")
-	@ConditionalOnMissingBean(name = "cros")
-	public FilterRegistrationBean<HttpServletRequestCrosFilter> crosFilter(ShiroHttpServletHeaderProperties properties){
-		
-		FilterRegistrationBean<HttpServletRequestCrosFilter> registration = new FilterRegistrationBean<HttpServletRequestCrosFilter>();
-		
-		HttpServletRequestCrosFilter crosFilter = new HttpServletRequestCrosFilter();
-		
-		crosFilter.setAccessControlAllowCredentials(properties.isAccessControlAllowCredentials());
-		crosFilter.setAccessControlAllowHeaders(properties.getAccessControlAllowHeaders());
-		crosFilter.setAccessControlAllowMethods(properties.getAccessControlAllowMethods());
-		crosFilter.setAccessControlAllowOrigin(properties.getAccessControlAllowOrigin());
-		
-		registration.setFilter(crosFilter);
-	    registration.setEnabled(false); 
-	    return registration;
-	}
-	
 	@Bean("escapeHtml4")
 	@ConditionalOnMissingBean(name = "escapeHtml4")
 	public FilterRegistrationBean<HttpServletRequestEscapeHtml4Filter> escapeHtml4Filter(){
@@ -124,21 +101,6 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		methodFilter.setAllowedHTTPMethods(StringUtils.tokenizeToStringArray(properties.getAccessControlAllowMethods()));
 		
 		registration.setFilter(methodFilter);
-	    registration.setEnabled(false); 
-	    return registration;
-	}
-	
-	@Bean("options")
-	@ConditionalOnMissingBean(name = "options")
-	public FilterRegistrationBean<HttpServletRequestOptionsFilter> optionsFilter(ShiroHttpServletHeaderProperties properties){
-		
-		FilterRegistrationBean<HttpServletRequestOptionsFilter> registration = new FilterRegistrationBean<HttpServletRequestOptionsFilter>();
-		
-		HttpServletRequestOptionsFilter optionsFilter = new HttpServletRequestOptionsFilter();
-		optionsFilter.setXContentTypeOptions(properties.getXContentTypeOptions());
-		optionsFilter.setXFrameOptions(properties.getXFrameOptions());
-		
-		registration.setFilter(optionsFilter);
 	    registration.setEnabled(false); 
 	    return registration;
 	}
