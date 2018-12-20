@@ -379,7 +379,7 @@
         <maven-surefire-plugin.vertsion>2.21.0</maven-surefire-plugin.vertsion>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
  		<j2cache.version>2.7.0-release</j2cache.version>
- 		<redisson.version>3.8.1</redisson.version>
+ 		<redisson.version>3.9.1</redisson.version>
 		<shiro.version>1.4.0</shiro.version>
 		<shiro-biz.version>1.0.6-SNAPSHOT</shiro-biz.version>
 		<shiro-ehcache.version>${shiro.version}</shiro-ehcache.version>
@@ -552,6 +552,10 @@
 		    	<exclusion>
 		    		<groupId>org.apache.shiro</groupId>
 		    		<artifactId>shiro-core</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+		    		<groupId>com.puppycrawl.tools</groupId>
+		    		<artifactId>checkstyle</artifactId>
 		    	</exclusion>
 		    </exclusions>
 		</dependency>
