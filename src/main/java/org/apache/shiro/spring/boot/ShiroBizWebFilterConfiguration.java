@@ -11,6 +11,9 @@ import org.apache.shiro.biz.web.filter.HttpServletRequestReferrerFilter;
 import org.apache.shiro.biz.web.filter.HttpServletSessionDequeFilter;
 import org.apache.shiro.biz.web.filter.HttpServletSessionExpiredFilter;
 import org.apache.shiro.biz.web.filter.HttpServletSessionStatusFilter;
+import org.apache.shiro.biz.web.filter.authc.AuthenticatingFailureCounter;
+import org.apache.shiro.biz.web.filter.authc.AuthenticatingFailureRequestCounter;
+import org.apache.shiro.biz.web.filter.authc.AuthenticatingFailureSessionCounter;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.session.mgt.SessionManager;
@@ -179,7 +182,18 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	    registration.setEnabled(false); 
 	    return registration;
 	}
-
+	
+	/*
+	 * 默认的认证失败次数计数器实现
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public AuthenticatingFailureCounter authcFailureCounter() {
+		if (bizProperties.isSessionStateless()) {
+			return new AuthenticatingFailureRequestCounter();
+		}
+		return new AuthenticatingFailureSessionCounter();
+	}
 	
 	@Bean
     @ConditionalOnMissingBean
