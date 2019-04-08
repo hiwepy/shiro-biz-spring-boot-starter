@@ -58,7 +58,7 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	 */
 	@Bean("logout")
 	@ConditionalOnMissingBean(name = "logout")
-	public FilterRegistrationBean<BizLogoutFilter> logoutFilter(List<LogoutListener> logoutListeners){
+	public FilterRegistrationBean<BizLogoutFilter> logoutFilter(@Autowired(required = false) List<LogoutListener> logoutListeners){
 		
 		FilterRegistrationBean<BizLogoutFilter> registration = new FilterRegistrationBean<BizLogoutFilter>(); 
 		BizLogoutFilter logoutFilter = new BizLogoutFilter();
