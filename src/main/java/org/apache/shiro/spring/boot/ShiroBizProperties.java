@@ -115,7 +115,7 @@ public class ShiroBizProperties {
 	/**
 	 * filter chain
 	 */
-	private Map<String /* pattert */, String /* Chain names */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
+	private Map<String /* pattern */, String /* Chain names */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 	/**
      * The login url to used to authenticate a user, used when redirecting users if authentication is required.
      */
