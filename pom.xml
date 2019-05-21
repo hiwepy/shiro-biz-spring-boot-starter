@@ -379,8 +379,8 @@
         <maven-surefire-plugin.vertsion>2.22.1</maven-surefire-plugin.vertsion>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
  		<j2cache.version>2.7.7-release</j2cache.version>
- 		<redisson.version>3.10.0</redisson.version>
-		<shiro.version>1.4.0</shiro.version>
+ 		<redisson.version>3.10.7</redisson.version>
+		<shiro.version>1.4.1</shiro.version>
 		<shiro-biz.version>1.0.6.RELEASE</shiro-biz.version>
 		<shiro-ehcache.version>${shiro.version}</shiro-ehcache.version>
 		<shiro-ehcache3.version>1.0.0</shiro-ehcache3.version>
