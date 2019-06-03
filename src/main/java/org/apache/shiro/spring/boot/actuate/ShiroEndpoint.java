@@ -65,7 +65,7 @@ public class ShiroEndpoint {
 	    			sessionDesc.setSystemHost(onlineSession.getSystemHost());
 	    		}
 	    		if(Boolean.TRUE.equals(session.getAttribute(Constants.SESSION_FORCE_LOGOUT_KEY))) {
-	    			sessionDesc.setStatus(OnlineStatus.force_logout.getInfo());
+	    			sessionDesc.setStatus(OnlineStatus.FORCE_LOGOUT.getInfo());
 	    		} 
 	    		shiroSessions.put(session.getId(), sessionDesc);
 			}
@@ -90,7 +90,7 @@ public class ShiroEndpoint {
             if(session != null) {  
             	if(session instanceof SimpleOnlineSession) {
         			SimpleOnlineSession onlineSession = (SimpleOnlineSession) session;
-        			onlineSession.setStatus(OnlineStatus.force_logout);
+        			onlineSession.setStatus(OnlineStatus.FORCE_LOGOUT);
         		}
                 session.setAttribute(Constants.SESSION_FORCE_LOGOUT_KEY, Boolean.TRUE);  
             }
@@ -166,7 +166,7 @@ public class ShiroEndpoint {
     			this.status = onlineSession.getStatus().getInfo();
     		}
     		if(Boolean.TRUE.equals(session.getAttribute(Constants.SESSION_FORCE_LOGOUT_KEY))) {
-    			this.status =  OnlineStatus.force_logout.getInfo();
+    			this.status =  OnlineStatus.FORCE_LOGOUT.getInfo();
     		}
 		}
 

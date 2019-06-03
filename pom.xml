@@ -381,7 +381,7 @@
  		<j2cache.version>2.7.7-release</j2cache.version>
  		<redisson.version>3.10.7</redisson.version>
 		<shiro.version>1.4.1</shiro.version>
-		<shiro-biz.version>1.0.6.RELEASE</shiro-biz.version>
+		<shiro-biz.version>1.0.7-SNAPSHOT</shiro-biz.version>
 		<shiro-ehcache.version>${shiro.version}</shiro-ehcache.version>
 		<shiro-ehcache3.version>1.0.0</shiro-ehcache3.version>
 		<shiro-hazelcast.version>${shiro.version}</shiro-hazelcast.version>
@@ -487,6 +487,7 @@
 		    </exclusions>
 		</dependency>
 		
+		<!-- https://mvnrepository.com/artifact/com.github.vindell/shiro-biz -->
 		<dependency>
 		    <groupId>com.github.vindell</groupId>
 			<artifactId>shiro-biz</artifactId>
