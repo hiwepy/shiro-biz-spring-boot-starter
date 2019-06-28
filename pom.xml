@@ -378,8 +378,8 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-surefire-plugin.vertsion>2.22.1</maven-surefire-plugin.vertsion>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
- 		<j2cache.version>2.7.7-release</j2cache.version>
- 		<redisson.version>3.10.7</redisson.version>
+ 		<j2cache.version>2.7.8-release</j2cache.version>
+ 		<redisson.version>3.11.1</redisson.version>
 		<shiro.version>1.4.1</shiro.version>
 		<shiro-biz.version>1.0.7-SNAPSHOT</shiro-biz.version>
 		<shiro-ehcache.version>${shiro.version}</shiro-ehcache.version>
@@ -498,6 +498,7 @@
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-ehcache</artifactId>
 			<version>${shiro-ehcache.version}</version>
+			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>net.sf.ehcache</groupId>
