@@ -20,8 +20,6 @@ import org.apache.shiro.biz.authz.permission.DefaultRolePermissionResolver;
 import org.apache.shiro.biz.realm.AuthorizingRealmListener;
 import org.apache.shiro.biz.session.DefaultSessionListener;
 import org.apache.shiro.biz.session.mgt.SimpleOnlineSessionFactory;
-import org.apache.shiro.biz.web.filter.authc.listener.LoginListener;
-import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
 import org.apache.shiro.biz.web.mgt.SessionCreationEnabledSubjectFactory;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
@@ -77,25 +75,6 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 	private ShiroBizProperties bizProperties;
 
 	/**
-	 * 登录监听：实现该接口可监听账号登录失败和成功的状态，从而做业务系统自己的事情，比如记录日志
-	 */
-	@Bean("loginListeners")
-	@ConditionalOnMissingBean(name = "loginListeners")
-	public List<LoginListener> loginListeners() {
-
-		List<LoginListener> loginListeners = new ArrayList<LoginListener>();
-		Map<String, LoginListener> beansOfType = getApplicationContext().getBeansOfType(LoginListener.class);
-		if (!ObjectUtils.isEmpty(beansOfType)) {
-			Iterator<Entry<String, LoginListener>> ite = beansOfType.entrySet().iterator();
-			while (ite.hasNext()) {
-				loginListeners.add(ite.next().getValue());
-			}
-		}
-
-		return loginListeners;
-	}
-
-	/**
 	 * Realm 执行监听：实现该接口可监听认证失败和成功的状态，从而做业务系统自己的事情，比如记录日志
 	 */
 	@Bean("realmListeners")
@@ -114,26 +93,6 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 		}
 
 		return realmListeners;
-	}
-
-	/**
-	 * 注销监听：实现该接口可监听账号注销失败和成功的状态，从而做业务系统自己的事情，比如记录日志
-	 */
-	@Bean("logoutListeners")
-	@ConditionalOnMissingBean(name = "logoutListeners")
-	public List<LogoutListener> logoutListeners() {
-
-		List<LogoutListener> logoutListeners = new ArrayList<LogoutListener>();
-
-		Map<String, LogoutListener> beansOfType = getApplicationContext().getBeansOfType(LogoutListener.class);
-		if (!ObjectUtils.isEmpty(beansOfType)) {
-			Iterator<Entry<String, LogoutListener>> ite = beansOfType.entrySet().iterator();
-			while (ite.hasNext()) {
-				logoutListeners.add(ite.next().getValue());
-			}
-		}
-
-		return logoutListeners;
 	}
 
 	@Bean("sessionListeners")
