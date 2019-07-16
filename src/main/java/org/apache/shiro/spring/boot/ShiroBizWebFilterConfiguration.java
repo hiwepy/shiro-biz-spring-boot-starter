@@ -1,5 +1,7 @@
 package org.apache.shiro.spring.boot;
 
+import java.util.stream.Collectors;
+
 import org.apache.shiro.biz.authz.principal.ShiroPrincipal;
 import org.apache.shiro.biz.utils.StringUtils;
 import org.apache.shiro.biz.web.filter.HttpServletRequestEscapeHtml4Filter;
@@ -12,6 +14,7 @@ import org.apache.shiro.biz.web.filter.HttpServletSessionStatusFilter;
 import org.apache.shiro.biz.web.filter.authc.AuthenticatingFailureCounter;
 import org.apache.shiro.biz.web.filter.authc.AuthenticatingFailureRequestCounter;
 import org.apache.shiro.biz.web.filter.authc.AuthenticatingFailureSessionCounter;
+import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.boot.biz.ShiroBizFilterFactoryBean;
@@ -21,6 +24,7 @@ import org.apache.shiro.spring.boot.biz.authc.BizLogoutFilter;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.AbstractShiroWebFilterConfiguration;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -55,11 +59,12 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	 */
 	@Bean("logout")
 	@ConditionalOnMissingBean(name = "logout")
-	public FilterRegistrationBean<BizLogoutFilter> logoutFilter(){
+	public FilterRegistrationBean<BizLogoutFilter> logoutFilter(ObjectProvider<LogoutListener> logoutListenerProvider){
 		
 		FilterRegistrationBean<BizLogoutFilter> registration = new FilterRegistrationBean<BizLogoutFilter>(); 
 		BizLogoutFilter logoutFilter = new BizLogoutFilter();
-		
+		// 监听器
+		logoutFilter.setLogoutListeners(logoutListenerProvider.stream().collect(Collectors.toList()));
 		logoutFilter.setPostOnlyLogout(bizProperties.isPostOnlyLogout());
 		//登录注销后的重定向地址：直接进入登录页面
 		logoutFilter.setRedirectUrl(bizProperties.getRedirectUrl());
