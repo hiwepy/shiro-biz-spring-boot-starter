@@ -10,12 +10,12 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	
-	<groupId>com.github.vindell</groupId>
+	<groupId>com.github.hiwepy</groupId>
 	<artifactId>spring-boot-starter-shiro-biz</artifactId>
 	<description>Spring Boot Starter For Shiro Biz</description>
 	<version>1.0.6-SNAPSHOT</version>
 	<name>${project.groupId}:${project.artifactId}</name>
-	<url>https://github.com/vindell/${project.artifactId}</url>
+	<url>https://github.com/hiwepy/${project.artifactId}</url>
 	<packaging>jar</packaging>
 
 	<licenses>
@@ -26,15 +26,15 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:https:github.com/vindell/${project.artifactId}.git</connection>
-		<developerConnection>scm:git:https:github.com/vindell/${project.artifactId}.git</developerConnection>
-		<url>https:github.com/vindell/${project.artifactId}</url>
+		<connection>scm:git:https:github.com/hiwepy/${project.artifactId}.git</connection>
+		<developerConnection>scm:git:https:github.com/hiwepy/${project.artifactId}.git</developerConnection>
+		<url>https:github.com/hiwepy/${project.artifactId}</url>
 		<tag>${project.artifactId}</tag>
 	</scm>
 
 	<developers>
 		<developer>
-			<name>vindell</name>
+			<name>wandl</name>
 			<email>hnxyhcwdl1003@163.com</email>
 			<roles>
 				<role>developer</role>
@@ -380,18 +380,18 @@
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
  		<j2cache.version>2.7.8-release</j2cache.version>
  		<redisson.version>3.11.1</redisson.version>
-		<shiro.version>1.4.1</shiro.version>
+		<shiro.version>1.4.2</shiro.version>
 		<shiro-biz.version>1.0.8-SNAPSHOT</shiro-biz.version>
 		<shiro-ehcache.version>${shiro.version}</shiro-ehcache.version>
 		<shiro-ehcache3.version>1.0.0</shiro-ehcache3.version>
 		<shiro-hazelcast.version>${shiro.version}</shiro-hazelcast.version>
-		<shiro-j2cache.version>1.0.0.RELEASE</shiro-j2cache.version>
+		<shiro-j2cache.version>1.0.2-SNAPSHOT</shiro-j2cache.version>
 		<shiro-redis.version>3.2.3</shiro-redis.version>
 		<shiro-redisson.version>1.0.0.RELEASE</shiro-redisson.version>
-		<spring-boot-starter-kaptcha.version>1.0.3.RELEASE</spring-boot-starter-kaptcha.version>
-		<spring-boot-starter-jcaptcha.version>1.0.1.RELEASE</spring-boot-starter-jcaptcha.version>
-		<spring-boot-starter-simplecaptcha.version>1.0.0.RELEASE</spring-boot-starter-simplecaptcha.version>
-		<spring-boot-starter-smartcaptcha.version>1.0.0.RELEASE</spring-boot-starter-smartcaptcha.version>
+		<spring-boot-starter-kaptcha.version>1.0.4-SNAPSHOT</spring-boot-starter-kaptcha.version>
+		<spring-boot-starter-jcaptcha.version>1.0.2-SNAPSHOT</spring-boot-starter-jcaptcha.version>
+		<spring-boot-starter-simplecaptcha.version>1.0.2-SNAPSHOT</spring-boot-starter-simplecaptcha.version>
+		<spring-boot-starter-smartcaptcha.version>1.0.2-SNAPSHOT</spring-boot-starter-smartcaptcha.version>
 	</properties>  
 	
 	<dependencies>
@@ -487,9 +487,9 @@
 		    </exclusions>
 		</dependency>
 		
-		<!-- https://mvnrepository.com/artifact/com.github.vindell/shiro-biz -->
+		<!-- https://mvnrepository.com/artifact/com.github.hiwepy/shiro-biz -->
 		<dependency>
-		    <groupId>com.github.vindell</groupId>
+		    <groupId>com.github.hiwepy</groupId>
 			<artifactId>shiro-biz</artifactId>
 			<version>${shiro-biz.version}</version>
 		</dependency>
@@ -532,7 +532,7 @@
 		    <scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.github.vindell</groupId>
+			<groupId>com.github.hiwepy</groupId>
 			<artifactId>shiro-j2cache</artifactId>
 			<version>${shiro-j2cache.version}</version>
 			<scope>provided</scope>
@@ -586,28 +586,28 @@
 		    <scope>provided</scope>
 		</dependency>
 		
-		<!-- https://mvnrepository.com/artifact/com.github.vindell/spring-boot-starter-kaptcha -->
+		<!-- https://mvnrepository.com/artifact/com.github.hiwepy/spring-boot-starter-kaptcha -->
 		<dependency>
-			<groupId>com.github.vindell</groupId>
-			<artifactId>spring-boot-starter-kaptcha</artifactId>
+			<groupId>com.github.hiwepy</groupId>
+			<artifactId>kaptcha-spring-boot-starter</artifactId>
 			<version>${spring-boot-starter-kaptcha.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.github.vindell</groupId>
-			<artifactId>spring-boot-starter-jcaptcha</artifactId>
+			<groupId>com.github.hiwepy</groupId>
+			<artifactId>jcaptcha-spring-boot-starter</artifactId>
 			<version>${spring-boot-starter-jcaptcha.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.github.vindell</groupId>
-			<artifactId>spring-boot-starter-simplecaptcha</artifactId>
+			<groupId>com.github.hiwepy</groupId>
+			<artifactId>simplecaptcha-spring-boot-starter</artifactId>
 			<version>${spring-boot-starter-simplecaptcha.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.github.vindell</groupId>
-			<artifactId>spring-boot-starter-smartcaptcha</artifactId>
+			<groupId>com.github.hiwepy</groupId>
+			<artifactId>smartcaptcha-spring-boot-starter</artifactId>
 			<version>${spring-boot-starter-smartcaptcha.version}</version>
 			<scope>provided</scope>
 		</dependency>
