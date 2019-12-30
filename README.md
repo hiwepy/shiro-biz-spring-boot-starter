@@ -8,7 +8,7 @@ shiro starter for spring boot
 
 
 1. Apache Shiro是一个强大且易用的Java安全框架,执行身份验证、授权、密码学和会话管理。使用Shiro的易于理解的API,您可以快速、轻松地获得任何应用程序,从最小的移动应用程序到最大的网络和企业应用程序。
-2. spring-boot-starter-shiro-biz 是在引用 [shiro-spring-boot-starter](http://mvnrepository.com/artifact/org.apache.shiro/shiro-spring-boot-starter "shiro-spring-boot-starter")、[shiro-spring-boot-web-starter](http://mvnrepository.com/artifact/org.apache.shiro/shiro-spring-boot-web-starter "shiro-spring-boot-web-starter") 的基础上整合 [shiro-biz](https://github.com/vindell/shiro-biz "shiro-biz") 的 Spring Boot 整合；
+2. shiro-biz-spring-boot-starter 是在引用 [shiro-spring-boot-starter](http://mvnrepository.com/artifact/org.apache.shiro/shiro-spring-boot-starter "shiro-spring-boot-starter")、[shiro-spring-boot-web-starter](http://mvnrepository.com/artifact/org.apache.shiro/shiro-spring-boot-web-starter "shiro-spring-boot-web-starter") 的基础上整合 [shiro-biz](https://github.com/vindell/shiro-biz "shiro-biz") 的 Spring Boot 整合；
 3. 完成了基于Shiro的权限的控制
 
 
