@@ -1,4 +1,4 @@
-# spring-boot-starter-shiro-biz
+# shiro-biz-spring-boot-starter
 shiro starter for spring boot
 
 ### 说明
