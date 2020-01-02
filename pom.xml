@@ -378,20 +378,20 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-surefire-plugin.vertsion>2.22.1</maven-surefire-plugin.vertsion>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
- 		<j2cache.version>2.7.8-release</j2cache.version>
+ 		<j2cache.version>2.8.0-release</j2cache.version>
  		<redisson.version>3.11.1</redisson.version>
 		<shiro.version>1.4.2</shiro.version>
 		<shiro-biz.version>1.0.8-SNAPSHOT</shiro-biz.version>
 		<shiro-ehcache.version>${shiro.version}</shiro-ehcache.version>
 		<shiro-ehcache3.version>1.0.0</shiro-ehcache3.version>
 		<shiro-hazelcast.version>${shiro.version}</shiro-hazelcast.version>
-		<shiro-j2cache.version>1.0.2-SNAPSHOT</shiro-j2cache.version>
+		<shiro-j2cache.version>1.0.2.RELEASE</shiro-j2cache.version>
 		<shiro-redis.version>3.2.3</shiro-redis.version>
 		<shiro-redisson.version>1.0.0.RELEASE</shiro-redisson.version>
-		<spring-boot-starter-kaptcha.version>1.0.4-SNAPSHOT</spring-boot-starter-kaptcha.version>
-		<spring-boot-starter-jcaptcha.version>1.0.2-SNAPSHOT</spring-boot-starter-jcaptcha.version>
-		<spring-boot-starter-simplecaptcha.version>1.0.2-SNAPSHOT</spring-boot-starter-simplecaptcha.version>
-		<spring-boot-starter-smartcaptcha.version>1.0.2-SNAPSHOT</spring-boot-starter-smartcaptcha.version>
+		<spring-boot-starter-kaptcha.version>1.0.4.RELEASE</spring-boot-starter-kaptcha.version>
+		<spring-boot-starter-jcaptcha.version>1.0.2.RELEASE</spring-boot-starter-jcaptcha.version>
+		<spring-boot-starter-simplecaptcha.version>1.0.2.RELEASE</spring-boot-starter-simplecaptcha.version>
+		<spring-boot-starter-smartcaptcha.version>1.0.2.RELEASE</spring-boot-starter-smartcaptcha.version>
 	</properties>  
 	
 	<dependencies>
