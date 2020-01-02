@@ -13,7 +13,7 @@
 	<groupId>com.github.hiwepy</groupId>
 	<artifactId>shiro-biz-spring-boot-starter</artifactId>
 	<description>Spring Boot Starter For Shiro Biz</description>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.3.RELEASE</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<url>https://github.com/hiwepy/${project.artifactId}</url>
 	<packaging>jar</packaging>
@@ -369,7 +369,7 @@
  		<commons-io.version>2.6</commons-io.version>
  		<ehcache3.version>3.6.0</ehcache3.version>
 		<freemarker.version>2.3.28</freemarker.version>
- 		<guava.version>27.0.1-jre</guava.version>
+ 		<guava.version>28.1-jre</guava.version>
 		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
  		<maven.version>3.0</maven.version>
        	<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
@@ -381,7 +381,7 @@
  		<j2cache.version>2.8.0-release</j2cache.version>
  		<redisson.version>3.11.1</redisson.version>
 		<shiro.version>1.4.2</shiro.version>
-		<shiro-biz.version>1.0.8-SNAPSHOT</shiro-biz.version>
+		<shiro-biz.version>1.0.8.RELEASE</shiro-biz.version>
 		<shiro-ehcache.version>${shiro.version}</shiro-ehcache.version>
 		<shiro-ehcache3.version>1.0.0</shiro-ehcache3.version>
 		<shiro-hazelcast.version>${shiro.version}</shiro-hazelcast.version>
