@@ -14,6 +14,7 @@ import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.authz.permission.RolePermissionResolver;
+import org.apache.shiro.biz.authc.DefaultAuthenticationFailureHandler;
 import org.apache.shiro.biz.authc.pam.DefaultModularRealmAuthenticator;
 import org.apache.shiro.biz.authz.permission.BitAndWildPermissionResolver;
 import org.apache.shiro.biz.authz.permission.DefaultRolePermissionResolver;
@@ -278,6 +279,12 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 		chainDefinition.addPathDefinition("/**", "authc");
 		return chainDefinition;
 	}
+
+	@Bean
+	protected DefaultAuthenticationFailureHandler defaultAuthenticationFailureHandler() {
+		return new DefaultAuthenticationFailureHandler();
+	}
+ 
 
 	/*
 	 * @Bean
