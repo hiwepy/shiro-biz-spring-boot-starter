@@ -7,17 +7,24 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.collections.MapUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationListener;
+import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.Authenticator;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
+import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.authz.permission.RolePermissionResolver;
 import org.apache.shiro.biz.authc.DefaultAuthenticationFailureHandler;
 import org.apache.shiro.biz.authc.pam.DefaultModularRealmAuthenticator;
 import org.apache.shiro.biz.authz.permission.BitAndWildPermissionResolver;
 import org.apache.shiro.biz.authz.permission.DefaultRolePermissionResolver;
+import org.apache.shiro.biz.authz.principal.ShiroPrincipalRepository;
+import org.apache.shiro.biz.realm.AbstractAuthorizingRealm;
 import org.apache.shiro.biz.realm.AuthorizingRealmListener;
 import org.apache.shiro.biz.session.DefaultSessionListener;
 import org.apache.shiro.biz.session.mgt.SimpleOnlineSessionFactory;
@@ -45,9 +52,12 @@ import org.apache.shiro.session.mgt.eis.SessionIdGenerator;
 import org.apache.shiro.spring.web.config.AbstractShiroWebConfiguration;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -284,7 +294,60 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 	protected DefaultAuthenticationFailureHandler defaultAuthenticationFailureHandler() {
 		return new DefaultAuthenticationFailureHandler();
 	}
- 
+
+	@Bean
+	public Realm defRealm(@Qualifier("defRepository") ShiroPrincipalRepository defRepository,
+			@Autowired(required = false) List<AuthorizingRealmListener> realmsListeners,
+			CredentialsMatcher credentialsMatcher,
+			ShiroBizProperties properties) {
+
+		AbstractAuthorizingRealm authzRealm = new AbstractAuthorizingRealm() {
+			
+			@Override
+			protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
+					throws AuthenticationException {
+				// 认证协议：CAS、HTTP、JWT、KISSO、LDAP、OAuth2、OpenID、SMAL等
+				ThreadContext.put("protocol", "HTTP");
+				// 负责此次认证的realm名称
+				ThreadContext.put("realm", "DsbAuthorizingRealm");
+				return super.doGetAuthenticationInfo(token);
+			}
+			
+			@Override
+			protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+				// 认证协议：CAS、HTTP、JWT、KISSO、LDAP、OAuth2、OpenID、SMAL等
+				ThreadContext.put("protocol", "HTTP");
+				// 负责此次认证的realm名称
+				ThreadContext.put("realm", "DsbAuthorizingRealm");
+				return super.doGetAuthorizationInfo(principals);
+			}
+			
+			@Override
+			public Class<?> getAuthenticationTokenClass() {
+				return UsernamePasswordToken.class;// 此Realm只支持UsernamePasswordToken
+			}
+			
+		};
+		// 认证账号信息提供实现：认证信息、角色信息、权限信息；业务系统需要自己实现该接口
+		authzRealm.setRepository(defRepository);
+		// 凭证匹配器：该对象主要做密码校验
+		authzRealm.setCredentialsMatcher(new AllowAllCredentialsMatcher());
+		// Realm 执行监听：实现该接口可监听认证失败和成功的状态，从而做业务系统自己的事情，比如记录日志
+		authzRealm.setRealmsListeners(realmsListeners);
+		authzRealm.setPermissionResolver(permissionResolver);
+		authzRealm.setRolePermissionResolver(rolePermissionResolver);
+		// 缓存相关的配置：采用提供的默认配置即可
+		authzRealm.setCachingEnabled(properties.isCachingEnabled());
+		authzRealm.setCacheManager(cacheManager);
+		// 认证缓存配置:无状态情况不缓存认证信息
+		authzRealm.setAuthenticationCachingEnabled(properties.isAuthenticationCachingEnabled());
+		authzRealm.setAuthenticationCacheName(properties.getAuthenticationCacheName());
+		// 授权缓存配置:无状态情况不缓存认证信息
+		authzRealm.setAuthorizationCachingEnabled(properties.isAuthorizationCachingEnabled());
+		authzRealm.setAuthorizationCacheName(properties.getAuthorizationCacheName());
+
+		return authzRealm;
+	}
 
 	/*
 	 * @Bean
