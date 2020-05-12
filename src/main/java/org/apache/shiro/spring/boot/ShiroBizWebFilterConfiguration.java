@@ -27,6 +27,7 @@ import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -123,7 +124,8 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	 * 默认的Session在线状态过滤器 ：解决回话被强制登出问题
 	 */
 	@Bean("sessionStatus")
-	@ConditionalOnMissingBean(name = "sessionStatus")
+	@ConditionalOnBean({CacheManager.class, SessionManager.class})
+	//@ConditionalOnMissingBean(name = "sessionStatus")
 	public FilterRegistrationBean<HttpServletSessionStatusFilter> sessionOnlineFilter(SessionManager sessionManager){
 		
 		FilterRegistrationBean<HttpServletSessionStatusFilter> registration = new FilterRegistrationBean<HttpServletSessionStatusFilter>();
@@ -141,7 +143,8 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	 * 默认的Session控制实现，解决唯一登录问题
 	 */
 	@Bean("sessionDeque")
-	@ConditionalOnMissingBean(name = "sessionDeque")
+	@ConditionalOnBean({CacheManager.class, SessionManager.class})
+	//@ConditionalOnMissingBean(name = "sessionDeque")
 	public FilterRegistrationBean<HttpServletSessionDequeFilter> sessionDequeFilter(CacheManager cacheManager, SessionManager sessionManager){
 		
 		FilterRegistrationBean<HttpServletSessionDequeFilter> registration = new FilterRegistrationBean<HttpServletSessionDequeFilter>();
