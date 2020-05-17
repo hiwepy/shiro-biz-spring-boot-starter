@@ -20,9 +20,9 @@ import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.spring.boot.ShiroBizWebAutoConfiguration;
 import org.apache.shiro.subject.Subject;
 import org.springframework.boot.actuate.autoconfigure.endpoint.EndpointAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
+import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnAvailableEndpoint;
 import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
-import org.springframework.boot.actuate.autoconfigure.health.HealthIndicatorAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.health.HealthContributorAutoConfiguration;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -40,12 +40,12 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass({Subject.class, HealthIndicator.class, EndpointAutoConfiguration.class})
 @ConditionalOnEnabledHealthIndicator("shiro")
 @AutoConfigureBefore(EndpointAutoConfiguration.class)
-@AutoConfigureAfter({ShiroBizWebAutoConfiguration.class, HealthIndicatorAutoConfiguration.class})
+@AutoConfigureAfter({ShiroBizWebAutoConfiguration.class, HealthContributorAutoConfiguration.class})
 public class ShiroEndpointAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnEnabledEndpoint
+	@ConditionalOnAvailableEndpoint
 	public ShiroEndpoint shiroEndpoint(SessionDAO sessionDAO) {
 		return new ShiroEndpoint(sessionDAO);
 	}
