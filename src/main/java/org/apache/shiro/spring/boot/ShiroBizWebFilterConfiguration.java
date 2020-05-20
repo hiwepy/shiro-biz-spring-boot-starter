@@ -2,6 +2,8 @@ package org.apache.shiro.spring.boot;
 
 import java.util.stream.Collectors;
 
+import javax.servlet.DispatcherType;
+
 import org.apache.shiro.biz.authz.principal.ShiroPrincipal;
 import org.apache.shiro.biz.utils.StringUtils;
 import org.apache.shiro.biz.web.filter.HttpServletRequestEscapeHtml4Filter;
@@ -222,10 +224,11 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
     }
 
     @Bean(name = "filterShiroFilterRegistrationBean")
-    @ConditionalOnMissingBean(name = "filterShiroFilterRegistrationBean")
+    @ConditionalOnMissingBean
     protected FilterRegistrationBean<AbstractShiroFilter> filterShiroFilterRegistrationBean() throws Exception {
 
         FilterRegistrationBean<AbstractShiroFilter> filterRegistrationBean = new FilterRegistrationBean<AbstractShiroFilter>();
+        filterRegistrationBean.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE, DispatcherType.ERROR);
         filterRegistrationBean.setFilter((AbstractShiroFilter) shiroFilterFactoryBean().getObject());
         filterRegistrationBean.setOrder(Ordered.LOWEST_PRECEDENCE);
 

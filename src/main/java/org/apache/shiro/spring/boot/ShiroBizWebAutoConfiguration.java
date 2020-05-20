@@ -270,13 +270,22 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 	@Override
 	protected ShiroFilterChainDefinition shiroFilterChainDefinition() {
 		DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
-		Map<String /* pattert */, String /* Chain names */> pathDefinitions = bizProperties
-				.getFilterChainDefinitionMap();
-		if (MapUtils.isNotEmpty(pathDefinitions)) {
-			chainDefinition.addPathDefinitions(pathDefinitions);
-			return chainDefinition;
+		if (MapUtils.isNotEmpty(bizProperties.getFilterChainDefinitionMap())) {
+			chainDefinition.addPathDefinitions(bizProperties.getFilterChainDefinitionMap());
 		}
-		chainDefinition.addPathDefinition("/**", "authc");
+		try {
+			 
+			Map<String, FilterChainDefinitionConfigurer> configurers = getApplicationContext().getBeansOfType(FilterChainDefinitionConfigurer.class);
+			if(MapUtils.isNotEmpty(configurers)) {
+				Iterator<Entry<String, FilterChainDefinitionConfigurer>> ite = configurers.entrySet().iterator();
+				while (ite.hasNext()) {
+					Entry<String, FilterChainDefinitionConfigurer> entry = ite.next();
+					entry.getValue().configurePathDefinition(chainDefinition);
+				}
+			}
+			 
+		} catch (BeansException e) {
+		}
 		return chainDefinition;
 	}
 
