@@ -15,7 +15,7 @@
  */
 package org.apache.shiro.spring.boot;
 
-import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 
 /**
  * TODO
@@ -23,7 +23,7 @@ import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
  */
 public interface FilterChainDefinitionConfigurer {
 
-	default void configurePathDefinition(ShiroFilterChainDefinition chainDefinition) {
+	default void configurePathDefinition(DefaultShiroFilterChainDefinition chainDefinition) {
 	}
 	
 }
