@@ -36,6 +36,7 @@ import org.apache.shiro.session.mgt.AbstractValidatingSessionManager;
 import org.apache.shiro.session.mgt.DefaultSessionManager;
 import org.apache.shiro.session.mgt.SessionFactory;
 import org.apache.shiro.session.mgt.SessionManager;
+import org.apache.shiro.session.mgt.SessionValidationScheduler;
 import org.apache.shiro.session.mgt.eis.CachingSessionDAO;
 import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
 import org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator;
@@ -74,7 +75,9 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 
 	@Autowired
 	private ShiroBizProperties bizProperties;
-
+	@Autowired(required = false)
+	private SessionValidationScheduler sessionValidationScheduler;
+	
 	/**
 	 * Realm 执行监听：实现该接口可监听认证失败和成功的状态，从而做业务系统自己的事情，比如记录日志
 	 */
@@ -220,6 +223,7 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 			AbstractValidatingSessionManager sManager = (AbstractValidatingSessionManager) sessionManager;
 			sManager.setSessionValidationInterval(bizProperties.getSessionValidationInterval());
 			sManager.setSessionValidationSchedulerEnabled(bizProperties.isSessionValidationSchedulerEnabled());
+			sManager.setSessionValidationScheduler(sessionValidationScheduler);
 		}
 		
 		if (sessionManager instanceof DefaultSessionManager) {
@@ -232,7 +236,7 @@ public class ShiroBizWebAutoConfiguration extends AbstractShiroWebConfiguration 
 		}
 		return sessionManager;
 	}
-
+	
 	@Bean
 	@ConditionalOnMissingBean
 	@Override

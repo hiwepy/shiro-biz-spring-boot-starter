@@ -486,7 +486,6 @@
 		    	</exclusion>
 		    </exclusions>
 		</dependency>
-		
 		<!-- https://mvnrepository.com/artifact/com.github.hiwepy/shiro-biz -->
 		<dependency>
 		    <groupId>com.github.hiwepy</groupId>
