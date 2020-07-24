@@ -14,11 +14,14 @@ shiro starter for spring boot
 
 ### Maven
 
-	<dependency>
-		<groupId>com.github.hiwepy</groupId>
-		<artifactId>shiro-biz-spring-boot-starter</artifactId>
-		<version>${project.version}</version>
-	</dependency>
+``` xml
+<dependency>
+	<groupId>com.github.hiwepy</groupId>
+	<artifactId>shiro-biz-spring-boot-starter</artifactId>
+	<version>${project.version}</version>
+</dependency>
+```
+	
 
 ### 配置参考
 
