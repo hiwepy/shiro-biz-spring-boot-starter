@@ -366,7 +366,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<commons-codec.version>1.11</commons-codec.version>
  		<commons-lang3.version>3.8.1</commons-lang3.version>
- 		<commons-io.version>2.6</commons-io.version>
+ 		<commons-io.version>2.7</commons-io.version>
  		<ehcache3.version>3.6.0</ehcache3.version>
 		<freemarker.version>2.3.28</freemarker.version>
  		<guava.version>29.0-jre</guava.version>
@@ -378,16 +378,16 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
- 		<j2cache.version>2.8.0-release</j2cache.version>
- 		<redisson.version>3.11.1</redisson.version>
-		<shiro.version>1.5.3</shiro.version>
-		<shiro-biz.version>1.1.1.RELEASE</shiro-biz.version>
+ 		<j2cache.version>2.8.2-release</j2cache.version>
+ 		<redisson.version>3.13.6</redisson.version>
+		<shiro.version>1.6.0</shiro.version>
+		<shiro-biz.version>1.1.2.RELEASE</shiro-biz.version>
 		<shiro-ehcache.version>${shiro.version}</shiro-ehcache.version>
 		<shiro-ehcache3.version>1.0.0</shiro-ehcache3.version>
 		<shiro-hazelcast.version>${shiro.version}</shiro-hazelcast.version>
-		<shiro-j2cache.version>1.0.2.RELEASE</shiro-j2cache.version>
+		<shiro-j2cache.version>1.0.3.RELEASE</shiro-j2cache.version>
 		<shiro-redis.version>3.2.3</shiro-redis.version>
-		<shiro-redisson.version>1.0.0.RELEASE</shiro-redisson.version>
+		<shiro-redisson.version>1.5.0.RELEASE</shiro-redisson.version>
 		<spring-boot-starter-kaptcha.version>1.0.4.RELEASE</spring-boot-starter-kaptcha.version>
 		<spring-boot-starter-jcaptcha.version>1.0.2.RELEASE</spring-boot-starter-jcaptcha.version>
 		<spring-boot-starter-simplecaptcha.version>1.0.2.RELEASE</spring-boot-starter-simplecaptcha.version>
