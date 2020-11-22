@@ -369,7 +369,7 @@
  		<commons-io.version>2.7</commons-io.version>
  		<ehcache3.version>3.6.0</ehcache3.version>
 		<freemarker.version>2.3.28</freemarker.version>
- 		<guava.version>29.0-jre</guava.version>
+ 		<guava.version>30.0-jre</guava.version>
 		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
  		<maven.version>3.0</maven.version>
        	<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
