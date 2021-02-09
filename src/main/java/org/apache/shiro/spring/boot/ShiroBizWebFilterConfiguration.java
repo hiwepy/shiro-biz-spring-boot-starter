@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import javax.servlet.DispatcherType;
 
 import org.apache.shiro.biz.authz.principal.ShiroPrincipal;
+import org.apache.shiro.biz.spring.ShiroFilterProxyFactoryBean;
 import org.apache.shiro.biz.utils.StringUtils;
 import org.apache.shiro.biz.web.filter.HttpServletRequestEscapeHtml4Filter;
 import org.apache.shiro.biz.web.filter.HttpServletRequestHeaderFilter;
@@ -205,8 +206,9 @@ public class ShiroBizWebFilterConfiguration extends AbstractShiroWebFilterConfig
     @Override
     protected ShiroFilterFactoryBean shiroFilterFactoryBean() {
 		
-		ShiroFilterFactoryBean filterFactoryBean = new ShiroBizFilterFactoryBean();
-        
+		ShiroFilterProxyFactoryBean filterFactoryBean = new ShiroBizFilterFactoryBean();
+		filterFactoryBean.setStaticSecurityManagerEnabled(bizProperties.isStaticSecurityManagerEnabled());
+		
 		//登录地址：会话不存在时访问的地址
         filterFactoryBean.setLoginUrl(bizProperties.getLoginUrl());
   		//系统主页：登录成功后跳转路径

@@ -151,6 +151,14 @@ public class ShiroBizProperties {
 	 * The data object cache name of session control filter 
 	 */
 	private String sessionDequeCacheName = HttpServletSessionDequeFilter.DEFAULT_SESSION_DEQUE_CACHE_NAME;
+
+    /**
+     * Whether or not to bind the constructed SecurityManager instance to static memory (via
+     * SecurityUtils.setSecurityManager).  This was added to support https://issues.apache.org/jira/browse/SHIRO-287
+     * @since 1.2
+     */
+    private boolean staticSecurityManagerEnabled;
+    
 	/** 
 	 * Whether to kickout the first login session. 
 	 */
@@ -499,6 +507,14 @@ public class ShiroBizProperties {
 		this.sessionDequeCacheName = sessionDequeCacheName;
 	}
 	
+	public boolean isStaticSecurityManagerEnabled() {
+		return staticSecurityManagerEnabled;
+	}
+
+	public void setStaticSecurityManagerEnabled(boolean staticSecurityManagerEnabled) {
+		this.staticSecurityManagerEnabled = staticSecurityManagerEnabled;
+	}
+
 	public boolean isKickoutFirst() {
 		return kickoutFirst;
 	}
