@@ -22,7 +22,7 @@ import com.github.streamone.shiro.cache.RedissonShiroCacheManager;
 @AutoConfigureAfter(AbstractCachingConfiguration.class)
 @AutoConfigureBefore(ShiroWebAutoConfiguration.class)
 @ConditionalOnBean(RedissonClient.class)
-@ConditionalOnProperty(prefix = ShiroRedissonCacheProperties.PREFIX, value = "type", havingValue = "redis")
+@ConditionalOnProperty(prefix = ShiroCacheProperties.PREFIX, value = "type", havingValue = "redis")
 @EnableConfigurationProperties({ ShiroRedissonCacheProperties.class })
 public class ShiroRedissonCacheConfiguration {
 
