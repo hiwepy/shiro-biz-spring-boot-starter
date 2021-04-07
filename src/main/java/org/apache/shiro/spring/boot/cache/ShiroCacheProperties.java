@@ -27,7 +27,7 @@ public class ShiroCacheProperties {
 	 */
 	
 	/**
-	 * 缓存类型：memory、spring、ehcache、hazelcast、j2cache、redis
+	 * 缓存类型：memory、spring、ehcache、hazelcast、j2cache、redis、redisson
 	 */
 	private String type = "memory";
 
