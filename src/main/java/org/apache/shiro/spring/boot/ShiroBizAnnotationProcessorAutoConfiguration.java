@@ -15,7 +15,9 @@
  */
 package org.apache.shiro.spring.boot;
 
+import org.apache.shiro.spring.boot.autoconfigure.ShiroAnnotationProcessorAutoConfiguration;
 import org.apache.shiro.spring.config.AbstractShiroAnnotationProcessorConfiguration;
+import org.apache.shiro.spring.config.ShiroAnnotationProcessorConfiguration;
 import org.apache.shiro.util.StringUtils;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +28,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-@AutoConfigureBefore( name = {
-	"org.apache.shiro.spring.boot.autoconfigure.ShiroAnnotationProcessorAutoConfiguration"  // shiro-spring-boot-web-starter
-})
+@AutoConfigureBefore({ShiroAnnotationProcessorAutoConfiguration.class, ShiroAnnotationProcessorConfiguration.class })
 @Configuration
 @ConditionalOnProperty(prefix = ShiroBizAnnotationProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ ShiroBizAnnotationProperties.class })
@@ -36,26 +36,26 @@ public class ShiroBizAnnotationProcessorAutoConfiguration extends AbstractShiroA
 
 	@Autowired
 	private ShiroBizAnnotationProperties properties;
-	
+
 	@Bean
     @DependsOn("lifecycleBeanPostProcessor")
     @Override
     public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
-		
+
 		// 解决Shiro与Spring Aop 冲突
 		DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = super.defaultAdvisorAutoProxyCreator();
 		advisorAutoProxyCreator.setProxyTargetClass(properties.isProxyTargetClass());
         advisorAutoProxyCreator.setExposeProxy(properties.isExposeProxy());
         advisorAutoProxyCreator.setFrozen(properties.isFrozen());
         advisorAutoProxyCreator.setOpaque(properties.isOpaque());
-        
+
         if(properties.isUsePrefix() && StringUtils.hasText(properties.getAdvisorBeanNamePrefix())) {
         	advisorAutoProxyCreator.setUsePrefix(properties.isUsePrefix());
         	advisorAutoProxyCreator.setAdvisorBeanNamePrefix(properties.getAdvisorBeanNamePrefix());
         }
-        
+
         return advisorAutoProxyCreator;
     }
-	 
-	 
+
+
 }
