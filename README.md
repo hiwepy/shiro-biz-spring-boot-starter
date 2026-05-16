@@ -16,7 +16,7 @@ shiro starter for spring boot
 
 ``` xml
 <dependency>
-	<groupId>com.github.hiwepy</groupId>
+	<groupId>io.github.hiwepy</groupId>
 	<artifactId>shiro-biz-spring-boot-starter</artifactId>
 	<version>${project.version}</version>
 </dependency>
