@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.0</version>
+		<version>3.0.13</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
 	<groupId>io.github.hiwepy</groupId>
 	<artifactId>shiro-biz-spring-boot-starter</artifactId>
 	<description>Spring Boot Starter For Shiro Biz</description>
-	<version>3.3.x.20240823-SNAPSHOT</version>
+	<version>3.0.x.20260527-SNAPSHOT</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<url>https://github.com/hiwepy/${project.artifactId}</url>
 	<packaging>jar</packaging>
@@ -356,6 +356,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>17</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
 		<!-- Maven Plugin versions -->
 		<maven.version>3.9.9</maven.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
@@ -406,14 +407,14 @@
 
 		<!-- Java Servlet API -->
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
 			<optional>true</optional>
 		</dependency>
 		<!-- Java Websocket API -->
 		<!-- https://mvnrepository.com/artifact/javax.websocket/javax.websocket-api -->
 		<dependency>
-			<groupId>javax.websocket</groupId>
+			<groupId>jakarta.websocket</groupId>
 			<artifactId>javax.websocket-api</artifactId>
 		</dependency>
 
