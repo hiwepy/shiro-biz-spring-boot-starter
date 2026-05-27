@@ -2,7 +2,7 @@ package org.apache.shiro.spring.boot;
 
 import java.util.stream.Collectors;
 
-import javax.servlet.DispatcherType;
+import jakarta.servlet.DispatcherType;
 
 import org.apache.shiro.biz.authz.principal.ShiroPrincipal;
 import org.apache.shiro.biz.spring.ShiroFilterProxyFactoryBean;

@@ -15,7 +15,7 @@
  */
 package org.apache.shiro.spring.boot.captcha;
 
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
