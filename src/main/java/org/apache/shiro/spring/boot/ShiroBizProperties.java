@@ -20,7 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.biz.authc.credential.CredentialsRetryLimitCredentialsMatcher;
 import org.apache.shiro.biz.web.filter.HttpServletSessionDequeFilter;
