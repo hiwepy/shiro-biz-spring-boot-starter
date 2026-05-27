@@ -415,7 +415,8 @@
 		<!-- https://mvnrepository.com/artifact/javax.websocket/javax.websocket-api -->
 		<dependency>
 			<groupId>jakarta.websocket</groupId>
-			<artifactId>javax.websocket-api</artifactId>
+			<artifactId>jakarta.websocket-api</artifactId>
+            <version>2.1.1</version>
 		</dependency>
 
 		<dependency>
